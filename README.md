@@ -17,7 +17,7 @@ After clone the repo into your proyect folder, you have to execute in the same f
 2. . venv/bin/activate
 3. pip3 install Flask
 
-With this 3 commands we have installed the necessary tools for run the application, now we need to create the a database into MySQL for the aplication, no matters the name. 
+with te first command we create a virtual enviorment for run the project, the second one runs the virtual enviorment and the last one install Flask into the virtual enviormente. 
 
 The next step is run the script for create de database tables, but we need to set the context for the application. To do that, we are going to use the next commands: 
 1. export FLASK_APP=to_do
