@@ -7,15 +7,21 @@ from .schema import instructions
 #Connect with the database
 def get_db():
     if 'db' not in g:
-        g.db = mysql.connector.connect(
-            host = current_app.config['DATABASE_HOST'],
-            user = current_app.config['DATABASE_USER'],
-            password = current_app.config['DATABASE_PASSWORD'],
-            database = current_app.config['DATABASE']
+        try:
+            g.db = mysql.connector.connect(
+                host = current_app.config['DATABASE_HOST'],
+                user = current_app.config['DATABASE_USER'],
+                password = current_app.config['DATABASE_PASSWORD'],
+                database = current_app.config['DATABASE']
 
-        )
-    g.cursor = g.db.cursor(dictionary = True)
-    return g.db, g.cursor
+            )
+            g.cursor = g.db.cursor(dictionary = True)
+            print('Connected to db')
+            return g.db, g.cursor
+        except:
+            print('Unable to connect with database')
+
+
 
 #Close database connection
 def close_db(e=None):
