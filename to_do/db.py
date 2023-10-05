@@ -18,8 +18,9 @@ def get_db():
             g.cursor = g.db.cursor(dictionary = True)
             print('Connected to db')
             return g.db, g.cursor
-        except:
-            print('Unable to connect with database')
+        except mysql.connector.Error as err:
+            print('Error: Unable to connect with database. {}'.format(err))
+    return g.db, g.cursor
 
 
 
