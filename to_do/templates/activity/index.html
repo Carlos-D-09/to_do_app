@@ -3,7 +3,7 @@
 {% block title %} Index {% endblock %}
 {% block header %} 
     {% if g.user %}
-        <a class="action" href="{{url_for('to_do_list.create')}}">Agregar tarea</a>
+        <a class="action" href="{{url_for('activity.create')}}">Agregar tarea</a>
     {% endif %}
 {% endblock %}
 
@@ -22,7 +22,7 @@
                     <div class="about">
                         {{todo['created_at'].strftime('%Y-%m-%d')}}
                     </div>
-                    <a href="{{ url_for('to_do_list.update',todo_id = todo['id']) }}">Editar</a>
+                    <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">Editar</a>
                 </div>
             </li>
             {% if not loop.last %}

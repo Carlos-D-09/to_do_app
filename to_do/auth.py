@@ -61,26 +61,29 @@ def login():
         #Finish validation inputs
         
         #Start search of user
-        db, c = get_db()
-        error = None
-        c.execute('SELECT * FROM user WHERE username = %s',(username,))
-        user = c.fetchone()
-        # Finish search of user
-
-        if user is None:
+        if username == "test user":
             error = "Invalid user or password"
         else:
-            #Start password validation   
-            SALT = current_app.config['SECRET_KEY']
-            if not check_password_hash(user['password'], password+SALT):
+            db, c = get_db()
+            error = None
+            c.execute('SELECT * FROM user WHERE username = %s',(username,))
+            user = c.fetchone()
+            # Finish search of user
+
+            if user is None:
                 error = "Invalid user or password"
-            
-            if error is None:
-                session.clear()
-                session['user_id'] = user['id']
-                session['username'] = user['username']
-                return redirect(url_for('to_do_list.index'))
-            #Finish password validation   
+            else:
+                #Start password validation   
+                SALT = current_app.config['SECRET_KEY']
+                if not check_password_hash(user['password'], password+SALT):
+                    error = "Invalid user or password"
+                
+                if error is None:
+                    session.clear()
+                    session['user_id'] = user['id']
+                    session['username'] = user['username']
+                    return redirect(url_for('activity.index'))
+                #Finish password validation   
 
         flash(error)    
     return render_template('auth/login.html')

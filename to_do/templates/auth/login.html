@@ -1,18 +1,51 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
 
-{% block title %} Login {% endblock %}
-
-{% block header %} 
-    <h1>Login</h1>
-{% endblock %}
-
-{% block content %}
-    <form method="POST">
-        <label for="username">Usename: </label>
-        <input type="text" placeholder="Username" name="username" id="username" required> <br> <br>
-        <label for="password">Password: </label>
-        <input type="password" placeholder="Password" name="password" id="password" required> <br> <br>
-
-        <input type="submit" value="Login">
-    </form>
-{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth/login.css')}}">
+</head>
+<body>
+    <div class="login-container-flex">
+        <div class="login-container-element">
+            <div class="login-flex">
+                <div class="login-grid">
+                    <div class="grid-element">
+                        <img src="{{url_for('static', filename='auth/form_img.jpg')}}" alt="" width="100%" height="100%">
+                    </div>
+                    <div class="grid-element form-color">
+                        <div class="form-flex">
+                            <div class="form-content">
+                                <div style="text-align: left;">
+                                    <h1 style="display: inline;">Sign in</h1>
+                                </div>
+                                <br>
+                                {% for message in get_flashed_messages() %}
+                                    <div class="flash">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                <br>
+                                <form method="POST">
+                                    <label for="username">Usename: </label>
+                                    <input type="text" placeholder="Username" name="username" id="username" required> <br> <br>
+                                    <label for="password">Password: </label>
+                                    <input type="password" placeholder="Password" name="password" id="password" required> <br> <br>
+                                
+                                    <input type="submit" value="Sign in">
+                                </form>
+                                <br><br><br>
+                                <div style="text-align: left;">
+                                    No account? <a href="{{url_for('auth.register')}}">Register</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    background-image: url('login_back.jpg');
+    background-size: cover;
+}
+
+.login-container-flex{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container-element{
+    width: 50%;
+    height: 52%;
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-flex{
+    display: flex;
+    width: 100%;
+    height:100%;
+}
+
+.login-grid{
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-element{
+    width: 100%;
+    height: 100%;
+}
+
+.grid-element img{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px 0px 0px 10px;
+}
+
+.form-flex{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.form-color{
+    background-color: rgb(170, 165, 165);
+    border-radius: 0px 10px 10px 0px;
+}
