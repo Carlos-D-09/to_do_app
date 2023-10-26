@@ -1,0 +1,103 @@
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    background-image: url('../images/login_back.jpg');
+    background-size: cover;
+}
+
+.login-container-flex{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container-element{
+    max-width: 55%;
+    min-width: 40%;
+    height: 55%;
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-flex{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(170, 165, 165);
+    border-radius: 10px 10px 10px 10px;
+}
+
+.login-grid{
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.grid-element{
+    width: 100%;
+    height: 100%;
+}
+
+.grid-element img{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px 0px 0px 10px;
+    overflow: hidden;
+}
+
+.form-flex{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-wrap: wrap;
+    gap: 0px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.form-title{
+    width: 100%;
+    padding-left: 15%;
+    align-self: end;
+    text-align: left;
+}
+
+.form-content{
+    padding: 10px;
+    color: rgb(44, 43, 43);
+    text-align: center;
+}
+
+.form-content label{
+    padding: 10px 10px 10px 0px;
+    display: block;
+    text-align: left;
+}
+
+.form-footer{
+    width: 80%;
+    text-align: center;
+    margin-top: 10px 0px 0px 0px;
+    border-top: 1px solid;
+}
+
+.input-text{
+    min-width: 100px;
+    max-width: 300px;
+    min-height: 30px;
+    max-height: 50px;
+    border: 1px solid rgb(236, 236, 236);
+    background-color: white;
+    border-radius: 4px;
+}

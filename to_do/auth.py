@@ -15,15 +15,16 @@ def register():
         #Start validation inputs
         username = request.form['username']
         password = request.form['password']
-        if not username:
-            error = "Username is required"
-        if not password: 
-            error = "Password is required"
+        re_password = request.form['re_password']
+        error = None
+        if not username or not password or not re_password:
+            error = "All inpusts are required"
+        elif password != re_password:
+            error = "The passwords must be the same"
         #Finish validation inputs
-
+        
         #Start validation uniqueness of records
         db, c = get_db()
-        error = None
         sql = 'SELECT id FROM user WHERE username = %s'
         values = [username]
         c.execute(sql, values)

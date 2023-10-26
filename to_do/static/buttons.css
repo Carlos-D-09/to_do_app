@@ -1,0 +1,18 @@
+.button-success{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: rgba(236, 255, 243, 0.932);
+    border: 1px solid rgb(156, 255, 194);
+    border-radius: 4px;
+}
+
+.button-success:hover{
+    font-weight: bold;
+    background-color: rgb(156, 255, 194);
+    border: 1px solid rgb(7, 238, 96);
+    transform: scale(1.03);
+    transition: 1s 0.2s;
+    cursor: pointer;
+}

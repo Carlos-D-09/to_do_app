@@ -1,6 +1,20 @@
+html{
+    font-family:'Cascadia Code';
+}
+
 body{
     margin: 0px;
     background-color: rgb(214, 214, 214);
+    font-family:'Cascadia Code';
+}
+
+input{
+    font-family:'Cascadia Code';
+}
+
+table{
+    font-family:'Cascadia Code';
+    
 }
 
 .flex-box-nav{
@@ -54,4 +68,9 @@ body{
 .nav-list p{
     display: inline;
     font-size: 1.8em;
+}
+
+.flash{
+    color: red;
+    font-weight: bold;
 }
