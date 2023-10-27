@@ -12,8 +12,8 @@ def get_db():
                 host = current_app.config['DATABASE_HOST'],
                 user = current_app.config['DATABASE_USER'],
                 password = current_app.config['DATABASE_PASSWORD'],
-                database = current_app.config['DATABASE']
-
+                database = current_app.config['DATABASE'],
+                port = current_app.config['DATABASE_PORT']
             )
             g.cursor = g.db.cursor(dictionary = True)
             print('Connected to db')
@@ -51,7 +51,7 @@ def db_seed():
 
 @click.command('seed-db') #Command for execute from terminal the db seeding 
 @with_appcontext
-def seed_db_command(): #Create a fresh installation for the database. 
+def seed_db_command(): #Seed a fresh installation for the database. 
     db_seed()
     click.echo("Base de datos poblada")
 
