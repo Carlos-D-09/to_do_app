@@ -14,6 +14,7 @@ Python modules:
 **Installation**
 
 **Windows (PowerShell)**
+
 After clone the repo into your project folder, enter the folder "to_do_app" and you have to execute, the following commands:
 1. python -m venv venv
 2. . venv/scripts/activate
