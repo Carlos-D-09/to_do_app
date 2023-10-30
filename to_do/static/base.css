@@ -1,11 +1,13 @@
 html{
     font-family:'Cascadia Code';
+    height: 100%;
 }
 
 body{
     margin: 0px;
     background-color: rgb(214, 214, 214);
     font-family:'Cascadia Code';
+    height: 100%;
 }
 
 input{
@@ -20,9 +22,8 @@ table{
 .flex-box-nav{
     display: flex;
     padding: 10px;
-    width: 100%;
-    min-height: 100px;
-    max-height: 200px;
+    width: 98.9%;
+    height: 10%;
     flex-direction: row;
     flex-wrap: nowrap;
     background-color: rgb(206, 206, 206);
@@ -31,9 +32,15 @@ table{
     top: 0;
 }
 
+.flex-box-nav a{
+    text-decoration: none;
+    color: black;
+}
+
 .content{
     margin: 0px;
     padding: 10px;
+    height: 85%;
 }
 
 .title-nav{

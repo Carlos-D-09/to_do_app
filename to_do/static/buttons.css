@@ -10,8 +10,27 @@
 
 .button-success:hover{
     font-weight: bold;
-    background-color: rgb(156, 255, 194);
-    border: 1px solid rgb(7, 238, 96);
+    background-color: rgba(212, 253, 227, 0.932);
+    border: 1px solid rgb(156, 255, 194);
+    transform: scale(1.03);
+    transition: 1s 0.2s;
+    cursor: pointer;
+}
+
+.button-stable{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: rgba(224, 246, 255, 0.932);
+    border: 1px solid rgb(111, 214, 255);
+    border-radius: 4px;
+}
+
+.button-stable:hover{
+    font-weight: bold;
+    background-color: rgba(204, 240, 255, 0.932);
+    border: 1px solid rgb(111, 214, 255);
     transform: scale(1.03);
     transition: 1s 0.2s;
     cursor: pointer;

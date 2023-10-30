@@ -1,35 +1,71 @@
 {% extends 'base.html' %}
 
 {% block title %} Index {% endblock %}
-{% block header %} 
-    {% if g.user %}
-        <a class="action" href="{{url_for('activity.create')}}">Agregar tarea</a>
-    {% endif %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/index.css')}}">
 {% endblock %}
 
 {% block content %}
-    <ul>
-        {% for todo in todos %}
-            <li class="todo">
-                <div>
-                    <h1>
-                        {% if todo['completed'] == 1 %}
-                            <strike>{{todo['description']}}</strike>
-                        {% else %}
-                            {{todo['description']}}
-                        {% endif %}
-                    </h1>
-                    <div class="about">
-                        {{todo['created_at'].strftime('%Y-%m-%d')}}
-                    </div>
-                    <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">Editar</a>
-                </div>
-            </li>
-            {% if not loop.last %}
-                <hr>    
-            {% endif %}
-
-        {% endfor %}
-    </ul>
+    <div class="index-structure">
+        <div class="operations">
+            <h1>Options: </h1>
+            <ul class="fa-ul">
+                <li> 
+                    <span class="fa-li"> 
+                        <i class="fa-solid fa-calendar-plus fa-xl"></i>
+                    </span>
+                    <a href="{{url_for('activity.create')}}">Add to-do</a>
+                </li><br>
+                <li> 
+                    <span class="fa-li"> 
+                        <i class="fa-solid fa-circle-plus fa-xl"></i>
+                    </span>
+                    <a href="#">Add category</a>
+                </li><br>
+            </ul>
+        </div>
+        <div class="filters">
+            <h1>Filters: </h1>
+            <div class="filter-list">
+                {% for category in categories %}
+                    <label class="container">{{category['name']}}
+                        <input type="radio" 
+                        {% if category['name'] == 'Planned' %}
+                            checked="checked"
+                        {% endif %} 
+                        name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="to_do">
+            <ul>
+                {% for todo in todos %}
+                    <li class="todo">
+                        <div>
+                            <h1>
+                                {% if todo['completed'] == 1 %}
+                                    <strike>{{todo['name']}}</strike>
+                                    {% else %}
+                                    {{todo['name']}}
+                                    {% endif %}
+                            </h1>
+                                {{todo['created_at'].strftime('%Y-%m-%d')}}
+                            <div class="about">
+                                {{todo['description']}}<br>
+                            </div>
+                            <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">Editar</a>
+                        </div>
+                    </li>
+                    {% if not loop.last %}
+                        <hr>    
+                    {% endif %}
+        
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
 {% endblock %}

@@ -1,13 +1,42 @@
 {% extends "base.html" %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{url_for('static',filename='activity/CSS/create.css')}}">
+{% endblock %}
+
 {% block title %}
-    Create
+    Create to-do
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        <label for="Description">Description</label>
-        <input type="text" name="description" id="Description" required>
-        <input type="submit" value="Save">
-    </form>
+    <div class="flexbox-center">
+        <div class="form-container">
+            <form method="post" class="form-content">
+                <h1>Add an activity to your to-do list</h1>
+                <div class="inputs">
+
+                    <label for="Name">Name:</label>
+                    <input type="text" class="input-text" name="name" id="name" required>
+            
+                    <label for="Description">Description:</label>
+                    <input type="text" class="input-text" name="description" id="Description" required>
+                    
+                    <label for="categories">Category:</label>
+                    <select class="input-category" name="categories" id="categories">
+                        {% for category in categories %}
+                            <option value="{{category['id']}}">{{category['name']}}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <label for="date">End at:</label>
+                    <input type="date" class="input-date" name="date" id="date">
+                    <input type="time" class="input-time" name="time" id="time">
+                </div>
+                <br><br>
+                <div class="button">
+                    <input class="button-stable" type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -7,6 +7,9 @@
     
     <!-- Style -->
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='inputs.css')}}">
+    {% block styles %}{% endblock %}
 
     <!-- Icons -->
     <script src="https://kit.fontawesome.com/36c2a6041f.js" crossorigin="anonymous"></script>
@@ -14,7 +17,11 @@
 <body>
     <nav class="flex-box-nav">
         <div class="title-nav">
-            <h1>To Do List</h1>
+            <h1>
+                <a href="{{ url_for('activity.index') }}">
+                    To Do List
+                </a>
+            </h1>
         </div>
         <div class="nav-list">
             <ul>

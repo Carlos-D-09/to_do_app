@@ -30,9 +30,11 @@ tables = [
             id INT PRIMARY KEY AUTO_INCREMENT, 
             created_by INT NOT NULL, 
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            name VARCHAR(50) NOT NULL,
             description VARCHAR(250) NOT NULL,
             completed BOOLEAN NOT NULL,
             category INT NOT NULL,
+            end_at TIMESTAMP, 
             FOREIGN KEY (category) REFERENCES category(id),
             FOREIGN KEY (created_by) REFERENCES user(id)
         )
@@ -45,10 +47,10 @@ pwd = generate_password_hash('12345'+'dev')
 seeder = [
     "INSERT INTO user (username, password) VALUES ('test user','" + pwd + "')",
     """
-        INSERT INTO category (created_by, name, description, standard) VALUES (1, 'Daily', 'Here you can consult your activities for today', TRUE)
+        INSERT INTO category (created_by, name, description, standard) VALUES (1, 'Planned', 'Here you can see all your activities uncompleted', TRUE)
     """,
     """
-        INSERT INTO category (created_by, name, description, standard) VALUES (1, 'Planned', 'Here you can see all your activities uncompleted', TRUE)
+        INSERT INTO category (created_by, name, description, standard) VALUES (1, 'Daily', 'Here you can consult your activities for today', TRUE)
     """,
     """
         INSERT INTO category (created_by, name, description, standard) VALUES (1, 'Important', 'Here you can see all your highlighted activities', TRUE)
