@@ -16,17 +16,18 @@ activity = Blueprint('activity', __name__, url_prefix='')
 def getAllTodo():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, end_at, a.created_at FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s order by created_at desc',
         (g.user['id'],)
     )
     todos = c.fetchall()
     c.execute(
-        'SELECT name FROM category where standard = 1 OR created_by = %s',
+        'SELECT name FROM category WHERE created_by = %s',
         (g.user['id'], )
     )
     categories = c.fetchall()
+    print(todos)
     return todos, categories
 
 #Return the requested task only if it belongs to the logged user. 
@@ -55,7 +56,7 @@ def checkTodo(todo_id):
 def getCategories(user_id):
     db, c = get_db()
     c.execute(
-        'SELECT id, name FROM category WHERE standard = 1 OR created_by = %s', (user_id, )
+        'SELECT id, name FROM category WHERE created_by = %s', (user_id, )
     )
     return c.fetchall()
     
@@ -78,15 +79,15 @@ def deleteTodo(todo_id):
     return True
 
 #Create a task 
-def createTodo(name, description, category, end_at):
+def createTodo(name, description, category, end_at, important):
     db, c = get_db()
     if end_at == 'undefined':
-        c.execute('INSERT INTO activity (created_by, name, description, completed, category) VALUES(%s,%s,%s, %s, %s)', 
-                  (g.user['id'],name, description, False, category)
+        c.execute('INSERT INTO activity (created_by, name, description, completed, category, important) VALUES(%s,%s,%s,%s,%s,%s)', 
+                (g.user['id'],name, description, False, category, important)
         )
     else:
-        c.execute('INSERT INTO activity (created_by, name, description, completed, category, end_at) VALUES(%s,%s,%s,%s,%s, %s)', 
-                  (g.user['id'], name, description, False, category, end_at)
+        c.execute('INSERT INTO activity (created_by, name, description, completed, category, end_at, important) VALUES(%s,%s,%s,%s,%s,%s,%s)', 
+                (g.user['id'], name, description, False, category, end_at, important)
         )
     db.commit()
 # End MySQL commandas
@@ -102,11 +103,24 @@ def index():
 @login_required
 def create():
     if request.method == "POST":
+        # Start Retrieve inputs from the form
         name = request.form['name']
         description = request.form['description']
-        category = request.form['categories']
+        try:    
+            category = request.form['categories']
+            important = request.form['important']
+        except:
+            category = 1
+            important = 0
         date = request.form['date']
         time = request.form['time']
+        if not important:
+            important = False
+        else:
+            important = True
+        # End retrieve inputs from the form
+
+        #Start validation for required inputs
         error = None
         if not name:
             error = "Name is required"
@@ -114,18 +128,34 @@ def create():
             error = "Description is required"
         if error is not None:
             flash(error)
-        else:
-            if not date:
-                end_at = 'undefined'
-                createTodo(name, description, category, end_at)
-            else:
-                if not time:
-                    time = '12:00:00'
-                else:
-                    time = time + ':00'
-                end_at = date + ' ' + time
-                createTodo(name, description, category, end_at)
-            return redirect(url_for('activity.index'))
+        #End validation for required inputs
+
+        #Start validations day and hour
+        if not date:
+            #If the to-do hasn't a limit day set end_at as undefined
+            end_at = 'undefined'
+            #We don't save the hour if the to-do hasn't a day
+
+        else: #If the to-do has a limit day
+            
+            #Start validation hour 
+            if not time:
+                #If it hasn't set 12pm as default hour
+                time = '12:00:00'
+            else: #If the to-do has a limit hour
+                #add milisencods to the hour for save as timestamp
+                time = time + ':00'
+            #End validation hour 
+
+            #Create timestamp
+            end_at = date + ' ' + time
+        
+        #End validation day and hour
+
+        createTodo(name, description, category, end_at, important)
+        
+        
+        return redirect(url_for('activity.index'))
 
     categories = getCategories(g.user['id'])
     return render_template('activity/create.html', categories=categories)

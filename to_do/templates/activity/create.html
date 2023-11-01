@@ -15,18 +15,28 @@
                 <h1>Add an activity to your to-do list</h1>
                 <div class="inputs">
 
-                    <label for="Name">Name:</label>
+                    <label for="name">Name:</label>
                     <input type="text" class="input-text" name="name" id="name" required>
             
                     <label for="Description">Description:</label>
                     <input type="text" class="input-text" name="description" id="Description" required>
                     
-                    <label for="categories">Category:</label>
-                    <select class="input-category" name="categories" id="categories">
-                        {% for category in categories %}
-                            <option value="{{category['id']}}">{{category['name']}}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="grid-category-important">
+                        <label for="categories">Category:</label>
+                        <div class="element1">
+                            <select class="input-category" name="categories" id="categories">
+                                {% for category in categories %}
+                                    <option value="{{category['id']}}">{{category['name']}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="element2">
+                            <input type="checkbox" name="important" id="important">
+                            <label for="important">Important</label>
+                        </div>
+                        
+                    </div>
+                    
                     
                     <label for="date">End at:</label>
                     <input type="date" class="input-date" name="date" id="date">

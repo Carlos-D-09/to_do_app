@@ -28,13 +28,21 @@
         <div class="filters">
             <h1>Filters: </h1>
             <div class="filter-list">
+                <label class="container"> Planned
+                    <input type="radio" name="radio" checked="checked">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"> Daily
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"> Important
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
                 {% for category in categories %}
                     <label class="container">{{category['name']}}
-                        <input type="radio" 
-                        {% if category['name'] == 'Planned' %}
-                            checked="checked"
-                        {% endif %} 
-                        name="radio">
+                        <input type="radio" name="radio">
                         <span class="checkmark"></span>
                     </label>
                 {% endfor %}
@@ -43,20 +51,62 @@
         <div class="to_do">
             <ul>
                 {% for todo in todos %}
-                    <li class="todo">
-                        <div>
-                            <h1>
+                    <li class="to_do_element">
+                        <div class="to_do_element_title">
+                            <h3>
                                 {% if todo['completed'] == 1 %}
                                     <strike>{{todo['name']}}</strike>
                                     {% else %}
                                     {{todo['name']}}
+                                {% endif %}
+                            </h3>
+                        </div>
+                        <div class="to_do_element_description">
+                            <p>
+                                {{todo['description']}}
+                            </p>
+                        </div>
+                        <div class="to_do_element_options-1">
+                            <div class="grid-category-important">
+                                <div class="element1">
+                                    {% if todo['completed'] == True %}
+                                        <input type="checkbox" name="completed" id="completed" checked="checked">
+                                        <label for="completed">Completed</label>
+                                        {% else %}
+                                        <input type="checkbox" name="completed" id="completed">
+                                        <label for="completed">Completed</label>
                                     {% endif %}
-                            </h1>
-                                {{todo['created_at'].strftime('%Y-%m-%d')}}
-                            <div class="about">
-                                {{todo['description']}}<br>
+                                </div>
+                                <div class="element2">
+                                    {% if todo['important'] == True %}
+                                        <input type="checkbox" name="important" id="important" checked="checked">
+                                        <label for="important">Important</label>
+                                    {% else %}
+                                        <input type="checkbox" name="important" id="important" >
+                                        <label for="important">Important</label>
+                                    {% endif %}
+                                </div>
+                                
                             </div>
-                            <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">Editar</a>
+                        </div>
+                        <div class="to_do_element_date">
+                            <p>
+                                {% if todo['end_at'] is none %}
+                                    undefined
+                                    <i class="fa-regular fa-clock"></i>
+                                {% else %}
+                                    {{todo['end_at'].strftime('%d-%m-%Y at %H-%M' )}}
+                                    <i class="fa-regular fa-clock"></i>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="to_do_element_options-2">
+                            <div class="button-stable">
+                                <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                    Editar
+                                </a>
+                            </div>
                         </div>
                     </li>
                     {% if not loop.last %}

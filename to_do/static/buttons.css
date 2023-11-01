@@ -25,6 +25,15 @@
     background-color: rgba(224, 246, 255, 0.932);
     border: 1px solid rgb(111, 214, 255);
     border-radius: 4px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-stable a{
+    text-decoration: none;
+    padding: 10px;
+    color: black;
 }
 
 .button-stable:hover{
