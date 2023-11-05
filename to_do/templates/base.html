@@ -10,9 +10,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='inputs.css')}}">
     {% block styles %}{% endblock %}
-
+    
     <!-- Icons -->
     <script src="https://kit.fontawesome.com/36c2a6041f.js" crossorigin="anonymous"></script>
+    <!-- Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    {% block scripts %}{% endblock %}
 </head>
 <body>
     <nav class="flex-box-nav">

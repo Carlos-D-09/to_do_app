@@ -17,6 +17,37 @@
     cursor: pointer;
 }
 
+.button-danger a{
+    text-decoration: none;
+    padding: 10px;
+    color: black;
+}
+
+.button-danger{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: rgba(255, 236, 236, 0.932);
+    border: 1px solid rgb(255, 156, 156);
+    border-radius: 4px;
+}
+
+.button-danger:hover{
+    font-weight: bold;
+    background-color: rgba(253, 212, 212, 0.932);
+    border: 1px solid rgb(255, 156, 156);
+    transform: scale(1.03);
+    transition: 1s 0.2s;
+    cursor: pointer;
+}
+
+.button-danger a{
+    text-decoration: none;
+    padding: 10px;
+    color: black;
+}
+
 .button-stable{
     max-width: 120px;
     min-width: 70px;

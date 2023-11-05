@@ -23,11 +23,10 @@ def getAllTodo():
     )
     todos = c.fetchall()
     c.execute(
-        'SELECT name FROM category WHERE created_by = %s',
+        'SELECT id, name FROM category WHERE created_by = %s',
         (g.user['id'], )
     )
     categories = c.fetchall()
-    print(todos)
     return todos, categories
 
 #Return the requested task only if it belongs to the logged user. 
@@ -110,14 +109,10 @@ def create():
             category = request.form['categories']
             important = request.form['important']
         except:
-            category = 1
+            category = 1 #Category when a to-do doesn't have a category
             important = 0
         date = request.form['date']
         time = request.form['time']
-        if not important:
-            important = False
-        else:
-            important = True
         # End retrieve inputs from the form
 
         #Start validation for required inputs

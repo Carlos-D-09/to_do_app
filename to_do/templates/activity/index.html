@@ -3,25 +3,33 @@
 {% block title %} Index {% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/todo.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/filters.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/options.css')}}">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{url_for('static', filename='to_do/JS/form_category.js')}}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="index-structure">
         <div class="operations">
             <h1>Options: </h1>
+            <div class="success-transaction" id="success-transaction"></div>
             <ul class="fa-ul">
                 <li> 
                     <span class="fa-li"> 
-                        <i class="fa-solid fa-calendar-plus fa-xl"></i>
+                        <i class="fa-solid fa-calendar-plus"></i>
                     </span>
                     <a href="{{url_for('activity.create')}}">Add to-do</a>
                 </li><br>
                 <li> 
                     <span class="fa-li"> 
-                        <i class="fa-solid fa-circle-plus fa-xl"></i>
+                        <i class="fa-solid fa-circle-plus"></i>
                     </span>
-                    <a href="#">Add category</a>
+                    <a href="#" id="add-category">Add category</a>
                 </li><br>
             </ul>
         </div>
@@ -29,20 +37,20 @@
             <h1>Filters: </h1>
             <div class="filter-list">
                 <label class="container"> Planned
-                    <input type="radio" name="radio" checked="checked">
+                    <input type="radio" name="radio" id="planned_filter" value="planned" checked="checked">
                     <span class="checkmark"></span>
                 </label>
                 <label class="container"> Daily
-                    <input type="radio" name="radio">
+                    <input type="radio" name="radio" id="daily_filter" value="daily">
                     <span class="checkmark"></span>
                 </label>
                 <label class="container"> Important
-                    <input type="radio" name="radio">
+                    <input type="radio" name="radio" id="important_filter" value="filter">
                     <span class="checkmark"></span>
                 </label>
                 {% for category in categories %}
                     <label class="container">{{category['name']}}
-                        <input type="radio" name="radio">
+                        <input type="radio" name="radio" id="category{{category['id']}}" value="{{category['id']}}">
                         <span class="checkmark"></span>
                     </label>
                 {% endfor %}
@@ -70,20 +78,20 @@
                             <div class="grid-category-important">
                                 <div class="element1">
                                     {% if todo['completed'] == True %}
-                                        <input type="checkbox" name="completed" id="completed" checked="checked">
-                                        <label for="completed">Completed</label>
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked">
+                                        <label for="completed{{todo['id']}}">Completed</label>
                                         {% else %}
-                                        <input type="checkbox" name="completed" id="completed">
-                                        <label for="completed">Completed</label>
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}">
+                                        <label for="completed{{todo['id']}}">Completed</label>
                                     {% endif %}
                                 </div>
                                 <div class="element2">
                                     {% if todo['important'] == True %}
-                                        <input type="checkbox" name="important" id="important" checked="checked">
-                                        <label for="important">Important</label>
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" checked="checked">
+                                        <label for="important{{todo['id']}}">Important</label>
                                     {% else %}
-                                        <input type="checkbox" name="important" id="important" >
-                                        <label for="important">Important</label>
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" >
+                                        <label for="important{{todo['id']}}">Important</label>
                                     {% endif %}
                                 </div>
                                 
