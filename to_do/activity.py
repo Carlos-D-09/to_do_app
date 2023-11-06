@@ -1,12 +1,13 @@
 from flask import (
     Blueprint,
     flash,
-    g, render_template, request, url_for, redirect, abort
+    g, render_template, request, url_for, redirect, abort, jsonify
 )
 from to_do.db import get_db
 
 #Función para proteger todos nuestros endpoints
 from to_do.auth import login_required
+from to_do.category import getCategories
 
 activity = Blueprint('activity', __name__, url_prefix='')
 
@@ -18,15 +19,11 @@ def getAllTodo():
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s order by created_at desc',
+        ' WHERE a.created_by = %s order by end_at desc',
         (g.user['id'],)
     )
     todos = c.fetchall()
-    c.execute(
-        'SELECT id, name FROM category WHERE created_by = %s',
-        (g.user['id'], )
-    )
-    categories = c.fetchall()
+    categories = getCategories(g.user['id'])
     return todos, categories
 
 #Return the requested task only if it belongs to the logged user. 
@@ -50,14 +47,6 @@ def checkTodo(todo_id):
         abort(404, "The task doesn't exist")
     
     return True
-
-#Returns all the categories that belongs to the logged user and the standard categories. 
-def getCategories(user_id):
-    db, c = get_db()
-    c.execute(
-        'SELECT id, name FROM category WHERE created_by = %s', (user_id, )
-    )
-    return c.fetchall()
     
 #Update a task 
 def updateTodo(description, completed, todo_id):
@@ -98,6 +87,12 @@ def index():
     todos, categories = getAllTodo()
     return render_template('activity/index.html', todos=todos, categories=categories)
 
+@activity.route('/activities',methods=['GET'])
+@login_required
+def activities():
+    todos, categories = getAllTodo()
+    return jsonify(todos)
+
 @activity.route('/create', methods=['GET','POST'])
 @login_required
 def create():
@@ -107,9 +102,11 @@ def create():
         description = request.form['description']
         try:    
             category = request.form['categories']
-            important = request.form['important']
         except:
             category = 1 #Category when a to-do doesn't have a category
+        try:
+            important = request.form['important']
+        except:
             important = 0
         date = request.form['date']
         time = request.form['time']

@@ -11,10 +11,12 @@
 
 {% block scripts %}
     <script src="{{url_for('static', filename='to_do/JS/form_category.js')}}"></script>
+    <script src="{{url_for('static', filename='to_do/JS/filters.js')}}"></script>
 {% endblock %}
 
 {% block content %}
     <div class="index-structure">
+        <!-- Operations -->
         <div class="operations">
             <h1>Options: </h1>
             <div class="success-transaction" id="success-transaction"></div>
@@ -33,33 +35,44 @@
                 </li><br>
             </ul>
         </div>
+        <!-- Filters options -->
         <div class="filters">
             <h1>Filters: </h1>
-            <div class="filter-list">
-                <label class="container"> Planned
-                    <input type="radio" name="radio" id="planned_filter" value="planned" checked="checked">
-                    <span class="checkmark"></span>
-                </label>
-                <label class="container"> Daily
-                    <input type="radio" name="radio" id="daily_filter" value="daily">
-                    <span class="checkmark"></span>
-                </label>
-                <label class="container"> Important
-                    <input type="radio" name="radio" id="important_filter" value="filter">
-                    <span class="checkmark"></span>
-                </label>
-                {% for category in categories %}
-                    <label class="container">{{category['name']}}
-                        <input type="radio" name="radio" id="category{{category['id']}}" value="{{category['id']}}">
+            <div class="filter-list" name="filter-list" >
+                <div id="default-filters">
+                    <label class="container"> All
+                        <input type="radio" name="radio" value="all" checked="checked">
                         <span class="checkmark"></span>
                     </label>
-                {% endfor %}
+                    <label class="container"> Planned
+                        <input type="radio" name="radio" value="planned">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container"> Daily
+                        <input type="radio" name="radio" value="daily">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container"> Important
+                        <input type="radio" name="radio" value="important">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div id="custome-filters">
+                    {% for category in categories %}
+                        <label class="container">{{category['name']}}
+                            <input type="radio" name="radio" id="category{{category['id']}}" value="{{category['id']}}">
+                            <span class="checkmark"></span>
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
         </div>
+        <!-- Show the to-do list  -->
         <div class="to_do">
-            <ul>
+            <ul id="to_do-list-container">
                 {% for todo in todos %}
                     <li class="to_do_element">
+                        <!-- Title -->
                         <div class="to_do_element_title">
                             <h3>
                                 {% if todo['completed'] == 1 %}
@@ -69,13 +82,15 @@
                                 {% endif %}
                             </h3>
                         </div>
+                        <!-- Description -->
                         <div class="to_do_element_description">
                             <p>
                                 {{todo['description']}}
                             </p>
                         </div>
+                        <!-- Important, completed and category -->
                         <div class="to_do_element_options-1">
-                            <div class="grid-category-important">
+                            <div class="grid-operations">
                                 <div class="element1">
                                     {% if todo['completed'] == True %}
                                         <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked">
@@ -94,9 +109,16 @@
                                         <label for="important{{todo['id']}}">Important</label>
                                     {% endif %}
                                 </div>
+                                <div class="element3">
+                                    {% if todo['category'] != 'null' %}
+                                        {{todo['category']}}
+                                        <i class="fa-solid fa-layer-group"></i>
+                                    {% endif %}
+                                </div>
                                 
                             </div>
                         </div>
+                        <!-- Date -->
                         <div class="to_do_element_date">
                             <p>
                                 {% if todo['end_at'] is none %}
@@ -108,6 +130,7 @@
                                 {% endif %}
                             </p>
                         </div>
+                        <!-- Buttons edit and delete -->
                         <div class="to_do_element_options-2">
                             <div class="button-stable">
                                 <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">
@@ -117,9 +140,6 @@
                             </div>
                         </div>
                     </li>
-                    {% if not loop.last %}
-                        <hr>    
-                    {% endif %}
         
                 {% endfor %}
             </ul>
