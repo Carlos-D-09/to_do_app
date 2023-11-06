@@ -19,12 +19,66 @@ def getAllTodo():
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s order by end_at desc',
+        ' WHERE a.created_by = %s'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],)
     )
     todos = c.fetchall()
     categories = getCategories(g.user['id'])
     return todos, categories
+
+#Returns all the activities that have an undefined time or end_at is not over
+def getPlanned():
+    db, c = get_db()
+    c.execute(
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE (DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND MONTH(a.end_at) >= MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s) OR'
+        ' (a.created_by = %s AND a.end_at is NULL)'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
+        (g.user['id'],g.user['id'])
+    )
+    todos = c.fetchall()
+    return todos
+    
+def getToday():
+    db, c = get_db()
+    c.execute(
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE (a.created_by = %s AND DAY(a.end_at) = DAY(CURRENT_TIMESTAMP)) OR'
+        ' (a.created_by = %s AND a.end_at is NULL)'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
+        (g.user['id'],g.user['id'])
+    )
+    todos = c.fetchall()
+    return todos
+
+#Return the importatns todo
+def getImportants():
+    db, c = get_db()
+    c.execute(
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE a.created_by = %s AND important = 1'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
+        (g.user['id'],)
+    )
+    todos = c.fetchall()
+    return todos
+
+#Return the activities that have the cateogry
+def getActivitiesByCategory(category):
+    db, c = get_db()
+    c.execute(
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE a.created_by = %s AND c.id = %s'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
+        (g.user['id'],category)
+    )
+    todos = c.fetchall()
+    return todos
 
 #Return the requested task only if it belongs to the logged user. 
 def getTodo(todo_id):
@@ -78,6 +132,7 @@ def createTodo(name, description, category, end_at, important):
                 (g.user['id'], name, description, False, category, end_at, important)
         )
     db.commit()
+
 # End MySQL commandas
 
 
@@ -87,12 +142,43 @@ def index():
     todos, categories = getAllTodo()
     return render_template('activity/index.html', todos=todos, categories=categories)
 
+#Return all the activities
 @activity.route('/activities',methods=['GET'])
 @login_required
 def activities():
     todos, categories = getAllTodo()
     return jsonify(todos)
 
+#Return the vigent activities
+@activity.route('/activities/planned',methods=['GET'])
+@login_required
+def planned():
+    todos = getPlanned()
+    return jsonify(todos)
+
+#Return the activities for today
+@activity.route('/activities/today',methods=['GET'])
+@login_required
+def today():
+    todos = getToday()
+    return jsonify(todos)
+
+#Return the ipmortant activities
+@activity.route('/activities/importants',methods=['GET'])
+@login_required
+def importants():
+    todos = getImportants()
+    return jsonify(todos)
+
+#Return the activities by category
+@activity.route('/activities/category',methods=['GET'])
+@login_required
+def categoryActivities():
+    category_id = category_id = request.args.get('category_id')
+    todos = getActivitiesByCategory(category_id)
+    return jsonify(todos)
+
+#Create todo
 @activity.route('/create', methods=['GET','POST'])
 @login_required
 def create():
@@ -106,6 +192,8 @@ def create():
             category = 1 #Category when a to-do doesn't have a category
         try:
             important = request.form['important']
+            if important == 'on':
+                important = 1
         except:
             important = 0
         date = request.form['date']
@@ -152,6 +240,7 @@ def create():
     categories = getCategories(g.user['id'])
     return render_template('activity/create.html', categories=categories)
 
+#Upate todo
 @activity.route('/<int:todo_id>/update', methods=['GET','POST'])
 @login_required
 def update(todo_id):
@@ -172,6 +261,7 @@ def update(todo_id):
     todo_item = getTodo(todo_id)
     return render_template('activity/update.html',todo = todo_item)
 
+#Delete todo
 @activity.route('/<int:todo_id>/delete',methods=['POST'])
 @login_required
 def delete(todo_id):

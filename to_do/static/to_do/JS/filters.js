@@ -6,7 +6,7 @@ $(document).ready(function() {
         const FILTERS = {
             'all': allTodo,
             'planned': planned,
-            'daily': daily,
+            'today': today,
             'important': important
         }
         
@@ -18,35 +18,70 @@ $(document).ready(function() {
     });    
 })
 
+//Request and show all todo
 function allTodo(){
     url = "/activities";
     $.get(url, function(data){
-        $('#to_do-list-container').empty();
-        $.each(data,function(index,todo){
-            if(todo != null){
-                let todo_div = buildTodo(todo);
-                $('#to_do-list-container').append(todo_div);
-            }    
-            // console.log(todo_div);
-        });
+        printTodo(data);
     });
 }
 
+//Request and show all todo planned
 function planned(){
-    console.log('Planned option');
+    url = "/activities/planned";
+    $.get(url, function(data){
+        if(data != null){
+            printTodo(data);
+        }else{
+            alert('Something went wrong');
+        }
+    });
 }
 
-function daily(){
-    console.log('Daily option');
+//Request the 
+function today(){
+    url = "/activities/today";
+    $.get(url, function(data){
+        if(data != null){
+            printTodo(data);
+        }else{
+            alert('Something went wrong');
+        }
+    });
 }
 
 function important(){
-    console.log('Important option');
+    url = "/activities/importants";
+    $.get(url, function(data){
+        if(data != null){
+            printTodo(data);
+        }else{
+            alert('Something went wrong');
+        }
+    });
 }
 
 function filter(category){
-    console.log('Filter for the cateogry ' + category)
+    url = "/activities/category" ;
+    $.get(url,{category_id:category}, function(data){
+        if(data != null){
+            printTodo(data);
+        }else{
+            alert('Something went wrong');
+        }
+    });
 }
+
+function printTodo(data){
+    $('#to_do-list-container').empty();
+    $.each(data,function(index,todo){
+        if(todo != null){
+            let todo_div = buildTodo(todo);
+            $('#to_do-list-container').append(todo_div);
+        }
+    });
+}
+
 function formatTimestamp(timestamp) {
     const options = { 
         year: 'numeric', 
