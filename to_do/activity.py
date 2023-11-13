@@ -4,10 +4,10 @@ from flask import (
     g, render_template, request, url_for, redirect, abort, jsonify
 )
 from to_do.db import get_db
-
-#Función para proteger todos nuestros endpoints
-from to_do.auth import login_required
 from to_do.category import getCategories
+
+#Función para proteger los endpoints
+from to_do.auth import login_required
 
 activity = Blueprint('activity', __name__, url_prefix='')
 
@@ -67,6 +67,19 @@ def getImportants():
     todos = c.fetchall()
     return todos
 
+#Return the completed todo
+def getCompleted():
+    db, c = get_db()
+    c.execute(
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE a.created_by = %s AND completed = 1'
+        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
+        (g.user['id'],)
+    )
+    todos = c.fetchall()
+    return todos
+
 #Return the activities that have the cateogry
 def getActivitiesByCategory(category):
     db, c = get_db()
@@ -84,7 +97,10 @@ def getActivitiesByCategory(category):
 def getTodo(todo_id):
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.description, u.username, a.completed, a.created_at FROM activity a JOIN user u on a.created_by = u.id WHERE a.id = %s', (todo_id,)
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        ' JOIN category c on a.category = c.id' 
+        ' WHERE a.created_by = %s AND a.id = %s',
+        (g.user['id'], todo_id)
     )
     todo = c.fetchone()
     if todo is None:
@@ -107,6 +123,15 @@ def updateTodo(description, completed, todo_id):
     if checkTodo(todo_id):
         db, c = get_db()
         c.execute('UPDATE activity SET description=%s, completed=%s WHERE id=%s',(description,completed,todo_id))
+        db.commit()
+    
+    return True
+
+#Updatae the tags completed and important for a especific todo
+def updateTodoTags(todo_id, tags):
+    if checkTodo(todo_id):
+        db, c = get_db()
+        c.execute('UPDATE activity SET completed=%s, important=%s WHERE id=%s',(tags['completed'],tags['important'],todo_id))
         db.commit()
     
     return True
@@ -136,6 +161,7 @@ def createTodo(name, description, category, end_at, important):
 # End MySQL commandas
 
 
+#Start Routes
 @activity.route('/',methods=['GET'])
 @login_required
 def index():
@@ -170,11 +196,18 @@ def importants():
     todos = getImportants()
     return jsonify(todos)
 
+#Return the completed activities
+@activity.route('/activities/completed',methods=['GET'])
+@login_required
+def completed():
+    todos = getCompleted()
+    return jsonify(todos)
+
 #Return the activities by category
 @activity.route('/activities/category',methods=['GET'])
 @login_required
 def categoryActivities():
-    category_id = category_id = request.args.get('category_id')
+    category_id = request.args.get('category_id')
     todos = getActivitiesByCategory(category_id)
     return jsonify(todos)
 
@@ -261,6 +294,33 @@ def update(todo_id):
     todo_item = getTodo(todo_id)
     return render_template('activity/update.html',todo = todo_item)
 
+@activity.route('/<int:todo_id>/update/tags', methods=['POST'])
+@login_required
+def updateTags(todo_id):
+    if request.method == "POST":
+        error = None
+        try:
+            completed = request.form['completed']
+            important = request.form['important']
+        except:
+            error = True
+
+        if error == None:
+            tags ={
+                'completed': completed,
+                'important': important
+            }
+            updateTodoTags(todo_id, tags)
+            todo = getTodo(todo_id)
+
+            response = {
+                'success': True,
+                'todo': todo
+            }
+            return jsonify(response)
+        
+        return jsonify(success=False)
+
 #Delete todo
 @activity.route('/<int:todo_id>/delete',methods=['POST'])
 @login_required
@@ -269,3 +329,5 @@ def delete(todo_id):
         if deleteTodo(todo_id):
             todo_list = getAllTodo()
             return redirect(url_for('activity.index'))
+        
+#End Routes

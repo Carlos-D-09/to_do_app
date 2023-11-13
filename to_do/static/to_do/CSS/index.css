@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: [row-add] minmax(0px,2fr) [row-filter] minmax(0px,3fr) [row-end] minmax(0px,1fr);
+  grid-template-rows: [row-add] minmax(0px,2fr) [row-filter] minmax(0px,5fr) [row-end] minmax(0px,1fr);
   grid-template-columns: [column-nav]  minmax(210px,1fr) [column-content] minmax(700px, 5fr);
   grid-auto-flow: dense; 
   gap: 10px 10px;
@@ -69,7 +69,7 @@
   grid-column: column-content;
   border: 1px solid rgb(175, 175, 175);
   border-radius: 8px;
-  box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
   overflow: scroll;
 }
 
@@ -83,5 +83,18 @@
   padding: 10px;
 }
 
+.to_do_form{
+  height: 80%;
+  margin-right: 10px;
+  grid-row: row-end;
+  grid-column: column-content;
+  border: 1px solid rgb(175, 175, 175);
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+  overflow: scroll;
+}
 
+.to_do_form::-webkit-scrollbar{
+  display: none;
+}
 

@@ -30,6 +30,7 @@ def getCategories(user_id):
     )
     return c.fetchall()
 
+#Return the requeste category
 def getCategory(user_id, category_id):
     db, c = get_db()
     c.execute(

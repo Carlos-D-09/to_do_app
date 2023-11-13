@@ -7,7 +7,8 @@ $(document).ready(function() {
             'all': allTodo,
             'planned': planned,
             'today': today,
-            'important': important
+            'important': important,
+            'completed': completed
         }
         
         //Current filter selected
@@ -61,6 +62,17 @@ function important(){
     });
 }
 
+function completed(){
+    url = "/activities/completed";
+    $.get(url, function(data){
+        if(data != null){
+            printTodo(data);
+        }else{
+            alert('Something went wrong');
+        }
+    });
+}
+
 function filter(category){
     url = "/activities/category" ;
     $.get(url,{category_id:category}, function(data){
@@ -101,31 +113,33 @@ function buildTodo(todo){
     const titleTag = $('<h3>').text(todo.name);
     const strike = $('<strike>').text(todo.name);
     const titleStrike = $('<h3>').append(strike);
+
     const title = todo.completed ?  
-        $('<div>').addClass('to_do_element_title').append(titleStrike) :
-        $('<div>').addClass('to_do_element_title').append(titleTag);
+        $('<div>').addClass('to_do_element_title').attr({'id': 'to_do_element_title_'+todo.id}).append(titleStrike) :
+        $('<div>').addClass('to_do_element_title').attr({'id': 'to_do_element_title_'+todo.id}).append(titleTag);
     
     //Description
-    const description = $('<div>').addClass('to_do_element_description').append($('<p>').text(todo.description));
+    const description = $('<div>').addClass('to_do_element_description').attr({'id': 'to_do_element_description_'+todo.id}).append($('<p>').text(todo.description));
 
     //Completed element1
     const completedCheckbox = todo.completed ?  
-        $('<input>').addClass('completed').attr({'type': 'checkbox', 'checked': 'checked', 'name': 'completed'+todo.id, 'id': 'completed'+todo.id}) :  
-        $('<input>').addClass('completed').attr({'type': 'checkbox',  'name': 'completed'+todo.id, 'id': 'completed'+todo.id});
+        $('<input>').addClass('completed').attr({'type': 'checkbox', 'checked': 'checked', 'name': 'completed'+todo.id, 'id': 'completed'+todo.id, 'value': todo.id, 'onclick':'updateCompleted(this)'}) :  
+        $('<input>').addClass('completed').attr({'type': 'checkbox',  'name': 'completed'+todo.id, 'id': 'completed'+todo.id, 'value': todo.id,'onclick':'updateCompleted(this)'});
 
     const completedLabel = $('<label>').attr('for','completed'+todo.id).text('Completed');
     const completed = $('<div>').addClass('element1').append(completedCheckbox, completedLabel);
 
     //Important element2
     const importantCheckbox = todo.important ? 
-        $('<input>').addClass('important').attr({'type': 'checkbox', 'checked': 'checked',  'name': 'important'+todo.id, 'id': 'important'+todo.id}) :
-        $('<input>').addClass('important').attr({'type': 'checkbox',  'name': 'important'+todo.id, 'id': 'important'+todo.id});
+        $('<input>').addClass('important').attr({'type': 'checkbox', 'checked': 'checked',  'name': 'important'+todo.id, 'id': 'important'+todo.id, 'value': todo.id, 'onclick':'updateImportant(this)'}) :
+        $('<input>').addClass('important').attr({'type': 'checkbox',  'name': 'important'+todo.id, 'id': 'important'+todo.id, 'value': todo.id, 'onclick':'updateImportant(this)'});
 
     const importantLabel = $('<label>').attr('for','important'+todo.id).text('Important');
     const important = $('<div>').addClass('element2').append(importantCheckbox, importantLabel);
     
     //Category - element3
-    const category = $('<div>').addClass('element3').text(todo.category + ' ').append($('<i>').addClass('fa-solid fa-layer-group'))
+    const text = ' ' + todo.category;
+    const category = $('<div>').addClass('element3').append($('<i>').addClass('fa-solid fa-layer-group'), text)
     
     //OPTIONS 1
     const grid_options = todo.category != 'null' ? 
@@ -146,7 +160,7 @@ function buildTodo(todo){
     const options2 = $('<div>').addClass('to_do_element_options-2').append(button_edit);
 
     //Crear todo
-    const todo_div = $('<li>').addClass('to_do_element').append(title, description, options1, date_div,options2);
+    const todo_div = $('<li>').addClass('to_do_element').attr({'id':'to_do_element_' + todo.id}).append(title, description, options1, date_div,options2);
     
     return todo_div;
 }

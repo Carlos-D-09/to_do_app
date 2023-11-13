@@ -16,7 +16,7 @@ def get_db():
                 port = current_app.config['DATABASE_PORT']
             )
             g.cursor = g.db.cursor(dictionary = True)
-            print('Connected to db')
+            # print('Connected to db')
             return g.db, g.cursor
         except mysql.connector.Error as err:
             print('Error: Unable to connect with database. {}'.format(err))

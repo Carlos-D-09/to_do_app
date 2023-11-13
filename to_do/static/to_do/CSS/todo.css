@@ -97,7 +97,7 @@
   
 .important:checked + label:before{
     content: "\f005";
-    color: rgb(252, 252, 102);
+    color: rgb(255, 230, 0);
     letter-spacing: 5px;
   }
   

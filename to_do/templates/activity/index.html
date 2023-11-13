@@ -12,6 +12,7 @@
 {% block scripts %}
     <script src="{{url_for('static', filename='to_do/JS/form_category.js')}}"></script>
     <script src="{{url_for('static', filename='to_do/JS/filters.js')}}"></script>
+    <script src="{{url_for('static', filename='to_do/JS/to_do.js')}}"></script>
 {% endblock %}
 
 {% block content %}
@@ -56,6 +57,10 @@
                         <input type="radio" name="radio" value="important">
                         <span class="checkmark"></span>
                     </label>
+                    <label class="container"> Completed
+                        <input type="radio" name="radio" value="completed">
+                        <span class="checkmark"></span>
+                    </label>
                 </div>
                 <div id="custome-filters">
                     {% for category in categories %}
@@ -71,9 +76,9 @@
         <div class="to_do">
             <ul id="to_do-list-container">
                 {% for todo in todos %}
-                    <li class="to_do_element">
+                    <li class="to_do_element" id="to_do_element_{{todo['id']}}">
                         <!-- Title -->
-                        <div class="to_do_element_title">
+                        <div class="to_do_element_title" id="to_do_element_title_{{todo['id']}}">
                             <h3>
                                 {% if todo['completed'] == 1 %}
                                     <strike>{{todo['name']}}</strike>
@@ -83,7 +88,7 @@
                             </h3>
                         </div>
                         <!-- Description -->
-                        <div class="to_do_element_description">
+                        <div class="to_do_element_description"  id="to_do_element_description_{{todo['id']}}">
                             <p>
                                 {{todo['description']}}
                             </p>
@@ -93,26 +98,26 @@
                             <div class="grid-operations">
                                 <div class="element1">
                                     {% if todo['completed'] == True %}
-                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked">
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" value="{{todo['id']}}" id="completed{{todo['id']}}" checked="checked" onclick="updateCompleted(this)">
                                         <label for="completed{{todo['id']}}">Completed</label>
                                         {% else %}
-                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}">
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" value="{{todo['id']}}" onclick="updateCompleted(this)">
                                         <label for="completed{{todo['id']}}">Completed</label>
                                     {% endif %}
                                 </div>
                                 <div class="element2">
                                     {% if todo['important'] == True %}
-                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" checked="checked">
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" value="{{todo['id']}}" checked="checked" onclick="updateImportant(this)">
                                         <label for="important{{todo['id']}}">Important</label>
                                     {% else %}
-                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" >
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" value="{{todo['id']}}" onclick="updateImportant(this)">
                                         <label for="important{{todo['id']}}">Important</label>
                                     {% endif %}
                                 </div>
                                 <div class="element3">
                                     {% if todo['category'] != 'null' %}
-                                        {{todo['category']}}
                                         <i class="fa-solid fa-layer-group"></i>
+                                        {{todo['category']}}
                                     {% endif %}
                                 </div>
                                 
@@ -143,6 +148,9 @@
         
                 {% endfor %}
             </ul>
+        </div>
+        <div class="to_do_form">
+
         </div>
     </div>
 
