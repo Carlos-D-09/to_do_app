@@ -1,10 +1,12 @@
-.operations p{
+/* The style for all the child elements for the class options */
+
+.options p{
     margin-left: 20px;
     font-size: 1.3em;
     padding-right: 10px;
 }
   
-.operations h1{
+.options h1{
     width: 100%;
     margin-left: 20px;
     text-align: left;
@@ -13,13 +15,13 @@
     padding-right: 10px;
 }
   
-.operations ul{
+.options ul{
     margin-top: 10px;
     margin-left: 60px;
     text-align: left;
 }
   
-.operations a{
+.options a{
     text-decoration: none;
     color: black;
 }

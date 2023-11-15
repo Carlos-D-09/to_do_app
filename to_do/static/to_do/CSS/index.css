@@ -1,20 +1,24 @@
+/* In this file I structure the section content  */
+
 .index-structure{
   width: 100%;
   height: 100%;
+  padding: 2px;
   display: grid;
   grid-template-rows: [row-add] minmax(0px,2fr) [row-filter] minmax(0px,5fr) [row-end] minmax(0px,1fr);
-  grid-template-columns: [column-nav]  minmax(210px,1fr) [column-content] minmax(700px, 5fr);
+  grid-template-columns: [column-nav]  minmax(210px,1fr) [column-content] minmax(700px, 5fr) [column-desc] minmax(210px,2fr);
   grid-auto-flow: dense; 
   gap: 10px 10px;
   text-align: center;
   overflow: scroll;
 }
 
+/* Hide scroll bar */
 .index-structure::-webkit-scrollbar{
   display: none;
 }
 
-.operations{
+.options{
   grid-row: row-add;
   grid-column: column-nav;
   width: 100%;
@@ -29,12 +33,13 @@
   overflow: scroll;
 }
 
-.operations:hover{
+.options:hover{
   transform: scale(1.01);
   transition: .5s 0s;
 }
 
-.operations::-webkit-scrollbar{
+/* Hide scroll bar */
+.options::-webkit-scrollbar{
   display: none;
 }
 
@@ -58,13 +63,13 @@
   transition: .5s 0s;
 }
 
+/* Hide scroll bar */
 .filters::-webkit-scrollbar{
   display: none;
 }
 
 .to_do{
   height: 100%;
-  margin-right: 10px;
   grid-row: row-add / row-end -1;
   grid-column: column-content;
   border: 1px solid rgb(175, 175, 175);
@@ -73,6 +78,7 @@
   overflow: scroll;
 }
 
+/* Hide scroll bar */
 .to_do::-webkit-scrollbar{
   display: none;
 }
@@ -84,16 +90,22 @@
 }
 
 .to_do_form{
-  height: 80%;
-  margin-right: 10px;
+  width: 100%;
+  height: 100%;
   grid-row: row-end;
   grid-column: column-content;
   border: 1px solid rgb(175, 175, 175);
   border-radius: 8px;
   box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
   overflow: scroll;
+  display: grid;
+  grid-template-rows: [row-start] minmax(0px,2fr) [row-end] minmax(0px,3fr);
+  grid-template-columns: [column-inputs-text] minmax(0px, 2fr) [column-button] minmax(0px,1.4fr);
+  grid-auto-flow: dense;
+  text-align: center;
 }
 
+/* Hide Scroll bar */
 .to_do_form::-webkit-scrollbar{
   display: none;
 }

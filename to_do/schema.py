@@ -46,5 +46,5 @@ pwd = generate_password_hash('12345'+'dev')
 
 seeder = [
     "INSERT INTO user (username, password) VALUES ('test user','" + pwd + "')",
-    "INSERT INTO category (created_by, name, description) VALUES ('1', 'null', 'This category indicates that the user does not assign a category')"
+    "INSERT INTO category (created_by, name, description) VALUES ('1', 'undefined', 'This category indicates that the user does not assign a category')"
 ]

@@ -26,7 +26,7 @@ def createCategory(name, desc):
 def getCategories(user_id):
     db, c = get_db()
     c.execute(
-        'SELECT id, name FROM category WHERE created_by = %s', (user_id, )
+        'SELECT id, name FROM category WHERE created_by = %s or created_by = 1', (user_id, )
     )
     return c.fetchall()
 

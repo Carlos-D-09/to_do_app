@@ -19,7 +19,7 @@
     {% block scripts %}{% endblock %}
 </head>
 <body>
-    <nav class="flex-box-nav">
+    <header class="flex-box-nav">
         <div class="title-nav">
             <h1>
                 <a href="{{ url_for('activity.index') }}">
@@ -44,7 +44,7 @@
                 {% endif %}
             </ul>
         </div>
-    </nav>
+    </header>
     <section class="content">
         <header>
             {% block header %}{% endblock %}

@@ -27,20 +27,21 @@ def getAllTodo():
     categories = getCategories(g.user['id'])
     return todos, categories
 
-#Returns all the activities that have an undefined time or end_at is not over
+#Returns all the taks uncompleted that have an undefined time or end_at is not over
 def getPlanned():
     db, c = get_db()
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE (DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND MONTH(a.end_at) >= MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s) OR'
-        ' (a.created_by = %s AND a.end_at is NULL)'
+        ' WHERE (DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND MONTH(a.end_at) >= MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false) OR'
+        ' (a.created_by = %s AND a.end_at is NULL AND a.completed = false)'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],g.user['id'])
     )
     todos = c.fetchall()
     return todos
-    
+
+#Returns all the task for today 
 def getToday():
     db, c = get_db()
     c.execute(
@@ -54,13 +55,13 @@ def getToday():
     todos = c.fetchall()
     return todos
 
-#Return the importatns todo
+#Return the importatns todo uncompleted
 def getImportants():
     db, c = get_db()
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND important = 1'
+        ' WHERE a.created_by = %s AND important = 1 AND a.completed = false'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],)
     )
@@ -80,13 +81,13 @@ def getCompleted():
     todos = c.fetchall()
     return todos
 
-#Return the activities that have the cateogry
+#Return the uncompleted todo that have the current category
 def getActivitiesByCategory(category):
     db, c = get_db()
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND c.id = %s'
+        ' WHERE a.created_by = %s AND c.id = %s AND a.completed = false'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],category)
     )
@@ -166,6 +167,7 @@ def createTodo(name, description, category, end_at, important):
 @login_required
 def index():
     todos, categories = getAllTodo()
+    print(categories)
     return render_template('activity/index.html', todos=todos, categories=categories)
 
 #Return all the activities
@@ -212,7 +214,7 @@ def categoryActivities():
     return jsonify(todos)
 
 #Create todo
-@activity.route('/create', methods=['GET','POST'])
+@activity.route('/create', methods=['POST'])
 @login_required
 def create():
     if request.method == "POST":
@@ -225,8 +227,6 @@ def create():
             category = 1 #Category when a to-do doesn't have a category
         try:
             important = request.form['important']
-            if important == 'on':
-                important = 1
         except:
             important = 0
         date = request.form['date']
@@ -240,7 +240,7 @@ def create():
         if not description:
             error = "Description is required"
         if error is not None:
-            flash(error)
+            return jsonify(error=error)
         #End validation for required inputs
 
         #Start validations day and hour
@@ -266,12 +266,7 @@ def create():
         #End validation day and hour
 
         createTodo(name, description, category, end_at, important)
-        
-        
-        return redirect(url_for('activity.index'))
-
-    categories = getCategories(g.user['id'])
-    return render_template('activity/create.html', categories=categories)
+        return jsonify(success=True)
 
 #Upate todo
 @activity.route('/<int:todo_id>/update', methods=['GET','POST'])
@@ -279,7 +274,7 @@ def create():
 def update(todo_id):
     if request.method == "POST":
         description = request.form['description']
-        completed = None if request.form.get('completed') == None else True
+        completed = None if request.form['completed'] == None else True
         error = None
         
         if not description: 

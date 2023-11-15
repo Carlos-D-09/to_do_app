@@ -1,38 +1,34 @@
 .input-text{
-    min-width: 150px;
-    max-width: 300px;
-    min-height: 30px;
-    max-height: 50px;
     border: 1px solid rgb(236, 236, 236);
     background-color: white;
     border-radius: 4px;
 }
 
+.input-textarea{
+    border: 1px solid rgb(236, 236, 236);
+    background-color: white;
+    border-radius: 4px;
+    overflow: scroll;
+}
+
+.input-textarea::-webkit-scrollbar{
+    display: none;
+}
+  
+
 .input-date{
-    min-width: 100px;
-    max-width: 300px;
-    min-height: 30px;
-    max-height: 50px;
     border: 1px solid rgb(236, 236, 236);
     background-color: white;
     border-radius: 4px;
 }
 
 .input-time{
-    min-width: 100px;
-    max-width: 300px;
-    min-height: 30px;
-    max-height: 50px;
     border: 1px solid rgb(236, 236, 236);
     background-color: white;
     border-radius: 4px;
 }
 
 .input-category{
-    min-width: 150px;
-    max-width: 300px;
-    min-height: 30px;
-    max-height: 50px;
     border: 1px solid rgb(236, 236, 236);
     background-color: white;
     border-radius: 4px;

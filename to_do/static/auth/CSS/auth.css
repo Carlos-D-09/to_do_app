@@ -79,6 +79,10 @@ body{
     text-align: center;
 }
 
+.form-content input{
+    font-size: 1.2em;
+}
+
 .form-content label{
     padding: 10px 10px 10px 0px;
     display: block;

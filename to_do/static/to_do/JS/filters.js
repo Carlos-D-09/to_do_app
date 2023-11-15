@@ -1,5 +1,9 @@
 $(document).ready(function() {
-    //Check if some radio input (filter) changed
+    checkFilter();
+})
+
+//Check if some radio input (filter) changed
+function checkFilter(){
     $('body').on('change', '.filter-list input[type=radio]', function () {
         
         //standard filters and their functions 
@@ -14,10 +18,10 @@ $(document).ready(function() {
         //Current filter selected
         let radio = $(this).val();
         
-        //All the to-do asociated to it's filter
-        const todo = FILTERS[radio] ? FILTERS[radio]() : filter(radio);
+        //Check which filter is selected and use its function
+        FILTERS[radio] ? FILTERS[radio]() : filter(radio);
     });    
-})
+}
 
 //Request and show all todo
 function allTodo(){
@@ -39,7 +43,7 @@ function planned(){
     });
 }
 
-//Request the 
+//Request the to-do with today and undefined date
 function today(){
     url = "/activities/today";
     $.get(url, function(data){
@@ -51,6 +55,7 @@ function today(){
     });
 }
 
+//Requeste the important to-do
 function important(){
     url = "/activities/importants";
     $.get(url, function(data){
@@ -62,6 +67,7 @@ function important(){
     });
 }
 
+//Request the completed to-do
 function completed(){
     url = "/activities/completed";
     $.get(url, function(data){
@@ -73,6 +79,7 @@ function completed(){
     });
 }
 
+//Request the to-do with the current category selected
 function filter(category){
     url = "/activities/category" ;
     $.get(url,{category_id:category}, function(data){
@@ -84,7 +91,9 @@ function filter(category){
     });
 }
 
+//Print all the to-do in the object data. The object data contains the follow structure: {id:todo, ..., id:todo}
 function printTodo(data){
+    //Clear the list before print the new data
     $('#to_do-list-container').empty();
     $.each(data,function(index,todo){
         if(todo != null){
@@ -94,6 +103,7 @@ function printTodo(data){
     });
 }
 
+//Receives a timestamp with the structure YYYY-MM-DD hh:mm:ss and returns a string with the word "at" added between the date and the hour and erase seconds
 function formatTimestamp(timestamp) {
     const options = { 
         year: 'numeric', 
@@ -107,6 +117,7 @@ function formatTimestamp(timestamp) {
     return formattedDate;
 }
 
+//Build the structure for a todo
 function buildTodo(todo){
 
     //Title
