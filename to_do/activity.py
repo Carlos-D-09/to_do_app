@@ -33,10 +33,11 @@ def getPlanned():
     c.execute(
         'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE (DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND MONTH(a.end_at) >= MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false) OR'
-        ' (a.created_by = %s AND a.end_at is NULL AND a.completed = false)'
+        ' WHERE (MONTH(a.end_at) > MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
+        ' OR (MONTH(a.end_at) = MONTH(CURRENT_TIMESTAMP) AND DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
+        ' OR (a.created_by = %s AND a.end_at is NULL AND a.completed = false)'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],g.user['id'])
+        (g.user['id'],g.user['id'], g.user['id'])
     )
     todos = c.fetchall()
     return todos
@@ -167,7 +168,6 @@ def createTodo(name, description, category, end_at, important):
 @login_required
 def index():
     todos, categories = getAllTodo()
-    print(categories)
     return render_template('activity/index.html', todos=todos, categories=categories)
 
 #Return all the activities
@@ -222,7 +222,7 @@ def create():
         name = request.form['name']
         description = request.form['description']
         try:    
-            category = request.form['categories']
+            category = request.form['category']
         except:
             category = 1 #Category when a to-do doesn't have a category
         try:

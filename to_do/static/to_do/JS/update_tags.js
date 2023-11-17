@@ -1,3 +1,5 @@
+//This file contains the function for update from the list the tags completed and important
+
 //Get the tags to update completed checkbox
 function updateCompleted(checkbox){
     let todo_id = checkbox.value;
@@ -54,45 +56,37 @@ function updateTags(tags, todo_id){
         if(data['success'] == true){
             let todo = data['todo'];
 
-            modifiedTitle(todo);
-            verifyFilter(todo);
+            //Cases when the filter completed or important are selected
+            verifyFilterTags(todo);
+
+            //Remove a todo completed
+            if(tags['completed'] == true){
+                $("#to_do_element_"+todo_id).remove();
+            }
         }else{
             alert('Something went wront trying to update the tag');
         }
     });
 }
 
-//Update title in DOM
-function modifiedTitle(todo){
-    const titleTag = $('<h3>').text(todo.name);
-    const strike = $('<strike>').text(todo.name);
-    const titleStrike = $('<h3>').append(strike);
-    
-    const title = todo.completed ?
-    $('<div>').addClass('to_do_element_title').append(titleStrike) :
-    $('<div>').addClass('to_do_element_title').append(titleTag);
-    
-    let titleDiv = $('#to_do_element_title_'+todo.id);
-    titleDiv.empty();
-    titleDiv.append(title);
-}
-
 //If the the filter important or completed is selected and the tag completed or important have changed, delete from the view for the filter.
-function verifyFilter(todo){
-    var selectedFilter = $('#default-filters input[name="radio"]:checked').val();
-    let important = todo.important;
-    let completed = todo.completed;
+function verifyFilterTags(todo){
+    let selectedFilter = $('#default-filters input[name="radio"]:checked').val();
+    if (selectedFilter != undefined){
+        let important = todo.important;
+        let completed = todo.completed;
+        const tags = {
+            'important' : important,
+            'completed' : completed
+        }
+        
+        const FILTERS = {
+            'important': removeImportant,
+            'completed': removeCompleted
+        }
 
-    const tags = {
-        'important' : important,
-        'completed' : completed
+        if (FILTERS[selectedFilter]) FILTERS[selectedFilter](tags,todo.id);
     }
-
-    const FILTERS = {
-        'important': removeImportant,
-        'completed': removeCompleted
-    }
-    if (FILTERS[selectedFilter]) FILTERS[selectedFilter](tags,todo.id);
 }
 
 //Remove a todo that doesn't belongs to to important filter 

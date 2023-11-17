@@ -11,10 +11,12 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{url_for('static', filename='to_do/JS/form_category.js')}}"></script>
-    <script src="{{url_for('static', filename='to_do/JS/filters.js')}}"></script>
-    <script src="{{url_for('static', filename='to_do/JS/to_do.js')}}"></script>
-    <script src="{{url_for('static', filename='to_do/JS/create.js')}}"></script>
+    <script src="{{url_for('static', filename='to_do/JS/category.js')}}"></script>
+    <script src="{{url_for('static', filename='to_do/JS/update_tags.js')}}"></script>
+    <script src="{{url_for('static', filename='to_do/JS/todo.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/filters.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/filter.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/create_todo.js')}}" type="module"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,14 +24,7 @@
         <!-- Start Options -->
         <div class="options">
             <h1>Options: </h1>
-            <div class="success-transaction" id="success-transaction"></div>
             <ul class="fa-ul">
-                <li> 
-                    <span class="fa-li"> 
-                        <i class="fa-solid fa-calendar-plus"></i>
-                    </span>
-                    <a href="{{url_for('activity.create')}}">Add to-do</a>
-                </li><br>
                 <li> 
                     <span class="fa-li"> 
                         <i class="fa-solid fa-circle-plus"></i>
@@ -37,6 +32,7 @@
                     <a href="#" id="add-category">Add category</a>
                 </li><br>
             </ul>
+            <div class="success-transaction" id="success-transaction"></div>
         </div>
         <!-- End Options -->
 
@@ -83,6 +79,15 @@
             </div>
         </div>
         <!-- End filters -->
+
+        <!-- Start info panel -->
+        <div class="info-panel">
+            <div></div>
+            <div></div>
+            <div></div>
+
+        </div>
+        <!-- End info panel -->
 
         <!-- Start to-do list  -->
         <div class="to_do">
@@ -170,7 +175,7 @@
             <!-- Title and category -->
             <div class="title">
                 <input type="text" class="input-text" name="name" id="name" placeholder="Title">
-                <select class="input-category" name="categories" id="categories">
+                <select class="input-category" name="categories-form" id="categories-form">
                     {% for category in categories %}
                     <option value="{{category['id']}}">{{category['name']}}</option>
                     {% endfor %}
@@ -205,7 +210,7 @@
                 </button>
             </div>
         </div>
-        <!-- End form to create a todo -->
+        <!-- End form to create a todos -->
     </div>
 
 {% endblock %}

@@ -21,12 +21,12 @@ function buildForm(){
         $('<br>'),
         $('<label>').text('Name'),
         $('<br>'),
-        $('<input>').addClass('input-text').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title' }),
+        $('<input>').addClass('input-text category-form').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title' }),
         $('<br>'),
         $('<br>'),
         $('<label>').text('Description:'),
         $('<br>'),
-        $('<input>').addClass('input-text').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc' }),
+        $('<input>').addClass('input-text category-form').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc' }),
         $('<br>'),
         $('<br>'),
         $('<div>').addClass('options-category').append(
@@ -76,6 +76,7 @@ function createCategory(){
                 
                 //Update filters
                 updateFilter(data['category']);
+                updateSelectForm(data['category']);
 
                 //Confirm the operation to the user
                 setTimeout(function (){
@@ -92,15 +93,15 @@ function createCategory(){
 //Update the filter list
 function updateFilter(category){
     if (category == null){
-        alert('Your categorie is saved, but something went wrong, please reload the page to see it');
+        alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
     }else{
-        let filter = buildFilterElement();
-        $('#custome-filters').append(fiilter);
+        let filter = buildFilterElement(category);
+        $('#custome-filters').append(filter);
     }
 }
 
 //Build and element to add on the filter list. 
-function buildFilterElement(){
+function buildFilterElement(category){
     var label = $('<label class="container">').text(category.name);
     var input = $('<input>').attr({
         type: 'radio',
@@ -112,4 +113,17 @@ function buildFilterElement(){
     label.append(input, span);
 
     return label;
+}
+
+//Update select input category for create a to-do  
+function updateSelectForm(category){
+    if(category == null){
+        alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
+    }else{
+        let categories = $('#categories-form');
+        categories.append(
+            $('<option>').attr({value:category.id}).text(category.name)
+        )
+
+    }
 }

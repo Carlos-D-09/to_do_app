@@ -5,8 +5,8 @@
   height: 100%;
   padding: 2px;
   display: grid;
-  grid-template-rows: [row-add] minmax(0px,2fr) [row-filter] minmax(0px,5fr) [row-end] minmax(0px,1fr);
-  grid-template-columns: [column-nav]  minmax(210px,1fr) [column-content] minmax(700px, 5fr) [column-desc] minmax(210px,2fr);
+  grid-template-rows: [row-options] minmax(0px,2fr) [row-filter] minmax(0px,5fr) [row-end] minmax(0px,1fr);
+  grid-template-columns: [column-nav]  minmax(210px,1fr) [column-content] minmax(700px, 5fr) [column-info] minmax(210px,2fr);
   grid-auto-flow: dense; 
   gap: 10px 10px;
   text-align: center;
@@ -19,7 +19,7 @@
 }
 
 .options{
-  grid-row: row-add;
+  grid-row: row-options;
   grid-column: column-nav;
   width: 100%;
   height: 100%;
@@ -68,9 +68,26 @@
   display: none;
 }
 
+.info-panel{
+  width: 99%;
+  height: 99%;
+  grid-row: row-options / row-end 2;
+  grid-column: column-info; 
+  border: 1px solid rgb(175, 175, 175);
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+  overflow: scroll;
+  display: grid;
+}
+
+.info-panel::-webkit-scrollbar{
+  display: none;
+}
+
+
 .to_do{
   height: 100%;
-  grid-row: row-add / row-end -1;
+  grid-row: row-end / row-options ;
   grid-column: column-content;
   border: 1px solid rgb(175, 175, 175);
   border-radius: 8px;
