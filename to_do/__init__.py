@@ -12,7 +12,7 @@ def create_app():
     app.register_blueprint(auth.auth)
     app.register_blueprint(activity.activity)
     app.register_blueprint(category.category)
-    
+
     app.config.from_mapping(
         SECRET_KEY = 'dev',
         DATABASE_HOST =os.environ.get('FLASK_DATABASE_HOST'),
@@ -23,4 +23,3 @@ def create_app():
     )
 
     return app
-

@@ -17,21 +17,21 @@ activity = Blueprint('activity', __name__, url_prefix='')
 def getAllTodo():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],)
     )
     todos = c.fetchall()
-    categories = getCategories(g.user['id'])
+    categories = getCategories()
     return todos, categories
 
 #Returns all the taks uncompleted that have an undefined time or end_at is not over
 def getPlanned():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE (MONTH(a.end_at) > MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
         ' OR (MONTH(a.end_at) = MONTH(CURRENT_TIMESTAMP) AND DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
@@ -46,10 +46,10 @@ def getPlanned():
 def getToday():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
-        ' WHERE (a.created_by = %s AND DAY(a.end_at) = DAY(CURRENT_TIMESTAMP)) OR'
-        ' (a.created_by = %s AND a.end_at is NULL)'
+        ' WHERE (a.created_by = %s AND MONTH(a.end_at) = MONTH(CURRENT_TIMESTAMP) AND DAY(a.end_at) = DAY(CURRENT_TIMESTAMP) and a.completed = false) OR'
+        ' (a.created_by = %s AND a.end_at is NULL and a.completed = false)'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
         (g.user['id'],g.user['id'])
     )
@@ -60,7 +60,7 @@ def getToday():
 def getImportants():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s AND important = 1 AND a.completed = false'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
@@ -73,7 +73,7 @@ def getImportants():
 def getCompleted():
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s AND completed = 1'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
@@ -86,7 +86,7 @@ def getCompleted():
 def getActivitiesByCategory(category):
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s AND c.id = %s AND a.completed = false'
         ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
@@ -99,14 +99,12 @@ def getActivitiesByCategory(category):
 def getTodo(todo_id):
     db, c = get_db()
     c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, a.end_at, a.created_at, a.important FROM activity a'
+        'SELECT a.id, a.name, a.description, a.completed, a.category AS category_id, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
         ' JOIN category c on a.category = c.id' 
         ' WHERE a.created_by = %s AND a.id = %s',
         (g.user['id'], todo_id)
     )
     todo = c.fetchone()
-    if todo is None:
-        abort(404, "The task doesn't exist")
 
     return todo
 
@@ -121,10 +119,14 @@ def checkTodo(todo_id):
     return True
     
 #Update a task 
-def updateTodo(description, completed, todo_id):
+def updateTodo( todo_id, todo):
     if checkTodo(todo_id):
+        print(todo)
         db, c = get_db()
-        c.execute('UPDATE activity SET description=%s, completed=%s WHERE id=%s',(description,completed,todo_id))
+        c.execute(
+            'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s, end_at=%s WHERE id=%s AND created_by=%s',
+            (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo['end_at'], todo_id, g.user['id'] )
+        )
         db.commit()
     
     return True
@@ -177,6 +179,16 @@ def activities():
     todos, categories = getAllTodo()
     return jsonify(todos)
 
+# Return a single todo
+@activity.route('/activity/<int:todo_id>', methods=['GET'])
+@login_required
+def todo(todo_id):
+    todo = getTodo(todo_id)
+    if todo is None:
+        error = "The todo doesn't exist"
+        return jsonify(error)
+    return jsonify(todo)
+
 #Return the vigent activities
 @activity.route('/activities/planned',methods=['GET'])
 @login_required
@@ -218,23 +230,18 @@ def categoryActivities():
 @login_required
 def create():
     if request.method == "POST":
-        # Start Retrieve inputs from the form
-        name = request.form['name']
-        description = request.form['description']
-        try:    
+        error = None
+        try: 
+            name = request.form['name']
+            description = request.form['description']
             category = request.form['category']
-        except:
-            category = 1 #Category when a to-do doesn't have a category
-        try:
             important = request.form['important']
+            date = request.form['date']
+            time = request.form['time']
         except:
-            important = 0
-        date = request.form['date']
-        time = request.form['time']
-        # End retrieve inputs from the form
+            error = "Invalid Form"
 
         #Start validation for required inputs
-        error = None
         if not name:
             error = "Name is required"
         if not description:
@@ -273,21 +280,46 @@ def create():
 @login_required
 def update(todo_id):
     if request.method == "POST":
-        description = request.form['description']
-        completed = None if request.form['completed'] == None else True
         error = None
+        todo = None
+        try:
+            todo = {
+                'name': request.form['name'],
+                'description': request.form['description'],
+                'category': request.form['category'],
+                'completed': request.form['completed'],
+                'important': request.form['important'],
+                'date': request.form['date'],
+                'time': request.form['time']
+            }
+        except:
+            error = "Invalid Form"
+
+        if error is not None:
+            return jsonify({'success':False, 'error': error})
         
-        if not description: 
+        if not todo['name']:
+            error = "Name is required"
+        
+        if not todo['description']:
             error = "Description is required"
         
-        if error is not None:
-            flash(error)
+        if not todo['date']:
+            todo['end_at'] = 'undefined'
         else:
-            updateTodo(description, completed, todo_id)
-            return redirect(url_for('activity.index'))
+            if not todo['time']:
+                todo['time'] = '12:00:00'
+            else:
+                todo['time'] = todo['time'] + ':00'
+            
+            todo['end_at'] = todo['date'] + ' ' + todo['time']
+            
+        
+        if updateTodo(todo_id, todo):
+            return jsonify({'success': True})
     
-    todo_item = getTodo(todo_id)
-    return render_template('activity/update.html',todo = todo_item)
+    return jsonify({'success':False,'error':'Something went wrong, please contact with support'})
+
 
 @activity.route('/<int:todo_id>/update/tags', methods=['POST'])
 @login_required

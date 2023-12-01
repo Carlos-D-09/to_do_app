@@ -78,6 +78,7 @@
   box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
   overflow: scroll;
   display: grid;
+  grid-template-rows: [row-description] 1fr [row-info] 1fr [row-for] 2fr; 
 }
 
 .info-panel::-webkit-scrollbar{

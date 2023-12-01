@@ -18,27 +18,32 @@ def createCategory(name, desc):
     )
     db.commit()
     
-    category = getCategory(g.user['id'],c.lastrowid)
+    category = getCategory(c.lastrowid)
 
     return True, category
 
 #Returns all the categories that belongs to the logged user and the standard categories. 
-def getCategories(user_id):
+def getCategories():
     db, c = get_db()
     c.execute(
-        'SELECT id, name FROM category WHERE created_by = %s or created_by = 1', (user_id, )
+        'SELECT id, name FROM category WHERE created_by = %s or created_by = 1', (g.user['id'], )
     )
     return c.fetchall()
 
-#Return the requeste category
-def getCategory(user_id, category_id):
+#Return the requested category
+def getCategory(category_id):
     db, c = get_db()
     c.execute(
-        'SELECT id, name FROM category WHERE created_by = %s and id = %s', (user_id, category_id)
+        'SELECT id, name, description FROM category WHERE created_by = %s and id = %s', (g.user['id'], category_id)
     )
     return c.fetchone()
 # End MySQL consults
 
+@category.route('/category')
+@login_required
+def returnCategories():
+    categories = getCategories()
+    return jsonify(categories)
 
 @category.route('/category/create', methods=['POST'])
 @login_required
@@ -62,3 +67,10 @@ def create():
         }
 
         return jsonify(response)
+
+@category.route('/category/<int:category_id>', methods=['GET'])
+@login_required
+def returnCategory(category_id):
+    if request.method == "GET":
+        category = getCategory(category_id)
+        return category

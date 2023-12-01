@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/filters.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/options.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/create.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/info.css')}}">
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{url_for('static', filename='to_do/JS/category.js')}}"></script>
-    <script src="{{url_for('static', filename='to_do/JS/update_tags.js')}}"></script>
-    <script src="{{url_for('static', filename='to_do/JS/todo.js')}}" type="module"></script>
-    <script src="{{url_for('static', filename='to_do/JS/filters.js')}}" type="module"></script>
-    <script src="{{url_for('static', filename='to_do/JS/filter.js')}}" type="module"></script>
-    <script src="{{url_for('static', filename='to_do/JS/create_todo.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/index.js')}}" type="module"></script>
 {% endblock %}
 
 {% block content %}
@@ -32,7 +28,6 @@
                     <a href="#" id="add-category">Add category</a>
                 </li><br>
             </ul>
-            <div class="success-transaction" id="success-transaction"></div>
         </div>
         <!-- End Options -->
 
@@ -82,9 +77,14 @@
 
         <!-- Start info panel -->
         <div class="info-panel">
-            <div></div>
-            <div></div>
-            <div></div>
+            <div class="category-desc" id="category-desc">
+                <h1>All </h1>
+                <p>
+                    Here you can show all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc
+                </p>
+            </div>
+            <div class="success-transaction" id="success-transaction"></div>
+            <div class="form-category" id="form-category"></div>
 
         </div>
         <!-- End info panel -->
@@ -149,19 +149,17 @@
                                     undefined
                                     <i class="fa-regular fa-clock"></i>
                                 {% else %}
-                                    {{todo['end_at'].strftime('%d-%m-%Y at %H-%M' )}}
+                                    {{todo['end_at']}}
                                     <i class="fa-regular fa-clock"></i>
                                 {% endif %}
                             </p>
                         </div>
                         <!-- Buttons edit and delete -->
-                        <div class="to_do_element_options-2">
-                            <div class="button-stable">
-                                <a href="{{ url_for('activity.update',todo_id = todo['id']) }}">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                    Editar
-                                </a>
-                            </div>
+                        <div class="to_do_element_options-2" id="to_do_element_options-2-{{todo['id']}}">
+                            <button class="button-stable edit-button" data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                                <p>Edit</p>
+                            </button>
                         </div>
                     </li>
         
@@ -199,8 +197,8 @@
                 <textarea class="input-textarea" name="description" id="description" cols="100" rows="3" placeholder="Description"></textarea>
             </div>
             <!-- Important and Save -->
-            <div class="save">
-                <div class="icon-center">
+            <div class="save" id="save">
+                <div class="icon-center" id="tags">
                     <input type="checkbox" class="important" name="important" id="important">
                     <label for="important"></label>
                 </div>

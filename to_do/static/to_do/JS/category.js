@@ -1,45 +1,41 @@
-$(document).ready(function() {
-    showForm();
-    deleteFormCategory();
-    createCategory();
-})
-
 // Show form to add category when the user click the option
-function showForm(){
+export function showForm(){
     $('body').on('click', '#add-category', function(){
         if ($('#pop-up-form-category').length == 0){
-            form = buildForm();
-            $(form).insertAfter("#add-category");
+            let form = buildForm();
+            $("#form-category").append(form);
         }
     });
 }
 
 //Build the form to add a category 
 function buildForm(){
-    var form = $('<div>').addClass('pop-up-form-category').attr('id', 'pop-up-form-category').append(
+    const iconSave = $('<i>').addClass('fa-regular fa-floppy-disk');
+    var formContainer = $('<div>').addClass('form-category-container').attr('id', 'form-category-container').append(
+        $('<h2>').text('Add category'),
         $('<div>').addClass('flash').attr('id', 'error-category'),
         $('<br>'),
         $('<label>').text('Name'),
         $('<br>'),
-        $('<input>').addClass('input-text category-form').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title' }),
+        $('<input>').addClass('input-text').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title' }),
         $('<br>'),
         $('<br>'),
         $('<label>').text('Description:'),
         $('<br>'),
-        $('<input>').addClass('input-text category-form').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc' }),
+        $('<input>').addClass('input-text').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc' }),
         $('<br>'),
         $('<br>'),
         $('<div>').addClass('options-category').append(
-            $('<button>').addClass('button-stable').attr('id', 'save-category').text('Guardar ').css({display: 'inline', "margin-right": '10px'}),
-            $('<button>').addClass('button-danger').attr('id', 'cancel-category').text('Cancel')
+            $('<button>').addClass('button-success').attr('id', 'save-category').append(iconSave,' Save').css({'margin':'5px'}),
+            $('<button>').addClass('button-danger').attr('id', 'cancel-category').text('Cancel').css({'margin':'5px'})
         )
     );
-
+    var form = $('<div>').addClass('pop-up-form-category').attr('id', 'pop-up-form-category').append(formContainer);
     return form;
 }
 
 // If the user press the button cancel, delete the form to add category
-function deleteFormCategory(){
+export function deleteFormCategory(){
      $('body').on('click', '#cancel-category', function(){
         if($('#pop-up-form-category').length != 0){
             $('#pop-up-form-category').remove();
@@ -48,7 +44,7 @@ function deleteFormCategory(){
 }
 
 //If the user press the button save, request the server create the category and update the page
-function createCategory(){
+export function createCategory(){
     $('body').on('click', '#save-category', function(){
         // Get values from the form
         let title = $('#title').val();
@@ -57,6 +53,7 @@ function createCategory(){
         //Validate values
         if(title == '' || desc == ''){
             alert('All inputs are required');
+            return false;
         }
 
         //Request parameters
@@ -76,7 +73,7 @@ function createCategory(){
                 
                 //Update filters
                 updateFilter(data['category']);
-                updateSelectForm(data['category']);
+                updateFilterForm(data['category']);
 
                 //Confirm the operation to the user
                 setTimeout(function (){
@@ -84,7 +81,7 @@ function createCategory(){
                 }, 5000);
             }
             else{
-                $('#error-category').append("Something went wrong")
+                $('#error-category').append("Something went wrong");
             }
         });
     });
@@ -116,7 +113,7 @@ function buildFilterElement(category){
 }
 
 //Update select input category for create a to-do  
-function updateSelectForm(category){
+function updateFilterForm(category){
     if(category == null){
         alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
     }else{
