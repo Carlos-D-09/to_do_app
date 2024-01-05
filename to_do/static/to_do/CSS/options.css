@@ -1,4 +1,4 @@
-/* The style for all the child elements for the class options */
+/* The style for all the child elements for the column options */
 
 .options p{
     margin-left: 20px;
@@ -43,10 +43,66 @@
 
 .form-category-container input{
     height: 2.5em;
-    width: 75%;
+    width: 70%;
 }
 
 .options-category{
+    width: 100%;
+    display: flex;
     text-align: right;
 }
 
+.options-form-category{
+    text-align: right;
+    margin-right: 29%;
+}
+
+.category-info {
+    padding: 20px;
+}
+
+.category-title{
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+.category-title h1{
+    text-align: left;
+}
+
+.delete-category{
+    color: rgb(255, 126, 126);
+}
+
+.delete-category:hover{
+    color: red;
+    cursor: pointer;
+    font-size: 1.6em;
+    transition: .5s 0s;
+}
+
+.edit-category{
+    color: rgb(78, 194, 240);
+}
+
+.edit-category:hover{
+    color: rgb(0, 164, 230);
+    cursor: pointer;
+    font-size: 1.7em;
+    transition: .5s 0s;
+}
+
+.category-desc p{
+    text-align: justify;
+}
+
+.success-transaction{
+    display: inline;
+    border-radius: 8px;
+    margin-left: 20px;
+    color: rgb(0, 173, 66);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}

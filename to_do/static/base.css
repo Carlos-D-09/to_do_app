@@ -87,3 +87,27 @@ table{
     color: red;
     font-weight: bold;
 }
+
+.center-center{
+    margin: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-center{
+    margin: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: start;
+}
+
+.right-center{
+    margin: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: end;
+}

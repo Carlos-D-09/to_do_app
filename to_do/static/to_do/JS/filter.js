@@ -2,33 +2,36 @@ import { allTodo, planned, today, important, completed, filter } from './filter_
 import { printTodos } from './todo.js';
 import { getCategory } from './category_requests.js';
 
+//standard filters and their functions 
+const FILTERS = {
+    'all': allTodo,
+    'planned': planned,
+    'today': today,
+    'important': important,
+    'completed': completed
+}
+
+//Standard descriptions
+const DESCRIPTIONS = {
+    'all': "Here you can see all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc",
+    'planned': "You can see your uncompleted activites for the follow days",
+    'today': "You can see your uncompleted activities for today",
+    'important': "You can see your uncompleted important activities",
+    'completed': "You can see your completed activities, doesn't matter the category or if they are important or not"
+}
+
 //Check if some radio input (filter) changed
 export function checkFilter(){
     $('body').on('change', '.filter-list input[type=radio]', function () {
-        
-        //standard filters and their functions 
-        const FILTERS = {
-            'all': allTodo,
-            'planned': planned,
-            'today': today,
-            'important': important,
-            'completed': completed
-        }
-        
-        //Standard descriptions
-        const DESCRIPTIONS = {
-            'all': "Here you can see all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc",
-            'planned': "You can see your uncompleted activites for the follow days",
-            'today': "You can see your uncompleted activities for today",
-            'important': "You can see your uncompleted important activities",
-            'completed': "You can see your completed activities, doesn't matter the category or if they are important or not"
-        }
         
         //Current filter selected
         let radio = $(this).val();
         
         //Check which filter is selected and update the list
         if (FILTERS[radio]){ //Update default filters
+            
+            //Remove edit buttons
+            $('#options-category').empty();
 
             //Update todo list 
             FILTERS[radio]().then(
@@ -38,9 +41,12 @@ export function checkFilter(){
             );    
             
             //Update description
-            updateDescription(capitalizeFirstLetter(radio), DESCRIPTIONS[radio]);
+            refreshDescription(capitalizeFirstLetter(radio), DESCRIPTIONS[radio]);
         
         }else{ //Update category filter
+
+            //Show delete and edit buttons
+            showOptionsButtons();
 
             //Update todo list 
             filter(radio).then(
@@ -48,10 +54,11 @@ export function checkFilter(){
             ).catch(
                 error => console.error(error)
             );
-            
-            let category = null;
             getCategory(radio).then(
-                data => updateDescription(capitalizeFirstLetter(data['name']), data['description'])
+                data => {
+                    let category = data['category'];
+                    refreshDescription(capitalizeFirstLetter(category['name']), category['description']);
+                }
             ).catch(
                 error => console.error(error)
             );
@@ -60,16 +67,22 @@ export function checkFilter(){
     });    
 }
 
+export function selectFirstFilter(){
+    let selectedFilter = $('.filter-list input[name="radio"]:checked');
+    selectedFilter.prop('checked', false);
+    
+    let newSelectedFilter = $('.filter-list input[name="radio"]').first();
+    newSelectedFilter.prop('checked', true);
+
+    let optionsCategory = $('#options-category');
+    optionsCategory.empty()
+    refreshFilter();
+    refreshDescription('All', DESCRIPTIONS['all']);
+}
+
 //Reload all the list of todo in the current category
 export function refreshFilter(){
-    var selectedFilter = $('.filter-list input[name="radio"]:checked').val();
-    const FILTERS = {
-        'all': allTodo,
-        'planned': planned,
-        'today': today,
-        'important': important,
-        'completed': completed
-    }
+    let selectedFilter = $('.filter-list input[name="radio"]:checked').val();
 
     //Check which filter is select and update the list
     FILTERS[selectedFilter] ? 
@@ -82,10 +95,48 @@ function capitalizeFirstLetter(string) {
 }
 
 //Change the description in the column info
-function updateDescription(name, description){
-    let descContainer = $('#category-desc');
+function refreshDescription(name, description){
+    let titleContainer = $('#category-title');
     let title = $('<h1>').text(name);
+    titleContainer.empty();
+    
+    titleContainer.append(title);
+
+    let descContainer = $('#category-desc');
     let desc = $('<p>').text(description);
     descContainer.empty();
-    descContainer.append(title, desc);
+    descContainer.append(desc);
 }
+
+//Add delete and edit button in screen when a custome filter is selected
+function showOptionsButtons(){
+    let optionsCategory = $('#options-category');
+    optionsCategory.empty();
+
+    let deleteButton = buildDeleteButton();
+    let editButton = buildEditButton();
+
+    optionsCategory.append(editButton, deleteButton);
+
+}
+
+//Return delete icon
+function buildDeleteButton(){
+    let div = $('<div>').addClass('right-center');
+    let icon = $('<i>').addClass('fa-solid fa-trash fa-xl delete-category').attr('onclick','showAlertDeleteCategory()');
+
+    div.append(icon);
+
+    return div;
+}
+
+//Return edit buton
+function buildEditButton(){
+    let div = $('<div>').addClass('left-center');
+    let icon = $('<i>').addClass('fa-regular fa-pen-to-square fa-xl edit-category').attr('onclick','showUpdateFormCategory()');
+
+    div.append(icon);
+
+    return div;
+}
+

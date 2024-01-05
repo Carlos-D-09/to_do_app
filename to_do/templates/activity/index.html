@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/filters.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/options.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/create.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/info.css')}}">
 {% endblock %}
 
 {% block scripts %}
@@ -63,7 +62,7 @@
                 <div id="custome-filters">
                     {% for category in categories %}
                         {% if category['id'] != 1 %}
-                        <label class="container">{{category['name']}}
+                        <label class="container" id="label-category{{category['id']}}">{{category['name']}}
                             <input type="radio" name="radio" id="category{{category['id']}}" value="{{category['id']}}">
                             <span class="checkmark"></span>
                         </label>
@@ -77,11 +76,25 @@
 
         <!-- Start info panel -->
         <div class="info-panel">
-            <div class="category-desc" id="category-desc">
-                <h1>All </h1>
-                <p>
-                    Here you can show all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc
-                </p>
+            <div class="category-info" id="category-info">
+                <div class="category-title">
+                    <div id="category-title">
+                        <h1>All </h1>
+                    </div>
+                    <div class="options-category" id="options-category">
+                        <!-- <div class="right-center">  
+                            <i class="fa-solid fa-trash  fa-xl delete-category" onclick="deleteCategory()"></i>
+                        </div>
+                        <div class="left-center">  
+                            <i class="fa-regular fa-pen-to-square fa-xl edit-category" onclick="updateCategory()"></i>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="category-desc" id="category-desc">
+                    <p>
+                        Here you can show all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc
+                    </p>
+                </div>
             </div>
             <div class="success-transaction" id="success-transaction"></div>
             <div class="form-category" id="form-category"></div>

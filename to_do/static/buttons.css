@@ -8,6 +8,16 @@
     border-radius: 4px;
 }
 
+.button-success a{
+    text-decoration: none;
+    padding: 10px;
+    color: black;
+}
+
+.button-success p{
+    display: inline;
+}
+
 .button-success:hover{
     font-weight: bold;
     background-color: rgba(212, 253, 227, 0.932);
@@ -17,11 +27,6 @@
     cursor: pointer;
 }
 
-.button-danger a{
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-}
 
 .button-danger{
     max-width: 120px;
@@ -33,6 +38,16 @@
     border-radius: 4px;
 }
 
+.button-danger a{
+    text-decoration: none;
+    padding: 10px;
+    color: black;
+}
+
+.button-danger p{
+    display: inline;
+}
+
 .button-danger:hover{
     font-weight: bold;
     background-color: rgba(253, 212, 212, 0.932);
@@ -41,13 +56,7 @@
     transition: 1s 0.2s;
     cursor: pointer;
 }
-
-.button-danger a{
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-}
-
+    
 .button-stable{
     max-width: 120px;
     min-width: 70px;
@@ -56,15 +65,16 @@
     background-color: rgba(224, 246, 255, 0.932);
     border: 1px solid rgb(111, 214, 255);
     border-radius: 4px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .button-stable a{
     text-decoration: none;
     padding: 10px;
     color: black;
+}
+
+.button-stable p{
+    display: inline;
 }
 
 .button-stable:hover{

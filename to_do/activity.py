@@ -121,12 +121,17 @@ def checkTodo(todo_id):
 #Update a task 
 def updateTodo( todo_id, todo):
     if checkTodo(todo_id):
-        print(todo)
         db, c = get_db()
-        c.execute(
-            'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s, end_at=%s WHERE id=%s AND created_by=%s',
-            (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo['end_at'], todo_id, g.user['id'] )
-        )
+        if(todo['end_at'] == 'undefined'):
+            c.execute(
+                'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s WHERE id=%s AND created_by=%s',
+                (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo_id, g.user['id'] )
+            )
+        else:
+            c.execute(
+                'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s, end_at=%s WHERE id=%s AND created_by=%s',
+                (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo['end_at'], todo_id, g.user['id'] )
+            )
         db.commit()
     
     return True
@@ -161,6 +166,8 @@ def createTodo(name, description, category, end_at, important):
                 (g.user['id'], name, description, False, category, end_at, important)
         )
     db.commit()
+
+    return True
 
 # End MySQL commandas
 
@@ -272,8 +279,11 @@ def create():
         
         #End validation day and hour
 
-        createTodo(name, description, category, end_at, important)
-        return jsonify(success=True)
+        if createTodo(name, description, category, end_at, important) == True:
+            result = True
+        else:
+            result = False
+        return jsonify(success=result)
 
 #Upate todo
 @activity.route('/<int:todo_id>/update', methods=['GET','POST'])
@@ -295,14 +305,15 @@ def update(todo_id):
         except:
             error = "Invalid Form"
 
-        if error is not None:
-            return jsonify({'success':False, 'error': error})
         
         if not todo['name']:
             error = "Name is required"
         
         if not todo['description']:
             error = "Description is required"
+        
+        if error is not None:
+            return jsonify({'success':False, 'error': error})
         
         if not todo['date']:
             todo['end_at'] = 'undefined'
