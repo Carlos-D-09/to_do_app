@@ -191,10 +191,10 @@ def activities():
 @login_required
 def todo(todo_id):
     todo = getTodo(todo_id)
-    if todo is None:
-        error = "The todo doesn't exist"
-        return jsonify(error)
-    return jsonify(todo)
+    if todo is not None:
+        return jsonify({'success':True,'todo': todo})
+    else:
+        return jsonify({'success':False,'error':"The todo doesn't exist"})
 
 #Return the vigent activities
 @activity.route('/activities/planned',methods=['GET'])
@@ -365,7 +365,8 @@ def updateTags(todo_id):
 def delete(todo_id):
     if request.method == "POST":
         if deleteTodo(todo_id):
-            todo_list = getAllTodo()
-            return redirect(url_for('activity.index'))
+            return jsonify({'success':True,'message':'To-do deleted successfully'})
+        else:
+            return jsonify({'success':False,'error':'Something went wrong, please contact with support'})
         
 #End Routes

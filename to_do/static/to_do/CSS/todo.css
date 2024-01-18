@@ -60,6 +60,7 @@
   grid-row: options;
   grid-column: column-end;
   display: flex;
+  gap:5px;
   align-items: center;
   justify-content: end;
   margin: 5px;
@@ -67,10 +68,6 @@
 
 .to_do_element_options-2 p{
   margin: 0px 5px 0px 5px;
-}
-
-.edit-button{
-  padding: 1px 1px 1px 2px;
 }
 
 .grid-operations{

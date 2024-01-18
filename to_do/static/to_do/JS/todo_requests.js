@@ -1,4 +1,4 @@
-//This file contains all the request for a to-do
+//This file contains all the request for the CRUD of to-do
 
 //Request to create a todo
 export function create(todo){
@@ -45,6 +45,18 @@ export function getTodo(id){
     return new Promise((resolve,reject) => {
         let url = '/activity/' + id;
         $.get(url,function(data){
+            resolve(data);
+        }).fail(function(error){
+            reject(error);
+        });
+    });
+}
+
+//Requeste delete todo
+export function deleteTodo(id){
+    return new Promise((resolve,reject) =>{
+        let url = '/' + id + '/delete';
+        $.post(url, function(data){
             resolve(data);
         }).fail(function(error){
             reject(error);

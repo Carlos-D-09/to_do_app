@@ -1,6 +1,8 @@
 import {createCategory, deleteCategory, getCategory, updateCategory} from './category_requests.js';
 import { selectFirstFilter } from './filter.js';
 
+//This files contains all the functions to manipulate category
+
 //Sart create category functions.....................................................................
 
     //- showForm(): Show the form to create a category
@@ -140,7 +142,7 @@ import { selectFirstFilter } from './filter.js';
 
     export function showAlertDeleteCategory(){
         let category_id = $('.filter-list input[type=radio]:checked').val();
-        let category = getCategory(category_id).then(
+        getCategory(category_id).then(
             data => {
                 if (data['success'] == true){
                     let category = data['category'];
@@ -205,7 +207,7 @@ import { selectFirstFilter } from './filter.js';
     //- showUpdateFormCategory(): Show update form for the category selected
     //- buildUpdateForm(): Build the form to update a category 
     //- removeUpdateFormCategory(): Remove from the view the form to update a category
-    //- editaCategory(): Send request to update a category and handle response
+    //- editCategory(): Send request to update a category and handle response
     //- editFilterElement(category): Refresh in the filter list the category name
     //- updateCategoryFromCreateForm(category): Refresh the category name in the select input into the form for create a to-do
 

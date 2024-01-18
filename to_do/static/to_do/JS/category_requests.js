@@ -1,3 +1,5 @@
+//File with the request for the CRUD of category
+
 export function getCategory(category_id){
     return new Promise((resolve, reject) => {
         let url = "/category/" + category_id;

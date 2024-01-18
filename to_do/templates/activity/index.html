@@ -81,13 +81,8 @@
                     <div id="category-title">
                         <h1>All </h1>
                     </div>
+                    <!-- Container to put the buttons edit and delete category -->
                     <div class="options-category" id="options-category">
-                        <!-- <div class="right-center">  
-                            <i class="fa-solid fa-trash  fa-xl delete-category" onclick="deleteCategory()"></i>
-                        </div>
-                        <div class="left-center">  
-                            <i class="fa-regular fa-pen-to-square fa-xl edit-category" onclick="updateCategory()"></i>
-                        </div> -->
                     </div>
                 </div>
                 <div class="category-desc" id="category-desc">
@@ -169,9 +164,13 @@
                         </div>
                         <!-- Buttons edit and delete -->
                         <div class="to_do_element_options-2" id="to_do_element_options-2-{{todo['id']}}">
-                            <button class="button-stable edit-button" data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
+                            <button class="button-stable " data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <p>Edit</p>
+                            </button> 
+                            <button  class="button-danger" data-id="{{todo['id']}}" id="delete{{todo['id']}}" onclick="showAlertDeleteTodo(this)">
+                                <i class="fa-solid fa-trash"></i>
+                                <p>Delete</p>
                             </button>
                         </div>
                     </li>
