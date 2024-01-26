@@ -140,3 +140,8 @@ function buildEditButton(){
     return div;
 }
 
+export function disableEnableFilterList(status){
+    console.log('Deshabilitar filtros', status);
+    $("#default-filters input[type=radio]").prop('disable',status);
+}
+

@@ -2,3 +2,4 @@ venv
 to_do/__pycache__
 cambios
 contexto
+.env

@@ -1,5 +1,5 @@
 import {createCategory, deleteCategory, getCategory, updateCategory} from './category_requests.js';
-import { selectFirstFilter } from './filter.js';
+import { selectFirstFilter, disableEnableFilterList } from './filter.js';
 
 //This files contains all the functions to manipulate category
 
@@ -220,6 +220,7 @@ import { selectFirstFilter } from './filter.js';
             if(data['success'] == true){
                 let form = buildUpdateForm(data['category']);
                 $("#form-category").append(form);
+                disableEnableFilterList(true);
             }else{
                 alert(data['error']);
             }
