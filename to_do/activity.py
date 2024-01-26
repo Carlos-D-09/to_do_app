@@ -3,194 +3,35 @@ from flask import (
     flash,
     g, render_template, request, url_for, redirect, abort, jsonify
 )
-from to_do.db import get_db
-from to_do.category import getCategories
-
-#Función para proteger los endpoints
 from to_do.auth import login_required
+
+from .database.Models.activities import Activities
+from .database.Models.categories import Categories
 
 activity = Blueprint('activity', __name__, url_prefix='')
 
-# Start MySQL consults
-
-#Returns all the task that belgons to the logged user and also return the username and the category name
-def getAllTodo():
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],)
-    )
-    todos = c.fetchall()
-    categories = getCategories()
-    return todos, categories
-
-#Returns all the taks uncompleted that have an undefined time or end_at is not over
-def getPlanned():
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE (MONTH(a.end_at) > MONTH(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
-        ' OR (MONTH(a.end_at) = MONTH(CURRENT_TIMESTAMP) AND DAY(a.end_at) >= DAY(CURRENT_TIMESTAMP) AND a.created_by = %s AND a.completed = false)'
-        ' OR (a.created_by = %s AND a.end_at is NULL AND a.completed = false)'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],g.user['id'], g.user['id'])
-    )
-    todos = c.fetchall()
-    return todos
-
-#Returns all the task for today 
-def getToday():
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE (a.created_by = %s AND MONTH(a.end_at) = MONTH(CURRENT_TIMESTAMP) AND DAY(a.end_at) = DAY(CURRENT_TIMESTAMP) and a.completed = false) OR'
-        ' (a.created_by = %s AND a.end_at is NULL and a.completed = false)'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],g.user['id'])
-    )
-    todos = c.fetchall()
-    return todos
-
-#Return the importatns todo uncompleted
-def getImportants():
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND important = 1 AND a.completed = false'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],)
-    )
-    todos = c.fetchall()
-    return todos
-
-#Return the completed todo
-def getCompleted():
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND completed = 1'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],)
-    )
-    todos = c.fetchall()
-    return todos
-
-#Return the uncompleted todo that have the current category
-def getActivitiesByCategory(category):
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND c.id = %s AND a.completed = false'
-        ' ORDER BY COALESCE(a.end_at, "9999-12-31") asc',
-        (g.user['id'],category)
-    )
-    todos = c.fetchall()
-    return todos
-
-#Return the requested task only if it belongs to the logged user. 
-def getTodo(todo_id):
-    db, c = get_db()
-    c.execute(
-        'SELECT a.id, a.name, a.description, a.completed, a.category AS category_id, c.name AS category, DATE_FORMAT(a.end_at, "%d-%m-%Y at %H:%i") AS end_at, a.created_at, a.important FROM activity a'
-        ' JOIN category c on a.category = c.id' 
-        ' WHERE a.created_by = %s AND a.id = %s',
-        (g.user['id'], todo_id)
-    )
-    todo = c.fetchone()
-
-    return todo
-
-#Verify if exist the task and if it belongs to the logged user. 
-def checkTodo(todo_id):
-    db, c = get_db()
-    c.execute('SELECT id FROM activity WHERE id = %s and created_by = %s',(todo_id, g.user['id']))
-
-    if c.fetchone() is None:
-        abort(404, "The task doesn't exist")
-    
-    return True
-    
-#Update a task 
-def updateTodo( todo_id, todo):
-    if checkTodo(todo_id):
-        db, c = get_db()
-        if(todo['end_at'] == 'undefined'):
-            c.execute(
-                'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s WHERE id=%s AND created_by=%s',
-                (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo_id, g.user['id'] )
-            )
-        else:
-            c.execute(
-                'UPDATE activity SET name =%s, description=%s, completed=%s, category=%s, important=%s, end_at=%s WHERE id=%s AND created_by=%s',
-                (todo['name'], todo['description'],todo['completed'], todo['category'], todo['important'], todo['end_at'], todo_id, g.user['id'] )
-            )
-        db.commit()
-    
-    return True
-
-#Updatae the tags completed and important for a especific todo
-def updateTodoTags(todo_id, tags):
-    if checkTodo(todo_id):
-        db, c = get_db()
-        c.execute('UPDATE activity SET completed=%s, important=%s WHERE id=%s',(tags['completed'],tags['important'],todo_id))
-        db.commit()
-    
-    return True
-
-#Delete a task 
-def deleteTodo(todo_id):
-    if checkTodo(todo_id):
-        db, c = get_db()
-        c.execute('DELETE FROM activity WHERE id = %s',(todo_id,))
-        db.commit()
-
-    return True
-
-#Create a task 
-def createTodo(name, description, category, end_at, important):
-    db, c = get_db()
-    if end_at == 'undefined':
-        c.execute('INSERT INTO activity (created_by, name, description, completed, category, important) VALUES(%s,%s,%s,%s,%s,%s)', 
-                (g.user['id'],name, description, False, category, important)
-        )
-    else:
-        c.execute('INSERT INTO activity (created_by, name, description, completed, category, end_at, important) VALUES(%s,%s,%s,%s,%s,%s,%s)', 
-                (g.user['id'], name, description, False, category, end_at, important)
-        )
-    db.commit()
-
-    return True
-
-# End MySQL commandas
-
-
-#Start Routes
 @activity.route('/',methods=['GET'])
 @login_required
 def index():
-    todos, categories = getAllTodo()
-    return render_template('activity/index.html', todos=todos, categories=categories)
+    todos = Activities.get_activities(g.user.id)
+    categories = Categories.get_categories(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    categories_list = [category._asdict() for category in categories]
+    return render_template('activity/index.html', todos=todos_list, categories=categories_list)
 
 #Return all the activities
 @activity.route('/activities',methods=['GET'])
 @login_required
 def activities():
-    todos, categories = getAllTodo()
-    return jsonify(todos)
+    todos = Activities.get_activities(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 # Return a single todo
 @activity.route('/activity/<int:todo_id>', methods=['GET'])
 @login_required
 def todo(todo_id):
-    todo = getTodo(todo_id)
+    todo = Activities.get_activity(g.user.id, todo_id)
     if todo is not None:
         return jsonify({'success':True,'todo': todo})
     else:
@@ -200,44 +41,48 @@ def todo(todo_id):
 @activity.route('/activities/planned',methods=['GET'])
 @login_required
 def planned():
-    todos = getPlanned()
-    return jsonify(todos)
+    todos = Activities.get_planned_activities(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 #Return the activities for today
 @activity.route('/activities/today',methods=['GET'])
 @login_required
 def today():
-    todos = getToday()
-    return jsonify(todos)
+    todos = Activities.get_today_activities(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 #Return the ipmortant activities
 @activity.route('/activities/importants',methods=['GET'])
 @login_required
 def importants():
-    todos = getImportants()
-    return jsonify(todos)
+    todos = Activities.get_important_activities(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 #Return the completed activities
 @activity.route('/activities/completed',methods=['GET'])
 @login_required
 def completed():
-    todos = getCompleted()
-    return jsonify(todos)
+    todos = Activities.get_completed_activities(g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 #Return the activities by category
 @activity.route('/activities/category',methods=['GET'])
 @login_required
 def categoryActivities():
     category_id = request.args.get('category_id')
-    todos = getActivitiesByCategory(category_id)
-    return jsonify(todos)
+    todos = Activities.get_activities_by_category(category_id, g.user.id)
+    todos_list = [todo._asdict() for todo in todos]
+    return jsonify(todos_list)
 
 #Create todo
 @activity.route('/create', methods=['POST'])
 @login_required
 def create():
     if request.method == "POST":
-        error = None
         try: 
             name = request.form['name']
             description = request.form['description']
@@ -246,127 +91,103 @@ def create():
             date = request.form['date']
             time = request.form['time']
         except:
-            error = "Invalid Form"
+            return jsonify({'success':False, 'error': "Invalid form"})
 
-        #Start validation for required inputs
-        if not name:
-            error = "Name is required"
-        if not description:
-            error = "Description is required"
-        if error is not None:
-            return jsonify(error=error)
-        #End validation for required inputs
+        if not name or not description:
+            return jsonify({'success':False, 'error': "Name and description are required"})
 
-        #Start validations day and hour
+        #Validate Day and hour
         if not date:
             #If the to-do hasn't a limit day set end_at as undefined
-            end_at = 'undefined'
+            end_at = None
             #We don't save the hour if the to-do hasn't a day
 
-        else: #If the to-do has a limit day
-            
-            #Start validation hour 
+        else:
             if not time:
-                #If it hasn't set 12pm as default hour
+                #If it hasn't an hour set 12pm as default hour
                 time = '12:00:00'
-            else: #If the to-do has a limit hour
-                #add milisencods to the hour for save as timestamp
+            else: #If the to-do has a limit hour add milisencods to the hour for save as timestamp
                 time = time + ':00'
-            #End validation hour 
 
             #Create timestamp
             end_at = date + ' ' + time
-        
-        #End validation day and hour
 
-        if createTodo(name, description, category, end_at, important) == True:
-            result = True
+        #Update Activity
+        todo = Activities(name, description, int(important), end_at, category, g.user.id)
+
+        if todo.save():
+            return jsonify(success=True)
         else:
-            result = False
-        return jsonify(success=result)
+            return jsonify(success=False)
 
 #Upate todo
-@activity.route('/<int:todo_id>/update', methods=['GET','POST'])
+@activity.route('/<int:todo_id>/update', methods=['POST'])
 @login_required
 def update(todo_id):
     if request.method == "POST":
-        error = None
-        todo = None
         try:
-            todo = {
-                'name': request.form['name'],
-                'description': request.form['description'],
-                'category': request.form['category'],
-                'completed': request.form['completed'],
-                'important': request.form['important'],
-                'date': request.form['date'],
-                'time': request.form['time']
-            }
+            name = request.form['name']
+            description = request.form['description']
+            category = request.form['category']
+            completed = request.form['completed']
+            important = request.form['important']
+            date = request.form['date']
+            time = request.form['time']
         except:
-            error = "Invalid Form"
+            return jsonify({'success':False, 'error': "Invalid form"})
 
+        if not name or not description:
+            return jsonify({'success':False, 'error': "Name and description are required"})
         
-        if not todo['name']:
-            error = "Name is required"
-        
-        if not todo['description']:
-            error = "Description is required"
-        
-        if error is not None:
-            return jsonify({'success':False, 'error': error})
-        
-        if not todo['date']:
-            todo['end_at'] = 'undefined'
+        #Validate Day and hour
+        if not date:
+            #If the to-do hasn't a limit day set end_at as undefined
+            end_at = None
+            #We don't save the hour if the to-do hasn't a day
+
         else:
-            if not todo['time']:
-                todo['time'] = '12:00:00'
+            if not time:
+                #If it hasn't an hour set 12pm as default hour
+                time = '12:00:00'
+            else: #If the to-do has a limit hour add milisencods to the hour for save as timestamp
+                time = time + ':00'
+
+            #Create timestamp
+            end_at = date + ' ' + time
+            
+        todo = Activities.get_activity_object(g.user.id, todo_id)
+        if todo:
+            if todo.update_activity(name, description, int(completed), category, int(important), end_at ):
+                return jsonify({'success': True})
             else:
-                todo['time'] = todo['time'] + ':00'
-            
-            todo['end_at'] = todo['date'] + ' ' + todo['time']
-            
-        
-        if updateTodo(todo_id, todo):
-            return jsonify({'success': True})
-    
-    return jsonify({'success':False,'error':'Something went wrong, please contact with support'})
+                return jsonify({'success': False, 'error': "We couldn't update the activity, please try again later"})
 
-
+#Update tags completed and important
 @activity.route('/<int:todo_id>/update/tags', methods=['POST'])
 @login_required
 def updateTags(todo_id):
     if request.method == "POST":
-        error = None
         try:
             completed = request.form['completed']
             important = request.form['important']
         except:
-            error = True
+            return jsonify(success=False)
 
-        if error == None:
-            tags ={
-                'completed': completed,
-                'important': important
-            }
-            updateTodoTags(todo_id, tags)
-            todo = getTodo(todo_id)
-
-            response = {
-                'success': True,
-                'todo': todo
-            }
-            return jsonify(response)
-        
+        todo = Activities.get_activity_object(g.user.id,todo_id)
+        if todo:
+            if todo.update_activity_tags(int(completed), int(important)):
+                todo = Activities.get_activity(g.user.id,todo_id)
+                return jsonify({'success': True, 'todo':todo})
+    
         return jsonify(success=False)
 
-#Delete todo
+# Delete todo
 @activity.route('/<int:todo_id>/delete',methods=['POST'])
 @login_required
 def delete(todo_id):
     if request.method == "POST":
-        if deleteTodo(todo_id):
+        todo = Activities.get_activity_object(g.user.id,todo_id)
+        if todo.delete_activity():
             return jsonify({'success':True,'message':'To-do deleted successfully'})
         else:
             return jsonify({'success':False,'error':'Something went wrong, please contact with support'})
-        
-#End Routes

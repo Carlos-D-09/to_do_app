@@ -59,14 +59,17 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
                     //Update filters
                     addFilter(data['category']);
                     addCategorySelectForm(data['category']);
-        
+                    
                     //Confirm the operation to the user
                     setTimeout(function (){
                         $('#success-transaction').empty();
                     }, 5000);
                 }
                 else{
-                    $('#error-category').append("Something went wrong");
+                    $('#error-category').append(data['error']);
+                    setTimeout(function (){
+                        $('#error-category').empty();
+                    }, 5000);
                 }
             }).catch(error => console.log(error));
         });

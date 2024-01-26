@@ -98,9 +98,13 @@ let currentTodoSelected = 0;
                 return false;
             }else{
                 create(todo).then(data => {
-                    refreshFilter();
-                    clearForm();
-                    alert('The to-do was added succesfully');
+                    if(data['success']){
+                        refreshFilter();
+                        clearForm();
+                        alert('The to-do was added succesfully');
+                    }else{
+                        alert("We couldn't save your to-do");
+                    }
                 }).catch(error => console.log(error));
             }
         });
@@ -204,24 +208,35 @@ let currentTodoSelected = 0;
     
         //Remove edit button
         $('#edit'+todo_id).remove();
-    
+        
         //Disable important and completed tag
         $('#important'+todo_id).prop('disabled', true);
         $('#completed'+todo_id).prop('disabled', true);
     }
-
+    
     function unselectTodoDiv(todo_id){
         //Modified background color 
         let todo_list = $("#to_do_element_" + todo_id);
         todo_list.css({'background-color': 'rgb(214, 214, 214)'});
-    
-        //Add Edit button
+        
+        //Remove edit button
+        $('#delete'+todo_id).remove();
+        
+        //Delete button
+        const iconDelete = $('<i>').addClass('fa-solid fa-trash');
+        const textDelete = $('<p>').text('Delete')
+        const button_delete = $('<button>').addClass('button-danger').append(iconDelete, textDelete).attr({'data-id': todo_id, 'id': 'delete'+todo_id, 'onclick':'showAlertDeleteTodo(this)'});
+
+        
+        //Edit button
         const iconEdit = $('<i>').addClass('fa-regular fa-pen-to-square');
         const textEdit = $('<p>').text('Edit')
-        const button_edit = $('<button>').addClass('button-stable edit-button').append(iconEdit, textEdit).attr({'data-id': todo_id, 'id': 'edit'+todo_id, 'onclick':'updateTodo(this)'});
-        $('#to_do_element_options-2-'+todo_id).append(button_edit);
+        const button_edit = $('<button>').addClass('button-stable').append(iconEdit, textEdit).attr({'data-id': todo_id, 'id': 'edit'+todo_id, 'onclick':'updateTodo(this)'});
         
-        //Disable important and completed tag
+        //Add edit and delete button
+        $('#to_do_element_options-2-'+todo_id).append(button_edit,button_delete);
+
+        //Able important and completed tag
         $('#important'+todo_id).prop('disabled', false);
         $('#completed'+todo_id).prop('disabled', false);
     }
@@ -303,8 +318,8 @@ let currentTodoSelected = 0;
         const textEdit = $('<p>').text('Edit').css('padding-left','5px')
         const textCancel = $('<p>').text('Cancel').css({'display':'inline', 'padding-left':'5px'})
         //Buttons
-        let editButton = $('<button>').append(iconEdit, textEdit).addClass('button-stable edit-button').attr({'id': 'edit-todo', 'data-id':todo_id}).css({'height':'50%', 'margin-right':'2px'});
-        let cancelButton = $('<button>').append(iconCancel, textCancel).addClass('button-danger edit-button').attr({'id':'cancel-edit', 'onclick':'cancelUpdate()'}).css({'height':'50%','margin-left':'3px'});
+        let editButton = $('<button>').append(iconEdit, textEdit).addClass('button-stable').attr({'id': 'edit-todo', 'data-id':todo_id}).css({'height':'50%', 'margin-right':'2px'});
+        let cancelButton = $('<button>').append(iconCancel, textCancel).addClass('button-danger').attr({'id':'cancel-edit', 'onclick':'cancelUpdate()'}).css({'height':'50%','margin-left':'3px'});
         
         //Remove save button and add edit buttons
         $('#save-todo').remove();

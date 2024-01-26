@@ -2,17 +2,17 @@ import functools
 from flask import (
     Blueprint, #Permite crear modulos configurables dentro de la aplicación
     flash, #Permite mandar mensajes de manera generica dentro de la apliación
-    render_template, request, url_for, session, current_app, redirect, g
+    render_template, request, url_for, session, redirect, g
 )
-from werkzeug.security import check_password_hash, generate_password_hash
-from to_do.db import get_db
+
+from .database.Models.users import Users
 
 auth = Blueprint('auth',__name__, url_prefix='/auth')
 
 @auth.route('/register', methods=['GET','POST'])
 def register():
     if request.method == "POST":
-        #Start validation inputs
+        #Validate inputs
         username = request.form['username']
         password = request.form['password']
         re_password = request.form['re_password']
@@ -21,70 +21,50 @@ def register():
             error = "All inpusts are required"
         elif password != re_password:
             error = "The passwords must be the same"
-        #Finish validation inputs
         
         #Start validation uniqueness of records
-        db, c = get_db()
-        sql = 'SELECT id FROM user WHERE username = %s'
-        values = [username]
-        c.execute(sql, values)
-        if c.fetchone() is not None: 
+        if Users.get_by_username(username):
             error = "The user {} have been already registered." . format(username)
-        #Finish validation uniqueness of records
 
-        #Star register of user 
+        #Register user 
         if error is None:
-            sql = 'INSERT INTO user (username, password) VALUES (%s, %s)'
-            SALT = current_app.config['SECRET_KEY']
-            hashed_pwd = generate_password_hash(password+SALT)
-            values = [username, hashed_pwd]
-            c.execute(sql, values)
-            db.commit()
-
+            pwd = Users.generate_password(password)
+            user = Users(username, pwd)
+            user.save()
             return redirect(url_for('auth.login'))
-        #Finish register of user 
-
+        
         flash(error)
-
     return render_template('auth/register.html')
 
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        #Start validation inputs
+        #Validate inputs
         username = request.form['username']
         password = request.form['password']
         if not username:
             error = "Username is required"
         if not password: 
             error = "Password is required"
-        #Finish validation inputs
         
-        #Start search of user
-        if username == "test user":
+        if username == "test user": #Default user to create seed
             error = "Invalid user or password"
         else:
-            db, c = get_db()
-            error = None
-            c.execute('SELECT * FROM user WHERE username = %s',(username,))
-            user = c.fetchone()
-            # Finish search of user
-
-            if user is None:
+            #Search user
+            user = Users.get_by_username(username)
+            if not user:
                 error = "Invalid user or password"
             else:
-                #Start password validation   
-                SALT = current_app.config['SECRET_KEY']
-                if not check_password_hash(user['password'], password+SALT):
+                #Validate password
+                if not user.check_password(password):
                     error = "Invalid user or password"
-                
-                if error is None:
-                    session.clear()
-                    session['user_id'] = user['id']
-                    session['username'] = user['username']
-                    return redirect(url_for('activity.index'))
-                #Finish password validation   
+
+        if error is None:
+            session.clear()
+            session['user_id'] = user.id
+            session['username'] = user.username
+            return redirect(url_for('activity.index'))
 
         flash(error)    
     return render_template('auth/login.html')
@@ -101,11 +81,8 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        db, c = get_db()
-        c.execute('SELECT id, username FROM user WHERE id = %s',(user_id,))
-        user = c.fetchone()
+        user = Users.get_general_info(user_id)
         g.user = user
-
 
 def login_required(view):
     @functools.wraps(view)
