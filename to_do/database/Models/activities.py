@@ -14,7 +14,7 @@ class Activities(db.Model):
     __tablename__ = 'activities'
 
     id = db.Column(INTEGER(unsigned=True), primary_key=True)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.TIMESTAMP, default=func.now(), nullable=False)
     name = db.Column(db.NVARCHAR(50), nullable=False)
     description = db.Column( db.NVARCHAR(250), nullable=False)
     completed = db.Column(db.Boolean, nullable=False)
@@ -129,9 +129,9 @@ class Activities(db.Model):
 
     @staticmethod
     def get_planned_activities(user_id):
+        current_year = func.extract('year',func.current_timestamp())
         current_month = func.extract('month', func.current_timestamp())
         current_day = func.extract('day',func.current_timestamp())
-        current_year = func.extract('year',func.current_timestamp())
 
         return Activities.query.with_entities(
             Activities.id,
@@ -165,9 +165,11 @@ class Activities(db.Model):
     
     @staticmethod
     def get_today_activities(user_id):
+
+        print(current_day)
+        current_year = func.extract('year',func.current_timestamp())
         current_month = func.extract('month', func.current_timestamp())
         current_day = func.extract('day',func.current_timestamp())
-        current_year = func.extract('year',func.current_timestamp())
 
         return Activities.query.with_entities(
             Activities.id,
@@ -184,7 +186,7 @@ class Activities(db.Model):
             or_(
                 (extract('year',Activities.end_at) > current_year) &
                 (extract('month', Activities.end_at) > current_month) &
-                (extract('day',Activities.end_at) >= current_day) &
+                (extract('day', Activities.end_at) == current_day) &
                 (Activities.created_by == user_id) &
                 (Activities.completed == False),
                 (Activities.created_by == user_id) &

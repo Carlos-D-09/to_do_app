@@ -6,22 +6,23 @@ from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import or_
 
 from datetime import datetime
+from sqlalchemy import func
 
 class Categories(db.Model):
     __tablename__ = 'categories'
 
     id = db.Column(INTEGER(unsigned=True), primary_key=True)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.TIMESTAMP, default=func.now(), nullable=False)
     name = db.Column(db.NVARCHAR(50), nullable=False)
     description = db.Column(db.NVARCHAR(250), nullable=False)
 
     created_by = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('Users', backref=db.backref('category-user',lazy=True))
 
-    def __init__(self, name, description, user_id):
+    def __init__(self, name, description, created_by):
         self.name = name
         self.description = description
-        self.created_by = user_id
+        self.created_by = created_by
 
     def save(self):
         try:

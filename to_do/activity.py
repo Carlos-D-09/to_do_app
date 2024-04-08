@@ -3,6 +3,7 @@ from flask import (
     flash,
     g, render_template, request, url_for, redirect, abort, jsonify
 )
+
 from to_do.auth import login_required
 
 from .database.Models.activities import Activities
@@ -22,7 +23,7 @@ def index():
 #Return all the activities
 @activity.route('/activities',methods=['GET'])
 @login_required
-def activities():
+def get_activities():
     todos = Activities.get_activities(g.user.id)
     todos_list = [todo._asdict() for todo in todos]
     return jsonify(todos_list)
@@ -72,7 +73,7 @@ def completed():
 #Return the activities by category
 @activity.route('/activities/category',methods=['GET'])
 @login_required
-def categoryActivities():
+def category_activities():
     category_id = request.args.get('category_id')
     todos = Activities.get_activities_by_category(category_id, g.user.id)
     todos_list = [todo._asdict() for todo in todos]
@@ -81,7 +82,7 @@ def categoryActivities():
 #Create todo
 @activity.route('/create', methods=['POST'])
 @login_required
-def create():
+def create_activity():
     if request.method == "POST":
         try: 
             name = request.form['name']
@@ -90,35 +91,36 @@ def create():
             important = request.form['important']
             date = request.form['date']
             time = request.form['time']
-        except:
-            return jsonify({'success':False, 'error': "Invalid form"})
 
-        if not name or not description:
-            return jsonify({'success':False, 'error': "Name and description are required"})
+            if not name or not description:
+                return jsonify({'success':False, 'error': "Name and description are required"})
 
-        #Validate Day and hour
-        if not date:
-            #If the to-do hasn't a limit day set end_at as undefined
-            end_at = None
-            #We don't save the hour if the to-do hasn't a day
+            #Validate Day and hour
+            if not date:
+                #If the to-do hasn't a limit day set end_at as undefined
+                end_at = None
+                #We don't save the hour if the to-do hasn't a day
 
-        else:
-            if not time:
-                #If it hasn't an hour set 12pm as default hour
-                time = '12:00:00'
-            else: #If the to-do has a limit hour add milisencods to the hour for save as timestamp
-                time = time + ':00'
+            else:
+                if not time:
+                    #If it hasn't an hour set 12pm as default hour
+                    time = '12:00:00'
+                else: #If the to-do has a limit hour add milisencods to the hour for save as timestamp
+                    time = time + ':00'
 
-            #Create timestamp
-            end_at = date + ' ' + time
+                #Create timestamp
+                end_at = date + ' ' + time
 
-        #Update Activity
-        todo = Activities(name, description, int(important), end_at, category, g.user.id)
+            #Update Activity
+            todo = Activities(name, description, int(important), end_at, category, g.user.id)
 
-        if todo.save():
-            return jsonify(success=True)
-        else:
-            return jsonify(success=False)
+            if todo.save():
+                return jsonify(success=True)
+            else:
+                return jsonify(success=False)
+        
+        except Exception as e:
+            return jsonify({'success':False, 'error':str(e)})
 
 #Upate todo
 @activity.route('/<int:todo_id>/update', methods=['POST'])

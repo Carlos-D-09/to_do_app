@@ -13,7 +13,7 @@ class Users (db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.password = Users.generate_password(password)
 
     def save(self):
         if not self.id:
@@ -35,7 +35,7 @@ class Users (db.Model):
     
     @staticmethod
     def get_by_username(username):
-        return Users.query.filter_by(username)
+        return Users.query.filter_by(username=username).first()
     
     @staticmethod
     def get_general_info(user_id):

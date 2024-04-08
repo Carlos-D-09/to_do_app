@@ -1,0 +1,16 @@
+{
+    "target_class": "Categories",
+    "data": [{
+        "name": "Undefined",
+        "description": "Class for activities without class",
+        "!refs": {
+            "created_by": {
+                "target_class": "Users",
+                "criteria":{
+                    "id": "1"
+                },
+                "field":"id"
+            }
+        }
+    }]
+}

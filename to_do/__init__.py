@@ -9,6 +9,7 @@ from . import category
 from .database.Models.users import Users
 from .database.Models.categories import Categories
 from .database.Models.activities import Activities
+from .database.Seeder.seed import configure_seed
 
 def create_app():
     app = Flask(__name__)
@@ -30,5 +31,7 @@ def create_app():
     )
 
     db.configure_database(app)
+    configure_seed(app)
+
 
     return app

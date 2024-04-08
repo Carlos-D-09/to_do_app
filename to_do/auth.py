@@ -17,6 +17,7 @@ def register():
         password = request.form['password']
         re_password = request.form['re_password']
         error = None
+
         if not username or not password or not re_password:
             error = "All inpusts are required"
         elif password != re_password:
@@ -24,12 +25,11 @@ def register():
         
         #Start validation uniqueness of records
         if Users.get_by_username(username):
-            error = "The user {} have been already registered." . format(username)
+            error = f"The user {username} has been already registered."
 
         #Register user 
         if error is None:
-            pwd = Users.generate_password(password)
-            user = Users(username, pwd)
+            user = Users(username, password)
             user.save()
             return redirect(url_for('auth.login'))
         
@@ -43,6 +43,7 @@ def login():
         #Validate inputs
         username = request.form['username']
         password = request.form['password']
+        error = None
         if not username:
             error = "Username is required"
         if not password: 

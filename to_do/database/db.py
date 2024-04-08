@@ -17,9 +17,9 @@ def configure_database(app):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = sgbd + '://' + db_user + ':' + db_pwd +'@' + db_host + ':' + db_port + '/' + db_name
 
+    db.init_app(app)
     app.cli.add_command(init_db_command)
     
-    db.init_app(app)
 
 @click.command('init-db') #Command for execute from terminal the db creation
 @with_appcontext

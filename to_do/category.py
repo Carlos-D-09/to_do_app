@@ -14,14 +14,14 @@ category = Blueprint('category', __name__, url_prefix='')
 #Route to return all the categories that belongs to the logged user 
 @category.route('/category')
 @login_required
-def returnCategories():
+def return_categories():
     categories = Categories.get_categories(g.user.id)
     return jsonify(categories)
 
 #Route to create a category
 @category.route('/category/create', methods=['POST'])
 @login_required
-def create():
+def create_category():
     if request.method == "POST":
         try:
             name = request.form['title']
@@ -45,7 +45,7 @@ def create():
 #Route to get an specific category
 @category.route('/category/<int:category_id>', methods=['GET'])
 @login_required
-def returnCategory(category_id):
+def return_category(category_id):
     if request.method == "GET":
         category = Categories.get_category(g.user.id,category_id)
         if category is not None:
@@ -56,7 +56,7 @@ def returnCategory(category_id):
 #Route to update a category
 @category.route('/category/<int:category_id>/update', methods=['POST'])
 @login_required
-def editCategory(category_id):
+def edit_category(category_id):
     if request.method == "POST":
         name = request.form['title']
         desc = request.form['desc']
@@ -76,7 +76,7 @@ def editCategory(category_id):
 #Route to delete a category
 @category.route('/category/<int:category_id>/delete', methods=['POST'])
 @login_required
-def removeCategory(category_id):
+def remove_category(category_id):
     if request.method == "POST":
         category = Categories.get_category_object(g.user.id, category_id)
         if category is not None:
