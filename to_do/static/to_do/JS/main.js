@@ -1,6 +1,6 @@
 import {checkFilter } from './filter.js';
 import {createTodo, updateImportant, updateCompleted, updateTodo, cancelUpdate, editTodo, showAlertDeleteTodo, removeTodo} from './todo.js';
-import {showForm, removeFormCategory, saveCategory, showAlertDeleteCategory, editCategory, deleteFloatingDialog, removeCategory, showUpdateFormCategory, removeUpdateFormCategory} from './category.js';
+import {showForm, removeFormCategory, saveCategory, showAlertDeleteCategory, editCategory, deleteFloatingDialog, removeCategory, showUpdateFormCategory} from './category/category.js';
 
 window.updateImportant = updateImportant;
 window.updateCompleted = updateCompleted;
@@ -22,7 +22,6 @@ $(document).ready(function() {
     saveCategory();
     showForm();
     removeFormCategory();
-    removeUpdateFormCategory();
     editCategory();
     
     //Listener for to-do

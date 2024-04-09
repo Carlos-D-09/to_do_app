@@ -166,7 +166,6 @@ class Activities(db.Model):
     @staticmethod
     def get_today_activities(user_id):
 
-        print(current_day)
         current_year = func.extract('year',func.current_timestamp())
         current_month = func.extract('month', func.current_timestamp())
         current_day = func.extract('day',func.current_timestamp())

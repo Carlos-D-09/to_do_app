@@ -1,0 +1,25 @@
+.show{
+    animation: show 1s ease-in-out forwards;
+}
+
+.remove{
+    animation: remove 1s ease-in-out forwards;
+}
+
+@keyframes show {
+  from {
+    opacity: 0; /* Comienza completamente oculto */
+  }
+  to {
+    opacity: 1; /* Termina completamente visible */
+  }
+}
+
+@keyframes remove {
+  from {
+    opacity: 1; /* Comienza completamente visible */
+  }
+  to {
+    opacity: 0; /* Termina completamente oculto */
+  }
+}

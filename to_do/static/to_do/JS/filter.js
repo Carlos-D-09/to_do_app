@@ -1,6 +1,6 @@
 import { allTodo, planned, today, important, completed, filter } from './filter_requests.js';
 import { printTodos } from './todo.js';
-import { getCategory } from './category_requests.js';
+import { getCategory } from './category/requests.js';
 
 //standard filters and their functions 
 const FILTERS = {
@@ -141,7 +141,6 @@ function buildEditButton(){
 }
 
 export function disableEnableFilterList(status){
-    console.log('Deshabilitar filtros', status);
     $("#default-filters input[type=radio]").prop('disable',status);
 }
 

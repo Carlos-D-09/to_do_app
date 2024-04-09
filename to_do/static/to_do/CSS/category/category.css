@@ -1,0 +1,151 @@
+@media (min-width: 1501px){
+    .floating-category-form{
+        width: 30%;
+    }
+}
+
+@media (max-width: 1500px){
+    .floating-category-form{
+        width: 35%;
+    }
+}
+
+@media (max-width: 1300px){
+    .floating-category-form{
+        width: 40%;
+    }
+}
+
+@media (max-width: 1200px){
+    .floating-category-form{
+        width: 45%;
+    }
+}
+
+@media (max-width: 1100px){
+    .floating-category-form{
+        width: 50%;
+    }
+}
+
+@media (max-width: 1000px){
+    .floating-category-form{
+        width: 55%;
+    }
+}
+@media (max-width: 900px){
+    .floating-category-form{
+        width: 60%;
+    }
+}
+@media (max-width: 800px){
+    .floating-category-form{
+        width: 65%;
+    }
+}
+
+@media (max-width: 700px){
+    .floating-category-form{
+        width: 70%;
+    }
+}
+
+.floating-category-form{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+    text-align: justify;
+    height: 40%;
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 3fr 1fr;
+    gap: 10px;
+    overflow: scroll;
+    transform: translate(-50%, -50%);
+}
+
+.floating-category-form::-webkit-scrollbar{
+    display: none;
+}
+
+.floating-category-form-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.floating-category-form-content{
+    height: 100%;
+    width: 100%;
+    padding-left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.floating-category-form-content-alert{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+}
+
+.floating-category-form-content-name{
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+.floating-category-form-content-name input{
+    width: 60%;
+    height: 35px;
+    font-family: 'Arial';
+    font-size: 1em;
+}
+
+.floating-category-form-content-name label{
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+    font-size: 1.1em;
+    font-weight: 400;
+}
+
+.floating-category-form-content-desc {
+    width: 80%;
+}
+
+.floating-category-form-content-desc label{
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+    font-size: 1.1em;
+    font-weight: 400;
+}
+
+.floating-category-form-content-desc textarea{
+    width: 100%;
+    resize: none;
+    font-family: 'Arial';
+    font-size: 1em;
+}
+
+.floating-category-form-content-desc textarea::-webkit-scrollbar{
+    display: none;
+}
+
+.floating-category-form-footer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}

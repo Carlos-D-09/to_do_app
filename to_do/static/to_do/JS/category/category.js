@@ -1,33 +1,30 @@
-import {createCategory, deleteCategory, getCategory, updateCategory} from './category_requests.js';
-import { selectFirstFilter, disableEnableFilterList } from './filter.js';
+import {createCategory, deleteCategory, getCategory, updateCategory} from './requests.js';
+import { selectFirstFilter, disableEnableFilterList } from '../filter.js';
+import { displayCategoryForm, deleteDialogForm, showCategoryFormAlert } from './utils.js'
 
 //This files contains all the functions to manipulate category
 
 //Sart create category functions.....................................................................
 
     //- showForm(): Show the form to create a category
-    //- removeFormCategory(): If the user press the button cancel, delete the form to add category
+    //- removeFormCategory(): If the user press the button cancel, delete the form to add or update category
     //- saveCategory(): If the user press the button save in create form, request the server create the category and update the page
-    //- buildForm(): Build the form to add a category 
     //- addFilter(category): Update the filter list with the new category
     //- buildFilterElement(category): Build a filter element to add on the filter list. 
-    //- addCategorySelectForm(category): Appends an option in the create form select
+    //- addCategorySelectForm(category): add ends an option in the create form select
 
     export function showForm(){
         $('body').on('click', '#add-category', function(){
-            if ($('#form-category').length != 0){
-                $('#form-category').empty();
+            if ($('#floating-category-form').length != 0){
+                $('#floating-category-form').empty();
             }
-            let form = buildForm();
-            $("#form-category").append(form);
+            displayCategoryForm();
         });
     }
 
     export function removeFormCategory(){
         $('body').on('click', '#cancel-category', function(){
-            if($('#pop-up-form-category').length != 0){
-                $('#pop-up-form-category').remove();
-            }
+            deleteDialogForm();
         });
     }
 
@@ -39,7 +36,7 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
 
             //Validate values
             if(title == '' || desc == ''){
-                alert('All inputs are required');
+                showCategoryFormAlert(true, 'All inputs are required');
                 return false;
             }
 
@@ -53,51 +50,18 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
             createCategory(inputs).then(data => {
                 if(data['success'] == true){
                     //Delete form and confirm operation to the user
-                    $('#pop-up-form-category').remove();
-                    $('#success-transaction').append('Category added successfully');
+                    showCategoryFormAlert(false, 'Category added succesfully', true);
                     
                     //Update filters
                     addFilter(data['category']);
                     addCategorySelectForm(data['category']);
-                    
-                    //Confirm the operation to the user
-                    setTimeout(function (){
-                        $('#success-transaction').empty();
-                    }, 5000);
-                }
-                else{
-                    $('#error-category').append(data['error']);
-                    setTimeout(function (){
-                        $('#error-category').empty();
-                    }, 5000);
+
+                }else{
+                    //Alert to the user that something went wrong
+                    showCategoryFormAlert(true, data['error']);
                 }
             }).catch(error => console.log(error));
         });
-    }
-
-    function buildForm(){
-        const iconSave = $('<i>').addClass('fa-regular fa-floppy-disk');
-        var formContainer = $('<div>').addClass('form-category-container').attr('id', 'form-category-container').append(
-            $('<h2>').text('Add category'),
-            $('<div>').addClass('flash').attr('id', 'error-category'),
-            $('<br>'),
-            $('<label>').text('Name'),
-            $('<br>'),
-            $('<input>').addClass('input-text').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title' }),
-            $('<br>'),
-            $('<br>'),
-            $('<label>').text('Description:'),
-            $('<br>'),
-            $('<input>').addClass('input-text').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc' }),
-            $('<br>'),
-            $('<br>'),
-            $('<div>').addClass('options-form-category').append(
-                $('<button>').addClass('button-success').attr('id', 'save-category').append(iconSave,' Save').css({'margin':'5px'}),
-                $('<button>').addClass('button-danger').attr('id', 'cancel-category').text('Cancel').css({'margin':'5px'})
-            )
-        );
-        var form = $('<div>').addClass('pop-up-form-category').attr('id', 'pop-up-form-category').append(formContainer);
-        return form;
     }
 
     function addFilter(category){
@@ -208,8 +172,6 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
 //Start functions to update a category........................................................................
 
     //- showUpdateFormCategory(): Show update form for the category selected
-    //- buildUpdateForm(): Build the form to update a category 
-    //- removeUpdateFormCategory(): Remove from the view the form to update a category
     //- editCategory(): Send request to update a category and handle response
     //- editFilterElement(category): Refresh in the filter list the category name
     //- updateCategoryFromCreateForm(category): Refresh the category name in the select input into the form for create a to-do
@@ -221,44 +183,12 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
         let category_id = $('.filter-list input[type=radio]:checked').val();
         getCategory(category_id).then(data => {
             if(data['success'] == true){
-                let form = buildUpdateForm(data['category']);
-                $("#form-category").append(form);
+                displayCategoryForm(true, data['category'])
                 disableEnableFilterList(true);
             }else{
                 alert(data['error']);
             }
         }).catch(error => console.log(error));
-    }
-
-    function buildUpdateForm(category){
-        const iconSave = $('<i>').addClass('fa-regular fa-floppy-disk');
-        var formContainer = $('<div>').addClass('form-category-container').attr('id', 'form-category-container').append(
-            $('<h2>').text('Update category'),
-            $('<div>').addClass('flash').attr('id', 'error-category'),
-            $('<br>'),
-            $('<label>').text('Name'),
-            $('<br>'),
-            $('<input>').addClass('input-text').attr({ type: 'text', placeholder: 'Name', id: 'title', name: 'title', value: category['name'] }),
-            $('<br>'),
-            $('<br>'),
-            $('<label>').text('Description:'),
-            $('<br>'),
-            $('<input>').addClass('input-text').attr({ type: 'textarea', rows: '5', cols: '50', placeholder: 'Description', id: 'desc', name: 'desc', value: category['description'] }),
-            $('<br>'),
-            $('<br>'),
-            $('<div>').addClass('options-form-category').append(
-                $('<button>').addClass('button-stable').attr({id: 'update-category',value: category['id']}).append(iconSave,' Update').css({'margin':'5px'}),
-                $('<button>').addClass('button-danger').attr('id', 'cancel-update-category').text('Cancel').css({'margin':'5px'})
-            )
-        );
-        var form = $('<div>').addClass('pop-up-form-category').attr('id', 'pop-up-form-category').append(formContainer);
-        return form;
-    }
-
-    export function removeUpdateFormCategory(){
-        $('body').on('click', '#cancel-update-category', function(){
-            $('#form-category').empty();
-        });
     }
 
     export function editCategory(){
@@ -270,7 +200,7 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
 
             //Validate values
             if(title == '' || desc == ''){
-                alert('All inputs are required');
+                showCategoryFormAlert(true, 'All inputs are required');
                 return false;
             }else{
                 let category = {
@@ -281,13 +211,13 @@ import { selectFirstFilter, disableEnableFilterList } from './filter.js';
 
                 updateCategory(category).then(data => {
                     if(data['success']){
-                        $('#form-category').empty();
+                        showCategoryFormAlert(false, 'Category edited successfully', true);
+                        
                         editFilterElement(data['category']);
                         updateCategoryFromCreateForm(data['category']);
                         selectFirstFilter();
-                        alert(data['message']);
                     }else{
-                        alert(data['error']);
+                        showCategoryFormAlert(true, data['error'])
                     }
                 }).catch(error => console.log(error));
             }

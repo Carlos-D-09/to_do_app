@@ -1,60 +1,111 @@
-.button-success{
+.button-lavender{
     max-width: 120px;
     min-width: 70px;
     max-height: 65px;
     min-height: 40px;
-    background-color: rgba(236, 255, 243, 0.932);
-    border: 1px solid rgb(156, 255, 194);
-    border-radius: 4px;
-}
-
-.button-success a{
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-}
-
-.button-success p{
-    display: inline;
-}
-
-.button-success:hover{
+    background-color: #f9e1fa;
+    border: 2px solid #d499d6;
+    color: #d499d6;
     font-weight: bold;
-    background-color: rgba(212, 253, 227, 0.932);
-    border: 1px solid rgb(156, 255, 194);
-    transform: scale(1.03);
-    transition: 1s 0.2s;
-    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.button-lavender:hover{
+    transform: scale(1.03);
+    background-color: #fdd2ff;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.button-info{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: #d9edff;
+    border: 2px solid #7fbdf7;
+    color: #7fbdf7;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-info:hover{
+    transform: scale(1.03);
+    background-color: #b8dafa;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.button-warning{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: #fffac1;
+    border: 2px solid #fdec88;
+    color: #ffde25;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-warning:hover{
+    transform: scale(1.03);
+    background-color: #fdf8c1;
+    cursor: pointer;
+    transition: 1s;
+}
 
 .button-danger{
     max-width: 120px;
     min-width: 70px;
     max-height: 65px;
     min-height: 40px;
-    background-color: rgba(255, 236, 236, 0.932);
-    border: 1px solid rgb(255, 156, 156);
-    border-radius: 4px;
-}
-
-.button-danger a{
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-}
-
-.button-danger p{
-    display: inline;
+    background-color: #fff4f4f5;
+    border: 2px solid #ffafaf;
+    color: #ffafaf;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .button-danger:hover{
-    font-weight: bold;
-    background-color: rgba(253, 212, 212, 0.932);
-    border: 1px solid rgb(255, 156, 156);
     transform: scale(1.03);
-    transition: 1s 0.2s;
+    background-color: #ece1e1f5;
     cursor: pointer;
+    transition: 1s;
+}
+
+.button-success{
+    max-width: 120px;
+    min-width: 70px;
+    max-height: 65px;
+    min-height: 40px;
+    background-color: #eafae7ef;
+    border: 2px solid #b8ffaf;
+    color: #b8ffaf;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.button-success:hover{
+    transform: scale(1.03);
+    background-color: #e0eeddef;
+    cursor: pointer;
+    transition: 1s;
 }
     
 .button-stable{
@@ -63,25 +114,18 @@
     max-height: 65px;
     min-height: 40px;
     background-color: rgba(224, 246, 255, 0.932);
-    border: 1px solid rgb(111, 214, 255);
-    border-radius: 4px;
-}
-
-.button-stable a{
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-}
-
-.button-stable p{
-    display: inline;
+    border: 2px solid rgb(111, 214, 255);
+    color: rgb(111, 214, 255);
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .button-stable:hover{
-    font-weight: bold;
-    background-color: rgba(204, 240, 255, 0.932);
-    border: 1px solid rgb(111, 214, 255);
     transform: scale(1.03);
-    transition: 1s 0.2s;
+    background-color: rgba(202, 223, 231, 0.932);
+    transition: 1s;
     cursor: pointer;
 }

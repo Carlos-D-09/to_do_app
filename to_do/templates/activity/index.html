@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/filters.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/options.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/create.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/category/category.css')}}">
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{url_for('static', filename='to_do/JS/index.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/main.js')}}" type="module"></script>
 {% endblock %}
 
 {% block content %}
@@ -216,7 +217,7 @@
                 </div>
                 <button class="button-success" id="save-todo">
                     <i class="fa-regular fa-floppy-disk"></i>
-                    Save
+                    <p>Save</p>
                 </button>
             </div>
         </div>
