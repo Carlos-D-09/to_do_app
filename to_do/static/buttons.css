@@ -1,3 +1,18 @@
+.button-layout{
+    border: 2px solid;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-layout:hover{
+    transform: scale(1.03);
+    cursor: pointer;
+    transition: 1s;
+}
+
 .button-lavender{
     max-width: 120px;
     min-width: 70px;
@@ -92,7 +107,7 @@
     min-height: 40px;
     background-color: #eafae7ef;
     border: 2px solid #b8ffaf;
-    color: #b8ffaf;
+    color: #94ff86;
     font-weight: bold;
     text-align: center;
     display: flex;
@@ -103,7 +118,7 @@
 
 .button-success:hover{
     transform: scale(1.03);
-    background-color: #e0eeddef;
+    background-color: #d3ffc9ef;
     cursor: pointer;
     transition: 1s;
 }
@@ -125,7 +140,11 @@
 
 .button-stable:hover{
     transform: scale(1.03);
-    background-color: rgba(202, 223, 231, 0.932);
+    background-color: rgb(174, 233, 255);
     transition: 1s;
     cursor: pointer;
+}
+
+.round{
+    border-radius: 8px;
 }

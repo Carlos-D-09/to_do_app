@@ -5,47 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='auth/CSS/auth.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base.css')}}">
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth/CSS/login.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='inputs.css')}}">
+
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/36c2a6041f.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="login-container-flex">
-        <div class="login-container-element">
-            <div class="login-flex">
-                <div class="login-grid">
-                    <div class="grid-element">
-                        <img src="{{url_for('static', filename='auth/images/form_img.jpg')}}" alt="" width="100%" height="100%">
-                    </div>
-                    <div class="grid-element">
-                        <div class="form-flex">
-                            <div class="form-title">
-                                <h1>Sign in</h1>
-                                {% for message in get_flashed_messages() %}
-                                    <div class="flash">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <div class="form-content">
-                                <form method="POST">
-                                    <label for="username">Username </label>
-                                    <input class="input-text" type="text" placeholder="Username" name="username" id="username" required> <br> <br>
-                                    <label for="password">Password </label>
-                                    <input class="input-text" type="password" placeholder="Password" name="password" id="password" required> <br> <br>
-                                
-                                    <input class="button-success" type="submit" value="Sign in">
-                                </form>
-                            </div>
-                            <div class="form-footer">
-                                <p>
-                                    No account? <a href="{{url_for('auth.register')}}">Register</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="login-container">
+        <div class="login-form-container">
+            <form action="/auth/login" method="POST" class="login-form" autocomplete="off">
+                <h1>Login my to-do app</h1>
+                <div class="login-form-inputs">
+                    <label for="username">Nombre de usuario:</label>
+                    <input class="input-text-bottom-border" type="text" placeholder="Username" id="username" name="username">
                 </div>
+                
+                <div class="login-form-inputs">
+                    <label for="password">Contraseña:</label>
+                    <input class="input-text-bottom-border" type="password" placeholder="Password" id="password" name="password" >
+                </div>
+
+                <div class="login-form-inputs">
+                    <button class="button-layout">
+                        <p>Inicia Sesión</p>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="login-options-container">
+            <div class="login-options-divide-line"></div>
+            <div class="login-options-register">
+                <div class="login-options-register-header">
+                    <h2>¿No tienes una cuenta?</h2>
+                </div>
+                <button class="button-layout">Registrate</button>
+            </div>
+            <div class="login-options-accounts-separator">
+                <p>Inicia sesión con</p>
+            </div>
+            <div class="login-options-accounts">
+                <a class="login-options-accounts-icon" href="#">
+                    <img src="./../static/auth/images/google_icon.png" alt="">
+                </a>
+                <a class="login-options-accounts-icon" href="#"> 
+                    <img src="../../static/auth/images/outlook_icon.png"  alt="">
+                </a>
+                <a class="login-options-accounts-icon" href="#">
+                    <i class="fa-brands fa-facebook fa-2xl" style="color: #4267B2"></i>
+                </a>
             </div>
         </div>
     </div>
