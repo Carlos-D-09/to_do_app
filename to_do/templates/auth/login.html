@@ -10,14 +10,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='inputs.css')}}">
 
+     <!-- Jquery -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
     <!-- Icons -->
     <script src="https://kit.fontawesome.com/36c2a6041f.js" crossorigin="anonymous"></script>
+
+    <!-- Google Auth -->
+    <script src="https://accounts.google.com/gsi/client" async ></script>
+
+    <!-- Scripts -->
+    <script src="../../static/auth/JS/login.js"></script>
 </head>
 <body>
     <div class="login-container">
         <div class="login-form-container">
             <form action="/auth/login" method="POST" class="login-form" autocomplete="off">
-                <h1>Login my to-do app</h1>
+                <h1>Login my to-do list</h1>
                 <div class="login-form-inputs">
                     <label for="username">Nombre de usuario:</label>
                     <input class="input-text-bottom-border" type="text" placeholder="Username" id="username" name="username">
@@ -47,15 +56,15 @@
                 <p>Inicia sesión con</p>
             </div>
             <div class="login-options-accounts">
-                <a class="login-options-accounts-icon" href="#">
+                <div id="google-auth" class="login-options-accounts-icon" data-onsuccess="onSignIn">
                     <img src="./../static/auth/images/google_icon.png" alt="">
-                </a>
-                <a class="login-options-accounts-icon" href="#"> 
+                </div>
+                <div class="login-options-accounts-icon" href="#"> 
                     <img src="../../static/auth/images/outlook_icon.png"  alt="">
-                </a>
-                <a class="login-options-accounts-icon" href="#">
+                </div>
+                <div class="login-options-accounts-icon" href="#">
                     <i class="fa-brands fa-facebook fa-2xl" style="color: #4267B2"></i>
-                </a>
+                </div>
             </div>
         </div>
     </div>

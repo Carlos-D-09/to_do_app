@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+from flask_cors import CORS
+
 from .database import db
 from . import auth
 from . import activity
@@ -13,6 +15,7 @@ from .database.Seeder.seed import configure_seed
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, supports_credentials=True)
 
     app.register_blueprint(auth.auth)
     app.register_blueprint(activity.activity)
@@ -27,11 +30,17 @@ def create_app():
         DATABASE_PASSWORD =os.environ.get('DATABASE_PASSWORD'),
         DATABASE_USER =os.environ.get('DATABASE_USER'),
         DATABASE_PORT =os.environ.get('DATABASE_PORT'),
-        DATABASE =os.environ.get('DATABASE')
+        DATABASE = os.environ.get('DATABASE'),
+        GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID'),
+        GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
     )
+
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = os.environ.get('OAUTHLIB_INSECURE_TRANSPORT')
 
     db.configure_database(app)
     configure_seed(app)
 
 
     return app
+
+

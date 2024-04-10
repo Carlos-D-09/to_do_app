@@ -1,13 +1,31 @@
+import os
 import functools
+from dotenv import load_dotenv
+from flask_oauthlib.client import OAuth
 from flask import (
     Blueprint, #Permite crear modulos configurables dentro de la aplicación
     flash, #Permite mandar mensajes de manera generica dentro de la apliación
-    render_template, request, url_for, session, redirect, g
+    render_template, request, url_for, session, redirect, g, current_app
 )
-
 from .database.Models.users import Users
 
 auth = Blueprint('auth',__name__, url_prefix='/auth')
+
+load_dotenv()
+oauth = OAuth(current_app)
+google = oauth.remote_app(
+    name='google',
+    consumer_key= os.environ.get('GOOGLE_CLIENT_ID'),
+    consumer_secret = os.environ.get('GOOGLE_CLIENT_SECRET'),
+    request_token_params={
+        'scope': 'profile',
+    },
+    request_token_url=None,
+    access_token_method='POST',
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
 @auth.route('/register', methods=['GET','POST'])
 def register():
@@ -70,6 +88,25 @@ def login():
         flash(error)    
     return render_template('auth/login.html')
 
+@auth.route('/google-login', methods=['GET'])
+def login_google():
+    if request.method == 'GET':
+        return google.authorize(callback=url_for('auth.authorized', _external=True))
+
+@auth.route('/google-login/authorized')
+def authorized():
+    response = google.authorized_response()
+
+    if response is None or response.get('access_token') is None:
+        return 'Login failed.'
+    
+    session['google_token'] = (response['access_token'], '')
+    me = google.get('userinfo')
+    
+    print(me.data)
+
+    return redirect(url_for('activity.index'))
+
 @auth.route('/logout')
 def logout():
     session.clear()
@@ -94,3 +131,7 @@ def login_required(view):
         return view(**kwargs)
     
     return wrapped_view
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
