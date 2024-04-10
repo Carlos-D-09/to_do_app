@@ -1,6 +1,6 @@
 venv
 to_do/__pycache__
-to_do/database/__pycache__/*
+to_do/database/__pycache__
 cambios
 contexto
 .env
