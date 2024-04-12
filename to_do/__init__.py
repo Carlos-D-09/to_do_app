@@ -74,7 +74,6 @@ def set_oauth_providers(app):
 
         'microsoft': {
             'client_id': os.environ.get('MICROSOFT_DIRECTORY_CLIENT_ID'),
-            'client_secret': os.environ.get('MICROSOFT_CLIENT_SECRET'),
             'app_id': os.environ.get('MICROSOFT_APP_ID'),
             'authorize_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
             'token_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
