@@ -26,7 +26,7 @@
     <div class="login-container">
         <div class="login-form-container">
             <form action="/auth/login" method="POST" class="login-form" autocomplete="off">
-                <h1>Login my to-do list</h1>
+                <h1>Iniciar sesión - <br> my to-do list</h1>
                 <div class="login-form-inputs">
                     <label for="username">Nombre de usuario:</label>
                     <input class="input-text-bottom-border" type="text" placeholder="Username" id="username" name="username">
@@ -56,15 +56,15 @@
                 <p>Inicia sesión con</p>
             </div>
             <div class="login-options-accounts">
-                <div id="google-auth" class="login-options-accounts-icon" data-onsuccess="onSignIn">
-                    <img src="./../static/auth/images/google_icon.png" alt="">
-                </div>
-                <div class="login-options-accounts-icon" href="#"> 
+                <a id="google-auth" class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='google')}}">
+                    <img src="./../static/auth/images/google_icon.png" alt>
+                </a>
+                <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='microsoft')}}"> 
                     <img src="../../static/auth/images/outlook_icon.png"  alt="">
-                </div>
-                <div class="login-options-accounts-icon" href="#">
-                    <i class="fa-brands fa-facebook fa-2xl" style="color: #4267B2"></i>
-                </div>
+                </a>
+                <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='github')}}">
+                    <i class="fa-brands fa-github fa-xl" style="color: black;"></i>
+                </a>
             </div>
         </div>
     </div>
