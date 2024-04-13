@@ -57,3 +57,7 @@ class Users (db.Model):
     @staticmethod
     def get_general_info(user_id):
         return Users.query.filter_by(id=user_id).with_entities(Users.id, Users.username).first()
+
+    @staticmethod
+    def get_by_email(email):
+        return Users.query.filter_by(email=email).first()

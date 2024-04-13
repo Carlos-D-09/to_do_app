@@ -95,6 +95,7 @@ body{
 @media (max-width: 1100px){
     .login-container{
         width: 73%;
+        height: 47%;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr;
     }
@@ -120,6 +121,7 @@ body{
 @media (max-width: 900px){
     .login-container{
         width: 83%;
+        height: 47%;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr;
     }
@@ -158,7 +160,7 @@ body{
 @media (max-width: 600px){
     .login-container{
         width: 90%;
-        height: 65%;
+        height: 80%;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
@@ -172,7 +174,7 @@ body{
 @media (max-width: 450px){
     .login-container{
         width: 90%;
-        height: 70%;
+        height: 85%;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
@@ -186,7 +188,7 @@ body{
 @media (max-width: 390px){
     .login-container{
         width: 90%;
-        height: 75%;
+        height: 90%;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
@@ -200,7 +202,7 @@ body{
 @media (max-width: 375px){
     .login-container{
         width: 90%;
-        height: 95%;
+        height: 90%;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
     }
@@ -218,6 +220,11 @@ body{
     display: grid;
     background: #B6CCBA;
     background: radial-gradient(at left bottom, #B6CCBA, #92BDC1);
+    overflow: scroll;
+}
+
+.login-container::-webkit-scrollbar{
+    display: none;
 }
 
 .login-form-container{
@@ -244,7 +251,7 @@ body{
     color: #d8ddc6;
 }
 
-.login-form-inputs{
+.login-form-input{
     width: 100%;
     display: flex;
     align-items: center;
@@ -252,19 +259,21 @@ body{
     flex-wrap: wrap;
 }
 
-.login-form-inputs input{
+.login-form-input input{
     width: 75%;
     height: 35px;
     font-size: 1em;
     
     border-color: #d8ddc6;
+    color: #7f817f;
+    font-weight: 500;
 }
 
-.login-form-inputs input:focus{
+.login-form-input input:focus{
     border-color: #d8ddc6;
 }
 
-.login-form-inputs label{
+.login-form-input label{
     width: 75%;
     height: 30px;
     display: block;
@@ -273,7 +282,7 @@ body{
     color: #d8ddc6;
 } 
 
-.login-form-inputs button{
+.login-form-input button{
     min-width: 120px;
     max-width: 160px;
     min-height: 50px;
@@ -284,7 +293,7 @@ body{
     color: #7aa7ac;
 }
 
-.login-form-inputs button:hover{
+.login-form-input button:hover{
     background-color: #92BDC1;
 }
 
@@ -403,4 +412,24 @@ body{
 .login-options-accounts-icon img{
     width: 30px;
     height: 30px;
+}
+
+.flash-message{
+    min-height: 10%;
+    max-height: 30%;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background: linear-gradient(225deg, #B6CCBA, #92BDC1);
+    color: #e73384;
+    border: 0px solid black;
+    border-radius: 8px;
+    box-shadow: 2px 0px 4px 0px rgba(0,0,0,0.5);
+    text-align: justify;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
 }

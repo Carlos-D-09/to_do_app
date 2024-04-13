@@ -17,26 +17,28 @@ def register():
     if request.method == "POST":
         #Validate inputs
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        re_password = request.form['re_password']
         error = None
 
-        if not username or not password or not re_password:
-            error = "All inpusts are required"
-        elif password != re_password:
-            error = "The passwords must be the same"
+        if not username or not password or not email:
+            error = "Todos los campos son requeridos"
         
         #Start validation uniqueness of records
         if Users.get_by_username_unprovided(username):
-            error = f"The user {username} has been already registered."
+            error = f"El nombre {username} ya esta en uso."
+        
+        if Users.get_by_email(email):
+            error = f"El correo electrónico {email} ya esta en uso."
 
         #Register user 
         if error is None:
-            user = Users(username, password)
+            user = Users(username, email, password, False)
             user.save()
-            return redirect(url_for('auth.login'))
+            return render_template(('auth/login.html'), username=username)
+    
+        return render_template('auth/register.html', error=error, username=username, email=email, password=password)
         
-        flash(error)
     return render_template('auth/register.html')
 
 
@@ -53,16 +55,16 @@ def login():
             error = "Password is required"
         
         if username == "test user": #Default user to create seed
-            error = "Invalid user or password"
+            error = "Nombre de usuario o contraseña invalidos"
         else:
             #Search user
             user = Users.get_by_username_unprovided(username)
             if not user:
-                error = "Invalid user or password"
+                error = "Nombre de usuario o contraseña invalidos"
             else:
                 #Validate password
                 if not user.check_password(password):
-                    error = "Invalid user or password"
+                    error = "Nombre de usuario o contraseña invalidos"
 
         if error is None:
             session.clear()
@@ -70,7 +72,9 @@ def login():
             session['username'] = user.username
             return redirect(url_for('activity.index'))
 
-        flash(error)    
+           
+        return render_template('auth/login.html', error=error, username=username, password=password)
+    
     return render_template('auth/login.html')
 
 @auth.route('/login/provider/<provider>', methods=['GET'])
@@ -80,7 +84,8 @@ def login_provider(provider):
         #Get provider
         provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
         if provider_data is None:
-            return jsonify({'success':False, 'error': f"We don't have support to log with {provider} accounts"})
+            error = f"No contamos con soporte para iniciar sesión con cuentas de {provider}"
+            return render_template('auth/login.html', error = error)
 
         # generate a random string for the state parameter
         session['oauth2_state'] = secrets.token_urlsafe(16)
@@ -103,32 +108,36 @@ def login_provider_authorized(provider):
 
     provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
     if provider_data is None:
-        return jsonify({'success':False, 'error': f"We don't have support to log with {provider} accounts"})
+        return jsonify({'success':False, 'error': f"No contamos con soporte para iniciar sesión con cuentas de {provider}"})
 
     #Check authentications errors
     if 'error' in request.args:
         for k, v in request.args.items():
             if k.startswith('error'):
                 print(f'{k}: {v}')
-                return jsonify({'success':False, 'error': f"We couldn't connect with {provider}, please tray again later"})
-            return redirect(url_for('auth.login'))
+                error = f"No podemos contactar con {provider}; porfavor, intente más tarde"
+            return redirect(url_for('auth.login', error = error))
 
     #Check coincidence with oauth state
     if request.args['state'] != session.get('oauth2_state'):
         print('There is a mistake with the returned state')
-        return jsonify({'success': False, 'error': f"We couldn't connect with {provider}, please tray again later"})
+        error = "No podemos contactar con {provider}; porfavor, intente más tarde"
+        return render_template('auth/login.html', error = error)
 
     #Check authorization code
     code = request.args['code']
     if not code:
         print("The reqeust didn't receive an authorization code")
-        return jsonify({'success': False, 'error': f"We couldn't connect with {provider}, please tray again later"})
+        error = f"No podemos contactar con {provider}; porfavor, intente más tarde"
+        return render_template('auth/login.html', error = error)
 
     #Echaneg auth code for a token access
     result, token = exchange_code_token(provider, provider_data, code)
 
     if result == False:
-        return jsonify({'succes':False, 'error': token})
+        error = f"No podemos contactar con {provider}; porfavor, intente más tarde"
+        return render_template('auth/login.html', error = error)
+
 
     #Use access token to get user info
     response = requests.get(provider_data['userinfo']['url'], headers={
@@ -140,7 +149,8 @@ def login_provider_authorized(provider):
 
     if response.get('error') is not None:
         print(response.get('error'))
-        return jsonify({'sucess':False, 'error': "We couldn't retrieve your info"})
+        error = "No pudimos recuperar tu información, intenta más tarde"
+        return render_template('auth/login.html', error = error)
 
     email = provider_data['userinfo']['email'](response)
     name = provider_data['userinfo']['name'](response)
@@ -155,7 +165,8 @@ def login_provider_authorized(provider):
         return redirect(url_for('activity.index'))
     
     else:
-        return jsonify({'success':False, 'error': f"We don't support {provider} accounts"})
+        error = f"No contamos con soporte para iniciar sesión con cuentas de {provider}"
+        return render_template('auth/login.html', error = error)
 
 
 @auth.route('/logout')

@@ -25,6 +25,8 @@ def create_app():
     load_dotenv()
 
     app.config.from_mapping(
+        APP_EMAIL = os.environ.get('APP_EMAIL'),
+        APP_EMAIL_PASSWORD = os.environ.get('APP_EMAIL_PASSWORD'),
         SECRET_KEY = os.environ.get('SECRET_KEY'),
         SGBD = os.environ.get('SGBD'),
         DATABASE_HOST =os.environ.get('DATABASE_HOST'),

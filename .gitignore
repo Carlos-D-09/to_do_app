@@ -1,8 +1,9 @@
 venv
 to_do/__pycache__
-to_do/database/__pycache__/*
+to_do/database/__pycache__
 to_do/database/Models/__pycache__/*
 to_do/database/Seeder/__pycache__/*
+to_do/static/auth/images/gris.png
 cambios
 contexto
 .env
