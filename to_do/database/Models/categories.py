@@ -1,12 +1,7 @@
-from flask import current_app, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-
 from ..db import db
-from sqlalchemy.dialects.mysql import INTEGER
-from sqlalchemy import or_
 
-from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy.dialects.mysql import INTEGER
+from sqlalchemy import or_, func
 
 class Categories(db.Model):
     __tablename__ = 'categories'

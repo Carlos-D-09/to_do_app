@@ -62,7 +62,8 @@ def set_oauth_providers(app):
             'userinfo': {
                 'url': 'https://www.googleapis.com/oauth2/v3/userinfo',
                 'email': lambda json: json['email'],
-                'name': lambda json: json['name']
+                'name': lambda json: json['name'],
+                'user_external_id': lambda json: json['sub'],
             },
             'scopes':  ['openid', 'email', 'profile'],
         },
@@ -80,7 +81,8 @@ def set_oauth_providers(app):
             'userinfo': {
                 'url': 'https://graph.microsoft.com/v1.0/me',
                 'email': lambda json: json['mail'],
-                'name': lambda json: json['givenName']
+                'name': lambda json: json['givenName'],
+                'user_external_id': lambda json: json['id']
             },
             'scopes':  ['openid', 'User.Read'],
         },
@@ -97,7 +99,9 @@ def set_oauth_providers(app):
             'token_url': 'https://github.com/login/oauth/access_token',
             'userinfo': {
                 'url': 'https://api.github.com/user',
-                'name': lambda json: json['name']
+                'name': lambda json: json['name'],
+                'email': lambda json: json['email'],
+                'user_external_id': lambda json: json['id']
             },
             'scopes':  ['user', 'user:email'],
         },

@@ -1,0 +1,11 @@
+{
+    "target_class": "Oauth_providers",
+    "data": [{
+        "name": "google"
+    },{
+        "name": "microsoft"
+    },{
+        "name": "github"
+    }
+    ]
+}

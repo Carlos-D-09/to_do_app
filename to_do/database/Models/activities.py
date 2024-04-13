@@ -1,14 +1,9 @@
-from flask import current_app, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-
 from ..db import db
 from .users import Users
 from .categories import Categories
 
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import func, extract, or_, update
-
-from datetime import datetime
 
 class Activities(db.Model):
     __tablename__ = 'activities'
