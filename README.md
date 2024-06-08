@@ -14,7 +14,6 @@ Python modules:
   - mysqlclient
   - flask-sqlalchemy
   - flask-cors
-  - Flask-OAuthlib
   - urlib
 
 **Installation**
@@ -24,7 +23,7 @@ Python modules:
 After clone the repo into your project folder, enter the folder "to_do_app" and you have to execute, the following commands:
 1. python -m venv venv
 2. . venv/scripts/activate
-3. pip3 install Flask mysql-connector-python python-dotenv flask-sqlalchemy mysqlclient Flask-OAuthlib flask-cors urlib
+3. pip3 install Flask mysql-connector-python python-dotenv flask-sqlalchemy mysqlclient flask-cors urlib
 
 Now you have to copy the file .env.example and rename it for .env. Then you have to edit the default parameters for your parameters.
 
@@ -40,7 +39,7 @@ Once we have run the app at least one time, we can use the script to run databas
 After cloning the repo into your project folder, enter the folder "to_do_app" and you have to execute, the following commands:
 1. python3 -m venv venv
 2. . venv/bin/activate
-3. pip install Flask mysql-connector-python python-dotenv flask-sqlalchemy mysqlclient Flask-OAuthlib flask-cors urlib 
+3. pip install Flask mysql-connector-python python-dotenv flask-sqlalchemy mysqlclient flask-cors urlib 
 
 Now you have to copy the file .env.example and rename it for .env. Then you have to edit the default parameters for your parameters.
 
