@@ -1,11 +1,14 @@
 {
     "target_class": "Oauth_providers",
     "data": [{
-        "name": "google"
+        "name": "google",
+        "active": true
     },{
-        "name": "microsoft"
+        "name": "microsoft",
+        "active": false
     },{
-        "name": "github"
+        "name": "github",
+        "active": true
     }
     ]
 }

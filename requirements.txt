@@ -1,0 +1,8 @@
+Flask
+python-dotenv
+mysqlclient
+flask-sqlalchemy
+flask-cors
+sqlalchemy-seeder
+setuptools
+requests

@@ -9,9 +9,11 @@ class Oauth_providers(db.Model):
     id = db.Column(INTEGER(unsigned=True), primary_key=True)
     name = db.Column(db.NVARCHAR(100), nullable=False)
     registered_at = db.Column(db.TIMESTAMP, default=func.now(), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, active):
         self.name = name
+        self.active = active
     
     def save(self):
         try:
