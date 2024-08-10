@@ -7,3 +7,4 @@ to_do/static/auth/images/gris.png
 cambios
 contexto
 .env
+*.wsgi

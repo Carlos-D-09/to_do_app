@@ -1,6 +1,4 @@
 $(document).ready(function(){
-    
-
     validate_inputs();
     delete_flash_alert();
 });
@@ -27,10 +25,10 @@ function delete_flash_alert(){
     let alert = $('#flash-message');
     if (alert.length > 0 ){
         setTimeout(function(){
+            alert.removeClass('show').addClass('remove');
             setTimeout(function(){
                 alert.remove();
-            },1000);
-            alert.removeClass('show').addClass('remove');
-        },2000);
+            },2000);
+        },4000);
     }
 }

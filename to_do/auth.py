@@ -7,8 +7,8 @@ from flask import (
     flash, #Permite mandar mensajes de manera generica dentro de la apliación
     render_template, request, url_for, session, redirect, g, current_app, abort, jsonify
 )
-from .database.Models.users import Users
-from .database.Models.oauth_providers import Oauth_providers
+from database.Models.users import Users
+from database.Models.oauth_providers import Oauth_providers
 
 auth = Blueprint('auth',__name__, url_prefix='/auth')
 

@@ -4,15 +4,11 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/todo.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/filters.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/options.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/create.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='to_do/CSS/category/category.css')}}">
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{url_for('static', filename='to_do/JS/main.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/index.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/requests.js')}}" type="module"></script>
 {% endblock %}
 
 {% block content %}
@@ -37,24 +33,24 @@
             <div class="filter-list" name="filter-list" >
                 <!-- Start default filters -->
                 <div id="default-filters">
-                    <label class="container"> All
-                        <input type="radio" name="radio" value="all" checked="checked">
+                    <label class="custome-checkmark"> All
+                        <input type="radio" name="filter" value="all" checked>
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container"> Planned
-                        <input type="radio" name="radio" value="planned">
+                    <label class="custome-checkmark"> Planned
+                        <input type="radio" name="filter" value="planned">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container"> Today
-                        <input type="radio" name="radio" value="today">
+                    <label class="custome-checkmark"> Today
+                        <input type="radio" name="filter" value="today">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container"> Important
-                        <input type="radio" name="radio" value="important">
+                    <label class="custome-checkmark"> Important
+                        <input type="radio" name="filter" value="important">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container"> Completed
-                        <input type="radio" name="radio" value="completed">
+                    <label class="custome-checkmark"> Completed
+                        <input type="radio" name="filter" value="completed">
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -63,13 +59,13 @@
                 <div id="custome-filters">
                     {% for category in categories %}
                         {% if category['id'] != 1 %}
-                        <label class="container" id="label-category{{category['id']}}">{{category['name']}}
-                            <input type="radio" name="radio" id="category{{category['id']}}" value="{{category['id']}}">
+                        <label class="custome-checkmark" id="label-category{{category['id']}}">{{category['name']}}
+                            <input type="radio" name="filter" id="category{{category['id']}}" value="{{category['id']}}">
                             <span class="checkmark"></span>
                         </label>
                         {% endif %}
-                        {% endfor %}
-                    </div>
+                    {% endfor %}
+                </div>
                 <!-- End custome filters-->
             </div>
         </div>
@@ -92,14 +88,11 @@
                     </p>
                 </div>
             </div>
-            <div class="success-transaction" id="success-transaction"></div>
-            <div class="form-category" id="form-category"></div>
-
         </div>
         <!-- End info panel -->
 
         <!-- Start to-do list  -->
-        <div class="to_do">
+        <div class="to_do_list">
             <!-- List to show all the to-do -->
             <ul id="to_do-list-container">
                 {% for todo in todos %}
@@ -165,11 +158,11 @@
                         </div>
                         <!-- Buttons edit and delete -->
                         <div class="to_do_element_options-2" id="to_do_element_options-2-{{todo['id']}}">
-                            <button class="button-stable " data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
+                            <button class="button-layout info " data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <p>Edit</p>
                             </button> 
-                            <button  class="button-danger" data-id="{{todo['id']}}" id="delete{{todo['id']}}" onclick="showAlertDeleteTodo(this)">
+                            <button  class="button-layout danger" data-id="{{todo['id']}}" id="delete{{todo['id']}}" onclick="showAlertDeleteTodo(this)">
                                 <i class="fa-solid fa-trash"></i>
                                 <p>Delete</p>
                             </button>
@@ -185,14 +178,34 @@
         <div class="to_do_form">
             <!-- Title and category -->
             <div class="title">
-                <input type="text" class="input-text" name="name" id="name" placeholder="Title">
-                <select class="input-category" name="categories-form" id="categories-form">
-                    {% for category in categories %}
-                    <option value="{{category['id']}}">{{category['name']}}</option>
-                    {% endfor %}
-                </select>
+                <input class="title-input" type="text" name="name" id="name" placeholder="Title">
                 <div class="icon-center">
                     <i class="fa-solid fa-layer-group fa-lg"></i>
+                </div>
+                <div>
+                    <button class="category-dropdown-button" id="category-dropdown-button">
+                        Undefined
+                    </button>
+                    <ul name="categories-dropdown" id="categories-dropdown" class="categories-dropdown">
+                        {% for category in categories %}
+                        <li>
+                            <input type="radio" name="category" id="category-{{category['id']}}" value="{{category['id']}}" checked>
+                            <label for="category-{{category['id']}}" id="label-category-{{category['id']}}">{{category['name']}}</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="category" id="category-2" value="2">
+                            <label for="category-2" id="label-category-2">Test2</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="category" id="category-3" value="3">
+                            <label for="category-3" id="label-category-3">Test3</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="category" id="category-4" value="4">
+                            <label for="category-4" id="label-category-4">Test4</label>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
             <!-- Date and hour -->
@@ -207,7 +220,7 @@
             </div>
             <!-- Description -->
             <div class="description">
-                <textarea class="input-textarea" name="description" id="description" cols="100" rows="3" placeholder="Description"></textarea>
+                <textarea name="description" id="description" cols="100" rows="3" placeholder="Description"></textarea>
             </div>
             <!-- Important and Save -->
             <div class="save" id="save">
@@ -215,13 +228,33 @@
                     <input type="checkbox" class="important" name="important" id="important">
                     <label for="important"></label>
                 </div>
-                <button class="button-success" id="save-todo">
+                <button class="button-layout success" id="save-todo">
                     <i class="fa-regular fa-floppy-disk"></i>
                     <p>Save</p>
                 </button>
             </div>
         </div>
         <!-- End form to create a todos -->
+    </div>
+    <div class="floating-category-form" id="floating-category-form">
+        <div class="category-form-title">
+            <label for="category-form-title">Title:</label>
+            <input type="text" placeholder="Title" id="category-form-title" name="category-form-title">
+        </div>
+        <div class="category-form-description">
+            <label for="category-form-description">Description:</label>
+            <textarea type="text" placeholder="Description" id="category-form-description" name="category-form-description"></textarea>
+        </div>
+        <div class="category-form-buttons">
+            <button class="button-layout danger" id="cancel-category">
+                <i class="fa-solid fa-xmark"></i>
+                <p>Cancel</p>
+            </button>
+            <button class="button-layout success" id="save-category">
+                <i class="fa-regular fa-floppy-disk"></i>
+                <p>Save</p>
+            </button>
+        </div>
     </div>
 
 {% endblock %}

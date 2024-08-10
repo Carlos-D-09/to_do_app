@@ -1,18 +1,20 @@
-//File with the request for the each filter
+//Request all to-do
+export async function allTodo(){
+    try {
+        const url = "http://localhost/activities";
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-//Request and show all todo
-export function allTodo(){
-    return new Promise((resolve, reject) => {
-        let url = "/activities";
-        $.get(url, function(data){
-            resolve(data);
-        }).fail(function (error) { 
-            reject(error);
-        });
-    });
+        return await response.json();
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
 
-//Request and show all todo planned
+//Request all to-do planned
 export function planned(){
     return new Promise((resolve, reject) => {
         let url = "/activities/planned";

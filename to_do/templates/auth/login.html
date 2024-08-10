@@ -24,51 +24,53 @@
     <script src="../../static/auth/JS/login.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-form-container">
-            <form action="/auth/login" method="POST" class="login-form" autocomplete="off">
-                <h1>Iniciar sesión - <br> my to-do list</h1>
-                <div class="login-form-input">
-                    <label for="username">Nombre de usuario:</label>
-                    <input class="input-text-bottom-border" type="text" placeholder="Nombre de usuario" id="username" name="username" value="{% if username %}{{username}}{% endif %}">
-                </div>
-                
-                <div class="login-form-input">
-                    <label for="password">Contraseña:</label>
-                    <input class="input-text-bottom-border" type="password" placeholder="Contraseña" id="password" name="password" value="{% if password %}{{password}}{% endif %}">
-                </div>
-
-                <div class="login-form-input">
-                    <button class="button-layout" id="login">
-                        <p>Inicia Sesión</p>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="login-options-container">
-            <div class="login-options-divide-line"></div>
-            <div class="login-options-register">
-                <div class="login-options-register-header">
-                    <h2>¿No tienes una cuenta?</h2>
-                </div>
-                <button id="registrar" class="button-layout">Registrate</button>
+    <section class="content">
+        <article class="login-container">
+            <div class="login-form-container">
+                <form action="/auth/login" method="POST" class="login-form" autocomplete="off">
+                    <h1>Iniciar sesión - <br> my to-do list</h1>
+                    <div class="login-form-input">
+                        <label for="username">Nombre de usuario:</label>
+                        <input type="text" placeholder="Nombre de usuario" id="username" name="username" value="{% if username %}{{username}}{% endif %}">
+                    </div>
+                    
+                    <div class="login-form-input">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" placeholder="Contraseña" id="password" name="password" value="{% if password %}{{password}}{% endif %}">
+                    </div>
+    
+                    <div class="login-form-input">
+                        <button class="button-layout" id="login">
+                            <p>Inicia Sesión</p>
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="login-options-accounts-separator">
-                <p>Inicia sesión con</p>
+            <div class="login-options-container">
+                <div class="login-options-divide-line"></div>
+                <div class="login-options-register">
+                    <div class="login-options-register-header">
+                        <h2>¿No tienes una cuenta?</h2>
+                    </div>
+                    <button id="registrar" class="button-layout">Registrate</button>
+                </div>
+                <div class="login-options-accounts-separator">
+                    <p>Inicia sesión con</p>
+                </div>
+                <div class="login-options-accounts">
+                    <a id="google-auth" class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='google')}}">
+                        <img src="./../static/auth/images/google_icon.png" alt>
+                    </a>
+                    <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='microsoft')}}"> 
+                        <img src="../../static/auth/images/outlook_icon.png"  alt="">
+                    </a>
+                    <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='github')}}">
+                        <i class="fa-brands fa-github fa-xl" style="color: black;"></i>
+                    </a>
+                </div>
             </div>
-            <div class="login-options-accounts">
-                <a id="google-auth" class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='google')}}">
-                    <img src="./../static/auth/images/google_icon.png" alt>
-                </a>
-                <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='microsoft')}}"> 
-                    <img src="../../static/auth/images/outlook_icon.png"  alt="">
-                </a>
-                <a class="login-options-accounts-icon" href="{{url_for('auth.login_provider',provider='github')}}">
-                    <i class="fa-brands fa-github fa-xl" style="color: black;"></i>
-                </a>
-            </div>
-        </div>
-    </div>
+        </article>
+    </section>
     {% if error %}
         <dialog open class="flash-message show" id="flash-message">
             {{ error }}

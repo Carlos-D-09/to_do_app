@@ -4,10 +4,10 @@ from flask import (
     g, render_template, request, url_for, redirect, abort, jsonify
 )
 
-from to_do.auth import login_required
+from auth import login_required
 
-from .database.Models.activities import Activities
-from .database.Models.categories import Categories
+from database.Models.activities import Activities
+from database.Models.categories import Categories
 
 activity = Blueprint('activity', __name__, url_prefix='')
 
@@ -18,7 +18,7 @@ def index():
     categories = Categories.get_categories(g.user.id)
     todos_list = [todo._asdict() for todo in todos]
     categories_list = [category._asdict() for category in categories]
-    return render_template('activity/index.html', todos=todos_list, categories=categories_list)
+    return render_template('activities/index.html', todos=todos_list, categories=categories_list)
 
 #Return all the activities
 @activity.route('/activities',methods=['GET'])

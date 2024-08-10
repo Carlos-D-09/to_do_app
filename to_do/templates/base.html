@@ -9,55 +9,57 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='animations.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='text.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='inputs.css')}}">
     {% block styles %}{% endblock %}
     
     <!-- Icons -->
     <script src="https://kit.fontawesome.com/36c2a6041f.js" crossorigin="anonymous"></script>
     <!-- Jquery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/base.js"></script>
     
     {% block scripts %}{% endblock %}
 </head>
 <body>
-    <header class="flex-box-nav">
-        <div class="title-nav">
-            <h1>
-                <a href="{{ url_for('activity.index') }}">
-                    To Do List
-                </a>
-            </h1>
+    <nav class="navbar">
+        <div class="navbar-title">
+            <h1>To-do List</h1>
         </div>
-        <div class="nav-list">
+        <div class="navbar-list">
             <ul>
                 {% if g.user %}
-                    <li>
+                    <li class="navbar-username">
                         <p>
                             {{g.user['username']}}
                         </p>
-                        <i class="fa-solid fa-user fa-2xl"></i>
                     </li>
-                    <li>
-                        <a href="{{ url_for('auth.logout') }}">
-                            <i class="fa-solid fa-right-from-bracket fa-2xl" style="color: black;"></i>
-                        </a>
+                    <li class="navbar-picture" id="navbar-picture">
+                        <span>
+                            <i class="fa-solid fa-user fa-2xl"></i>
+                        </span>
                     </li>
                 {% endif %}
             </ul>
         </div>
-    </header>
+        <ul class="floating-navbar-menu" id="floating-navbar-menu"> 
+            <li>
+                <p>
+                    Profile
+                </p>
+                <span></span>
+            </li>
+            <li>
+                <p>
+                    Calendar
+                </p>
+                <span></span>
+            </li>
+            <li>
+                <p>
+                    Logout
+                </p>
+            </li>
+        </ul>
+    </nav>
     <section class="content">
-        <header>
-            {% block header %}{% endblock %}
-        </header>
-
-        {% for message in get_flashed_messages() %}
-        <div class="flash">
-            {{ message }}
-        </div>
-        {% endfor %}
-
         {% block content %}{% endblock %}
     </section>
 </body>
