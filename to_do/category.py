@@ -5,9 +5,9 @@ from flask import (
 )
 
 #Función para proteger todos nuestros endpoints
-from auth import login_required
-from database.Models.categories import Categories
-from database.Models.activities import Activities
+from .auth import login_required
+from .database.Models.categories import Categories
+from .database.Models.activities import Activities
 
 
 category = Blueprint('category', __name__, url_prefix='')

@@ -4,10 +4,10 @@ from flask import (
     g, render_template, request, url_for, redirect, abort, jsonify
 )
 
-from auth import login_required
+from .auth import login_required
 
-from database.Models.activities import Activities
-from database.Models.categories import Categories
+from .database.Models.activities import Activities
+from .database.Models.categories import Categories
 
 activity = Blueprint('activity', __name__, url_prefix='')
 

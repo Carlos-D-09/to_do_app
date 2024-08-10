@@ -1,7 +1,7 @@
 //Request all to-do
 export async function allTodo(){
     try {
-        const url = "http://localhost/activities";
+        const url = "/activities";
         const response = await fetch(url);
         
         if (!response.ok) {
