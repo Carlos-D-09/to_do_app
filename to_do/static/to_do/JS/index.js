@@ -1,4 +1,5 @@
 import { allTodo, planned, today, important, completed } from "./requests.js";
+import { printTodos } from "./utils.js";
 
 //standard filters and their functions 
 const FILTERS = {
@@ -85,7 +86,7 @@ function checkFilter(){
 
                 //Update todo list 
                 FILTERS[radio]().then(
-                    // data => printTodos(data)
+                    data => printTodos(data)
                 ).catch(
                     error => console.error(error)
                 );    
