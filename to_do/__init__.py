@@ -25,6 +25,8 @@ def create_app():
     app.register_blueprint(category.category)
 
     app.config.from_mapping(
+        SESSION_COOKIE_SAMESITE = 'Lax',
+        SESSION_COOKIE_SECURE = False,
         APP_EMAIL = os.environ.get('APP_EMAIL'),
         APP_EMAIL_PASSWORD = os.environ.get('APP_EMAIL_PASSWORD'),
         SECRET_KEY = os.environ.get('SECRET_KEY'),

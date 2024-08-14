@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', ()=>{
-    profile_click();
+    profileClick();
 })
 
 // Listener to detect profile picture click and show floating dialog
-function profile_click(){
+function profileClick(){
     let profile_picture = document.getElementById('navbar-picture');
     let floating_menu = document.getElementById('floating-navbar-menu');
     profile_picture.addEventListener('click',()=>{

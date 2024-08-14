@@ -127,7 +127,6 @@ class Activities(db.Model):
         current_year = func.extract('year',func.current_timestamp())
         current_month = func.extract('month', func.current_timestamp())
         current_day = func.extract('day',func.current_timestamp())
-
         return Activities.query.with_entities(
             Activities.id,
             Activities.name,
@@ -141,7 +140,7 @@ class Activities(db.Model):
             Categories, Activities.category_id == Categories.id
         ).filter(            
             or_(
-                (extract('year',Activities.end_at) > current_year) &
+                (extract('year', Activities.end_at) >= current_year) &
                 (extract('month', Activities.end_at) > current_month) &
                 (Activities.created_by == user_id) &
                 (Activities.completed == False), 

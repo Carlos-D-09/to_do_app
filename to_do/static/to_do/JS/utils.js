@@ -1,4 +1,6 @@
-//Print each to-do in todos
+import { saveTodoClick } from "./todo.js";
+
+//Print each to-do in the ul
 export function printTodos(todos){
     //Clear the list before print the new data
     let to_do_list = document.getElementById('to_do-list-container');
@@ -10,7 +12,7 @@ export function printTodos(todos){
 }
 
 //Build a to-do HTML element
-function buildTodo(todo){
+export function buildTodo(todo){
 
     //Title
     let title = buildTodoTitle(todo.name, todo.id, todo.completed);
@@ -56,6 +58,7 @@ function buildTodo(todo){
     return todo_div;
 }
 
+// Create the title to show a to-do
 function buildTodoTitle(title, todo_id, completed){
     let titleTag = document.createElement('h3');
     titleTag.textContent = title;
@@ -74,6 +77,7 @@ function buildTodoTitle(title, todo_id, completed){
     return title_div;
 }
 
+//Create the description to show a to-do
 function buildTodoDescription(description, todo_id){
     let description_text = document.createElement('p');
     description_text.textContent = description;
@@ -86,6 +90,7 @@ function buildTodoDescription(description, todo_id){
     return desc_div;
 }
 
+//Create completed input to show a to-do
 function buildTodoCompleted(completed, todo_id){
     let completedCheckbox = document.createElement('input');
     completedCheckbox.className = 'completed';
@@ -93,7 +98,7 @@ function buildTodoCompleted(completed, todo_id){
     completedCheckbox.setAttribute('name', 'completed'+todo_id);
     completedCheckbox.setAttribute('id', 'completed'+todo_id);
     completedCheckbox.setAttribute('value', todo_id);
-    completedCheckbox.setAttribute('onclick','updateCompleted(this)');
+    completedCheckbox.setAttribute('onclick',`changeTags(${todo_id})`);
     
     if (completed) completedCheckbox.setAttribute('checked','checked');
 
@@ -108,6 +113,7 @@ function buildTodoCompleted(completed, todo_id){
     return completed_div;
 }
 
+//Create important input to show on a to-do
 function buildTodoImportant(important, todo_id){
     let importantCheckbox  = document.createElement('input');
     importantCheckbox.className = 'important';
@@ -115,7 +121,7 @@ function buildTodoImportant(important, todo_id){
     importantCheckbox.setAttribute('name', 'important'+todo_id);
     importantCheckbox.setAttribute('id', 'important'+todo_id);
     importantCheckbox.setAttribute('value', todo_id);
-    importantCheckbox.setAttribute('onclick', 'updateImportant(this)');
+    importantCheckbox.setAttribute('onclick', `changeTags(${todo_id})`);
 
     if (important) importantCheckbox.setAttribute('checked', 'checked');
 
@@ -130,6 +136,7 @@ function buildTodoImportant(important, todo_id){
     return important_div;
 }
 
+//Create the category to show on a to-do
 function buildTodoCategory(category){
     let text = ' ' + category;
 
@@ -144,6 +151,7 @@ function buildTodoCategory(category){
     return category_div;
 }
 
+//Create date to show in a to-do
 function buildTodoDate(date){
     let iconDate = document.createElement('i');
     iconDate.className = 'fa-regular fa-clock';
@@ -159,7 +167,8 @@ function buildTodoDate(date){
     return date_div;
 }
 
-function buildTodoButtons(todo_id){
+//Create edit and delete button to show on a to-do
+export function buildTodoButtons(todo_id){
     let iconEdit = document.createElement('i');
     iconEdit.className = 'fa-regular fa-pen-to-square';
 
@@ -174,9 +183,9 @@ function buildTodoButtons(todo_id){
 
     let button_edit = document.createElement('button');
     button_edit.className = 'button-layout info';
-    button_edit.setAttribute('data-id', todo_id);
     button_edit.setAttribute('id', 'edit'+todo_id);
-    button_edit.setAttribute('onclick', 'updateTodo(this)');
+    button_edit.setAttribute('data-id', todo_id);
+    button_edit.setAttribute('onclick', 'updateTodoClick(this)');
     button_edit.append(iconEdit, textEdit);
     
     let button_delete = document.createElement('button');
@@ -187,4 +196,114 @@ function buildTodoButtons(todo_id){
     button_delete.append(iconDelete, textDelete);
 
     return [button_delete, button_edit];
+}
+
+//Clean create form
+export function clearForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('description').value = ''
+    document.querySelector('input[name="category"]:checked').checked = false;
+    document.getElementById('category-1').checked = true;
+    document.getElementById('category-dropdown-button').textContent = 'Undefined';
+    document.getElementById('important').checked = false;
+    document.getElementById('date').value = '';
+    document.getElementById('time').value = '';
+}
+
+//Remove the edit buttons in the update form.
+export function removeEditButtons(){
+    let editButton = document.getElementById('edit-todo');
+    let cancelEditButton = document.getElementById('cancel-edit');
+    if (editButton != null){
+        editButton.remove();
+        cancelEditButton.remove();
+    }
+}
+
+//Add edit and cancel buttons to the form for update a to-do.
+export function addEditButtons(todo_id){
+    //Iconos
+    let iconEdit = document.createElement('i');
+    iconEdit.className = 'fa-regular fa-pen-to-square';
+
+    let iconCancel = document.createElement('i');
+    iconCancel.className = 'fa-solid fa-xmark';
+
+    //Textos
+    let textEdit = document.createElement('p');
+    textEdit.textContent = 'Edit';
+
+    let textCancel = document.createElement('p');
+    textCancel.style.display = 'inline';
+    textCancel.style.paddingLeft = '5px';
+    textCancel.textContent = 'Cancel';
+
+    //Buttons
+    let editButton = document.createElement('button');
+    editButton.className = 'button-layout info';
+    editButton.setAttribute('id','edit-todo');
+    editButton.setAttribute('data-id',todo_id);
+    editButton.append(iconEdit, textEdit);
+    
+    let cancelButton = document.createElement('button');
+    cancelButton.className = 'button-layout danger';
+    cancelButton.setAttribute('id', 'cancel-edit');
+    cancelButton.setAttribute('onclick','cancelUpdate()');
+    cancelButton.append(iconCancel, textCancel);
+
+    //Remove save button and add edit buttons
+    let save_button = document.getElementById('save-todo');
+    if(save_button!=null) save_button.remove();
+    document.getElementById('save').append(editButton, cancelButton);
+}
+
+//Add the completed checkbox in the update form.
+export function addCompleted(completed){
+    let input = document.createElement('input');
+    input.className = 'completed';
+    input.setAttribute('type','checkbox');
+    input.setAttribute('name','completed');
+    input.setAttribute('id','completed');
+    input.checked = completed;
+    
+    let label = document.createElement('label');
+    label.setAttribute('for','completed');
+    label.setAttribute('id','completedLabel');
+    document.getElementById('tags').append(input,label);
+}
+
+//Remove the completed checkbox in the update form.
+export function removeCompletedCheckbox(){
+    let completed_input = document.getElementById('completed');
+    if (completed_input != null){
+        completed_input.remove();
+        document.getElementById('completedLabel').remove();
+    }
+}
+
+// Add the save button to create a to-do 
+export function restoreSaveButton(){
+    let icon = document.createElement('i');
+    icon.className = 'fa-regular fa-floppy-disk';
+
+    let text = document.createElement('p');
+    text.style.display = 'inline';
+    text.style.marginLeft = '5px';
+    text.textContent = 'Save';
+    
+    let saveButton = document.createElement('button');
+    saveButton.className = 'button-layout success';
+    saveButton.setAttribute('id','save-todo');
+    saveButton.append(icon, text);
+
+    document.getElementById('save').append(saveButton);
+}    
+
+export function deleteFloatingDialog(){
+    let dialog = document.getElementById('floating-dialog');
+    dialog.classList.remove('active');
+    dialog.classList.add('hide');
+    setTimeout(function(){
+        dialog.remove();
+    },1000)
 }

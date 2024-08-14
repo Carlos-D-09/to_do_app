@@ -5,7 +5,6 @@ from flask import (
 )
 
 from .auth import login_required
-
 from .database.Models.activities import Activities
 from .database.Models.categories import Categories
 
@@ -85,12 +84,13 @@ def category_activities():
 def create_activity():
     if request.method == "POST":
         try: 
-            name = request.form['name']
-            description = request.form['description']
-            category = request.form['category']
-            important = request.form['important']
-            date = request.form['date']
-            time = request.form['time']
+            todo_json = request.get_json()
+            name = todo_json['name']
+            description = todo_json['description']
+            category = todo_json['category']
+            important = todo_json['important']
+            date = todo_json['date']
+            time = todo_json['time']
 
             if not name or not description:
                 return jsonify({'success':False, 'error': "Name and description are required"})
@@ -123,18 +123,19 @@ def create_activity():
             return jsonify({'success':False, 'error':str(e)})
 
 #Upate todo
-@activity.route('/<int:todo_id>/update', methods=['POST'])
+@activity.route('/<int:todo_id>/update', methods=['PUT'])
 @login_required
 def update(todo_id):
-    if request.method == "POST":
+    if request.method == "PUT":
         try:
-            name = request.form['name']
-            description = request.form['description']
-            category = request.form['category']
-            completed = request.form['completed']
-            important = request.form['important']
-            date = request.form['date']
-            time = request.form['time']
+            form = request.get_json()
+            name = form['name']
+            description = form['description']
+            category = form['category']
+            completed = form['completed']
+            important = form['important']
+            date = form['date']
+            time = form['time']
         except:
             return jsonify({'success':False, 'error': "Invalid form"})
 
@@ -165,29 +166,30 @@ def update(todo_id):
                 return jsonify({'success': False, 'error': "We couldn't update the activity, please try again later"})
 
 #Update tags completed and important
-@activity.route('/<int:todo_id>/update/tags', methods=['POST'])
+@activity.route('/<int:todo_id>/update/tags', methods=['PUT'])
 @login_required
 def updateTags(todo_id):
-    if request.method == "POST":
+    if request.method == "PUT":
         try:
-            completed = request.form['completed']
-            important = request.form['important']
+            form = request.get_json()
+            completed = form['completed']
+            important = form['important']
         except:
-            return jsonify(success=False)
+            return jsonify({'success':False, 'error': "Invalid form"})
 
         todo = Activities.get_activity_object(g.user.id,todo_id)
         if todo:
             if todo.update_activity_tags(int(completed), int(important)):
                 todo = Activities.get_activity(g.user.id,todo_id)
                 return jsonify({'success': True, 'todo':todo})
-    
-        return jsonify(success=False)
+        else:
+            return jsonify({'success':False, 'error':'to-do unexisted'})
 
 # Delete todo
-@activity.route('/<int:todo_id>/delete',methods=['POST'])
+@activity.route('/<int:todo_id>/delete',methods=['DELETE'])
 @login_required
 def delete(todo_id):
-    if request.method == "POST":
+    if request.method == "DELETE":
         todo = Activities.get_activity_object(g.user.id,todo_id)
         if todo.delete_activity():
             return jsonify({'success':True,'message':'To-do deleted successfully'})

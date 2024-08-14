@@ -1,6 +1,7 @@
 :root {
     --navbar-color: #79ac9b;
     --background-color: #e6f8f6;
+    --todo-selected: #d1ebe8;
     --button-success-color: #81c784;
     --button-success-background: #eafae7;
     --button-success-hover: #d0f5c9;
@@ -163,6 +164,13 @@ body{
 .floating-navbar-menu li p {
     padding: 0px 20px 0px 0px;
     margin: 0px;
+}
+
+.floating-navbar-menu li a {
+    padding: 0px 20px 0px 0px;
+    margin: 0px;
+    text-decoration: none;
+    color: var(--background-color);
 }
 
 .floating-navbar-menu li:hover{

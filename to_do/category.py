@@ -24,8 +24,9 @@ def return_categories():
 def create_category():
     if request.method == "POST":
         try:
-            name = request.form['title']
-            desc = request.form['desc']
+            form = request.get_json();
+            name = form['title']
+            desc = form['desc']
         except Exception as e:
             print(f"Error al recuperar los parametros del formulario: {e}")
             return jsonify({'success': False,'error':"Invalid form"})

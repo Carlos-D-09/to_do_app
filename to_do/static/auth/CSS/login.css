@@ -102,11 +102,13 @@ body{
     background-color: rgba(255, 255, 255, 0.034);
 }
 
-.login-form-input:autofill,
-.login-form-input:autofill:hover, 
-.login-form-input:autofill:focus{
+.login-form-input input:autofill,
+.login-form-input input:autofill:hover, 
+.login-form-input input:autofill:focus{
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color 5000s ease-in-out 0s;
+    color: #80837e;
+    font-size: 1em;
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
 }
 
 .login-form-input label{

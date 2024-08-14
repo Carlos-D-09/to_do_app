@@ -8,6 +8,7 @@
 
 {% block scripts %}
     <script src="{{url_for('static', filename='to_do/JS/index.js')}}" type="module"></script>
+    <script src="{{url_for('static', filename='to_do/JS/filters.js')}}" type="module"></script>
     <script src="{{url_for('static', filename='to_do/JS/requests.js')}}" type="module"></script>
 {% endblock %}
 
@@ -30,7 +31,7 @@
         <!-- Start Filters -->
         <div class="filters">
             <h1>Filters: </h1>
-            <div class="filter-list" name="filter-list" >
+            <div class="filter-list" id="filter-list">
                 <!-- Start default filters -->
                 <div id="default-filters">
                     <label class="custome-checkmark"> All
@@ -119,19 +120,19 @@
                             <div class="grid-operations">
                                 <div class="element1">
                                     {% if todo['completed'] == True %}
-                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" value="{{todo['id']}}" id="completed{{todo['id']}}" checked="checked" onclick="updateCompleted(this)">
-                                        <label for="completed{{todo['id']}}">Completed</label>
+                                    <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked" onclick="changeTags({{todo['id']}})">
+                                    <label for="completed{{todo['id']}}">Completed</label>
                                         {% else %}
-                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" value="{{todo['id']}}" onclick="updateCompleted(this)">
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" onclick="changeTags({{todo['id']}})">
                                         <label for="completed{{todo['id']}}">Completed</label>
                                     {% endif %}
                                 </div>
                                 <div class="element2">
                                     {% if todo['important'] == True %}
-                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" value="{{todo['id']}}" checked="checked" onclick="updateImportant(this)">
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" checked="checked" onclick="changeTags({{todo['id']}})">
                                         <label for="important{{todo['id']}}">Important</label>
                                     {% else %}
-                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" value="{{todo['id']}}" onclick="updateImportant(this)">
+                                        <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" onclick="changeTags({{todo['id']}})">
                                         <label for="important{{todo['id']}}">Important</label>
                                     {% endif %}
                                 </div>
@@ -158,7 +159,7 @@
                         </div>
                         <!-- Buttons edit and delete -->
                         <div class="to_do_element_options-2" id="to_do_element_options-2-{{todo['id']}}">
-                            <button class="button-layout info " data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodo(this)">
+                            <button class="button-layout info " data-id="{{todo['id']}}" id="edit{{todo['id']}}" onclick="updateTodoClick(this)">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <p>Edit</p>
                             </button> 
@@ -186,26 +187,21 @@
                     <button class="category-dropdown-button" id="category-dropdown-button">
                         Undefined
                     </button>
-                    <ul name="categories-dropdown" id="categories-dropdown" class="categories-dropdown">
-                        {% for category in categories %}
-                        <li>
-                            <input type="radio" name="category" id="category-{{category['id']}}" value="{{category['id']}}" checked>
-                            <label for="category-{{category['id']}}" id="label-category-{{category['id']}}">{{category['name']}}</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="category" id="category-2" value="2">
-                            <label for="category-2" id="label-category-2">Test2</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="category" id="category-3" value="3">
-                            <label for="category-3" id="label-category-3">Test3</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="category" id="category-4" value="4">
-                            <label for="category-4" id="label-category-4">Test4</label>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <div class="categories-dropdown-container" id="categories-dropdown-container">
+                        <ul name="categories-dropdown" id="categories-dropdown" class="categories-dropdown">
+                            {% for category in categories %}
+                            <li>
+                                {% if loop.index0 == 0 %}
+                                    <input type="radio" name="category" id="category-{{category['id']}}" value="{{category['id']}}" checked>
+                                    <label for="category-{{category['id']}}" id="label-category-{{category['id']}}">{{category['name']}}</label>
+                                {% else %}    
+                                    <input type="radio" name="category" id="category-{{category['id']}}" value="{{category['id']}}">
+                                    <label for="category-{{category['id']}}" id="label-category-{{category['id']}}">{{category['name']}}</label>
+                                {% endif %}    
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
             <!-- Date and hour -->

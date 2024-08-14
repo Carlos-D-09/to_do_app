@@ -89,3 +89,37 @@
     transform-origin: center center;
   }
 }
+
+@keyframes show-floating-dialog{
+  from {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center center;
+  }to{
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+  }
+}
+
+@keyframes remove-floating-dialog {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+  }to{
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center center;
+  }
+}
+
+@keyframes input-login {
+  from{
+    background-color: rgba(0,0,0,0);
+    color: #80837e;
+  }to{
+    background-color: rgba(0, 0, 0, 0);
+    color: #80837e;
+  }
+}
