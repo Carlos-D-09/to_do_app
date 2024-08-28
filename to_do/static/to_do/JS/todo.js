@@ -1,4 +1,4 @@
-import { refreshFilter } from './filters.js';
+import { refreshFilterContent } from './filters.js';
 import { createTodo, updateTags, getTodo, updateTodo, deleteTodo} from './requests.js';
 import { buildTodoButtons, clearForm, removeEditButtons, 
     addEditButtons, addCompleted, removeCompletedCheckbox, restoreSaveButton,
@@ -39,7 +39,7 @@ export function saveTodoClick(){
             }else{
                 createTodo(todo).then(data => {
                     if(data['success']){
-                        refreshFilter();
+                        refreshFilterContent();
                         clearForm();
                         alert('The to-do was added succesfully');
                     }else{
@@ -222,7 +222,7 @@ export function editTodo(){
                 //Request to-do update
                 updateTodo(todo).then(data => {
                     if (data['success']){
-                        refreshFilter();
+                        refreshFilterContent();
                         cancelUpdate();
                         alert('The to-do was updated succesfully');
                     }else{
@@ -247,11 +247,12 @@ export function changeTags(todo_id){
         important: important, 
         completed: completed
     }
-
-    console.log(tags, todo_id);
-    updateTags(tags, todo_id).then(data => {
+    
+     updateTags(tags, todo_id).then(data => {
         if(data['success'] == true){
             verifyFilterTags(data['todo']);
+        }else{
+            alert(data['error']);
         }
     }).catch(error => console.log(error));
 }

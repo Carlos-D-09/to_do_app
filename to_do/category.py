@@ -55,12 +55,13 @@ def return_category(category_id):
             return jsonify({'success':False,'error':"The category doesn't exist"})
         
 #Route to update a category
-@category.route('/category/<int:category_id>/update', methods=['POST'])
+@category.route('/category/<int:category_id>/update', methods=['PUT'])
 @login_required
 def edit_category(category_id):
-    if request.method == "POST":
-        name = request.form['title']
-        desc = request.form['desc']
+    if request.method == "PUT":
+        form = request.get_json()
+        name = form['name']
+        desc = form['description']
         
         if not name or not desc:
             return jsonify({'success': False, 'error': "Name and Description are required"})
@@ -75,10 +76,10 @@ def edit_category(category_id):
              return jsonify({'success': False, 'error': 'You are trying to update an unexisting category'})
 
 #Route to delete a category
-@category.route('/category/<int:category_id>/delete', methods=['POST'])
+@category.route('/category/<int:category_id>/delete', methods=['DELETE'])
 @login_required
 def remove_category(category_id):
-    if request.method == "POST":
+    if request.method == "DELETE":
         category = Categories.get_category_object(g.user.id, category_id)
         if category is not None:
             if Activities.set_all_activities_undefined(g.user.id,category.id):

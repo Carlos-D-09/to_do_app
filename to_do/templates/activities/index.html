@@ -14,6 +14,53 @@
 
 {% block content %}
     <div class="index-structure">
+        <!-- Start Options with Filters (movil view) -->
+        <div class="options-filters">
+            <div class="options-collapse">
+                <button class="button-rounded-layout success" id="movil-add-to-do">
+                    <i class="fa-solid fa-book"></i>
+                    <p>Add to-do</p>
+                </button>
+                <button class="button-rounded-layout success" id="movil-add-category">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <p>Add category</p>
+                </button>
+            </div>
+            <div class="filters-list-collapse" id="filter-list-collapse">
+                <!-- Start default filters -->
+                <div id="default-filters-collapse" class="filters-list-container">
+                    <div class="filter-button selected" id="filter-collapsed-all" data-value="all" name="filters-collapsed"> 
+                        All
+                    </div>
+                    <div class="filter-button" id="filter-collapsed-planned" data-value="planned" name="filters-collapsed"> 
+                        Planned
+                    </div>
+                    <div class="filter-button" id="filter-collapsed-today" data-value="today" name="filters-collapsed">  
+                        Today
+                    </div>
+                    <div class="filter-button" id="filter-collapsed-important" data-value="important" name="filters-collapsed"> 
+                        Important
+                    </div>
+                    <div class="filter-button" id="filter-collapsed-completed" data-value="completed" name="filters-collapsed"> 
+                        Completed
+                    </div>
+                </div>
+                <!-- End default filters -->
+                <!-- Start custome filters (By category) -->
+                <div id="custome-filters-collapse" class="filters-list-container">
+                    {% for category in categories %}
+                        {% if category['id'] != 1 %}
+                            <div class="filter-button" id="filter-collapsed-category{{category['id']}}" data-value="{{category['id']}}" name="filters-collapsed"> 
+                                {{category['name']}}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <!-- End custome filters-->
+            </div>
+        </div>
+        <!-- End options with filters -->
+
         <!-- Start Options -->
         <div class="options">
             <h1>Options: </h1>
@@ -30,50 +77,72 @@
 
         <!-- Start Filters -->
         <div class="filters">
-            <h1>Filters: </h1>
-            <div class="filter-list" id="filter-list">
-                <!-- Start default filters -->
-                <div id="default-filters">
-                    <label class="custome-checkmark"> All
-                        <input type="radio" name="filter" value="all" checked>
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="custome-checkmark"> Planned
-                        <input type="radio" name="filter" value="planned">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="custome-checkmark"> Today
-                        <input type="radio" name="filter" value="today">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="custome-checkmark"> Important
-                        <input type="radio" name="filter" value="important">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="custome-checkmark"> Completed
-                        <input type="radio" name="filter" value="completed">
-                        <span class="checkmark"></span>
-                    </label>
+            <div class="filters-content">
+                <div class="filters-title">
+                    <h1>Filters: </h1>
                 </div>
-                <!-- End default filters -->
-                <!-- Start custome filters (By category) -->
-                <div id="custome-filters">
-                    {% for category in categories %}
-                        {% if category['id'] != 1 %}
-                        <label class="custome-checkmark" id="label-category{{category['id']}}">{{category['name']}}
-                            <input type="radio" name="filter" id="category{{category['id']}}" value="{{category['id']}}">
+                <div class="filters-list" id="filter-list">
+                    <!-- Start default filters -->
+                    <div id="default-filters">
+                        <label class="custome-checkmark"> All
+                            <input type="radio" id="filter-all" name="filter" value="all" checked>
                             <span class="checkmark"></span>
                         </label>
-                        {% endif %}
-                    {% endfor %}
+                        <label class="custome-checkmark"> Planned
+                            <input type="radio" id="filter-planned" name="filter" value="planned">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="custome-checkmark"> Today
+                            <input type="radio" id="filter-today" name="filter" value="today">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="custome-checkmark"> Important
+                            <input type="radio" id="filter-important" name="filter" value="important">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="custome-checkmark"> Completed
+                            <input type="radio" id="filter-completed" name="filter" value="completed">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <!-- End default filters -->
+                    <!-- Start custome filters (By category) -->
+                    <div id="custome-filters">
+                        {% for category in categories %}
+                            {% if category['id'] != 1 %}
+                            <label class="custome-checkmark" id="label-category{{category['id']}}">
+                                <input type="radio" name="filter" id="category{{category['id']}}" value="{{category['id']}}">
+                                <span class="checkmark"></span>
+                                <p id="label-category-{{category['id']}}-name">{{category['name']}}</p>
+                            </label>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <!-- End custome filters-->
                 </div>
-                <!-- End custome filters-->
+            </div>
+            <div class="filter-description" id="filter-description">
+                <div class="category-info">
+                    <div class="category-title">
+                        <div id="category-title-collapse">
+                            <h1>All </h1>
+                        </div>
+                        <!-- Container to put the buttons edit and delete category -->
+                        <div class="options-category" id="options-category-collapse">
+                        </div>
+                    </div>
+                    <div class="category-desc" id="category-desc-collapse">
+                        <p>
+                            Here you can show all your activiaties, doesn't matter the category, if they are completed, uncompleted, important, not important, etc
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- End filters -->
 
         <!-- Start info panel -->
-        <div class="info-panel">
+        <div class="info-panel" id="info-panel">
             <div class="category-info" id="category-info">
                 <div class="category-title">
                     <div id="category-title">
@@ -120,26 +189,26 @@
                             <div class="grid-operations">
                                 <div class="element1">
                                     {% if todo['completed'] == True %}
-                                    <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked" onclick="changeTags({{todo['id']}})">
-                                    <label for="completed{{todo['id']}}">Completed</label>
+                                        <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" checked="checked" onclick="changeTags({{todo['id']}})">
+                                        <label for="completed{{todo['id']}}"><p>Completed</p></label>
                                         {% else %}
                                         <input type="checkbox" class="completed" name="completed{{todo['id']}}" id="completed{{todo['id']}}" onclick="changeTags({{todo['id']}})">
-                                        <label for="completed{{todo['id']}}">Completed</label>
+                                        <label for="completed{{todo['id']}}"><p>Completed</p></label>
                                     {% endif %}
                                 </div>
                                 <div class="element2">
                                     {% if todo['important'] == True %}
                                         <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" checked="checked" onclick="changeTags({{todo['id']}})">
-                                        <label for="important{{todo['id']}}">Important</label>
+                                        <label for="important{{todo['id']}}"><p>Important</p></label>
                                     {% else %}
                                         <input type="checkbox" class="important" name="important{{todo['id']}}" id="important{{todo['id']}}" onclick="changeTags({{todo['id']}})">
-                                        <label for="important{{todo['id']}}">Important</label>
+                                        <label for="important{{todo['id']}}"><p>Important</p></label>
                                     {% endif %}
                                 </div>
                                 <div class="element3">
                                     {% if todo['category'] != 'null' %}
                                         <i class="fa-solid fa-layer-group"></i>
-                                        {{todo['category']}}
+                                        <p>{{todo['category']}}</p>
                                     {% endif %}
                                 </div>
                                 
@@ -150,12 +219,11 @@
                             <p>
                                 {% if todo['end_at'] is none %}
                                     undefined
-                                    <i class="fa-regular fa-clock"></i>
                                 {% else %}
                                     {{todo['end_at']}}
-                                    <i class="fa-regular fa-clock"></i>
                                 {% endif %}
                             </p>
+                            <i class="fa-regular fa-clock"></i>
                         </div>
                         <!-- Buttons edit and delete -->
                         <div class="to_do_element_options-2" id="to_do_element_options-2-{{todo['id']}}">
@@ -190,7 +258,7 @@
                     <div class="categories-dropdown-container" id="categories-dropdown-container">
                         <ul name="categories-dropdown" id="categories-dropdown" class="categories-dropdown">
                             {% for category in categories %}
-                            <li>
+                            <li id="li-category-{{category['id']}}">
                                 {% if loop.index0 == 0 %}
                                     <input type="radio" name="category" id="category-{{category['id']}}" value="{{category['id']}}" checked>
                                     <label for="category-{{category['id']}}" id="label-category-{{category['id']}}">{{category['name']}}</label>
@@ -206,13 +274,8 @@
             </div>
             <!-- Date and hour -->
             <div class="date-hour">
-                <div class="icon-right">
-                    <label for="date">
-                        <i class="fa-regular fa-clock fa-lg" style="padding-right: 10px;" ></i>
-                    </label>
-                </div>
-                <input type="date" class="input-date" name="date" id="date">
-                <input type="time" class="input-time" name="time" id="time">    
+                <input type="date" name="date" id="date">
+                <input type="time" name="time" id="time">    
             </div>
             <!-- Description -->
             <div class="description">
@@ -241,7 +304,7 @@
             <label for="category-form-description">Description:</label>
             <textarea type="text" placeholder="Description" id="category-form-description" name="category-form-description"></textarea>
         </div>
-        <div class="category-form-buttons">
+        <div class="category-form-buttons" id=category-form-buttons>
             <button class="button-layout danger" id="cancel-category">
                 <i class="fa-solid fa-xmark"></i>
                 <p>Cancel</p>
@@ -249,6 +312,10 @@
             <button class="button-layout success" id="save-category">
                 <i class="fa-regular fa-floppy-disk"></i>
                 <p>Save</p>
+            </button>
+            <button class="button-layout info" id="edit-category" style="display: none;">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <p>Edit</p>
             </button>
         </div>
     </div>

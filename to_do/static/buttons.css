@@ -1,3 +1,18 @@
+.button-rounded-layout{
+    max-width: 120px;
+    min-width: 80px;
+    max-height: 55px;
+    min-height: 50px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
 .button-layout{
     max-width: 120px;
     min-width: 80px;
@@ -11,16 +26,19 @@
     justify-content: center;
 }
 
-.button-layout:hover{
+.button-layout:hover,
+.button-rounded-layout:hover{
     cursor: pointer;
 }
 
-.button-layout.success{
+.button-layout.success,
+.button-rounded-layout.success{
     background-color: var(--button-success-background);
     color: var(--button-success-color);
 }
 
-.button-layout.success:hover{
+.button-layout.success:hover,
+.button-rounded-layout.success:hover{
     background-color: var(--button-success-hover);
 }
 

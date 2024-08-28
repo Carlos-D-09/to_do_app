@@ -103,8 +103,10 @@ function buildTodoCompleted(completed, todo_id){
     if (completed) completedCheckbox.setAttribute('checked','checked');
 
     let completedLabel = document.createElement('label');
-    completedLabel.textContent = 'Completed';
+    let completedText = document.createElement('p');
+    completedText.textContent = 'Completed';
     completedLabel.setAttribute('for','completed'+todo_id);
+    completedLabel.append(completedText);
 
     let completed_div = document.createElement('div');
     completed_div.className = 'element1';
@@ -126,8 +128,10 @@ function buildTodoImportant(important, todo_id){
     if (important) importantCheckbox.setAttribute('checked', 'checked');
 
     let importantLabel = document.createElement('label');
+    let importantText = document.createElement('p');
+    importantText.textContent = 'Completed';
     importantLabel.setAttribute('for','important'+todo_id);
-    importantLabel.textContent = 'Important';
+    importantLabel.append(importantText);
     
     let important_div = document.createElement('div');
     important_div.className = 'element2';
@@ -138,7 +142,8 @@ function buildTodoImportant(important, todo_id){
 
 //Create the category to show on a to-do
 function buildTodoCategory(category){
-    let text = ' ' + category;
+    let categoryText = document.createElement('p');
+    categoryText.textContent = ' ' + category;
 
     let icon = document.createElement('i');
     icon.className = 'fa-solid fa-layer-group';
@@ -146,7 +151,7 @@ function buildTodoCategory(category){
     let category_div = document.createElement('div');
     category_div.className = 'element3';
 
-    category_div.append(icon, text);
+    category_div.append(icon, categoryText);
 
     return category_div;
 }
@@ -158,11 +163,10 @@ function buildTodoDate(date){
     
     let date_text = document.createElement('p');
     date ? date_text.textContent = date + ' ' : date_text.textContent = 'Undefined ';
-    date_text.append(iconDate);
 
     let date_div = document.createElement('div');
     date_div.className = 'to_do_element_date';
-    date_div.append(date_text);
+    date_div.append(iconDate, date_text);
 
     return date_div;
 }
@@ -306,4 +310,134 @@ export function deleteFloatingDialog(){
     setTimeout(function(){
         dialog.remove();
     },1000)
+}
+
+export function clearCategoryForm(){
+    document.getElementById('category-form-title').value = '';
+    document.getElementById('category-form-description').value = '';
+}
+
+//Add a new category on the filter section
+export function addFilter(category){
+    if (category == null){
+        alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
+    }else{
+        let filter = buildFilterElement(category);
+        document.getElementById('custome-filters').append(filter);
+    }
+}
+
+//Construir un elemento para añadir al filtro 
+function buildFilterElement(category){
+    let label = document.createElement('label');
+    label.className = 'custome-checkmark';
+    label.setAttribute('id',`label-category${category.id}`);
+
+    let text = document.createElement('p');
+    text.textContent = category.name;
+    
+    let input = document.createElement('input');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('name', 'filter');
+    input.setAttribute('id', `category${category.id}`);
+    input.setAttribute('value',category.id);
+
+    let span = document.createElement('span');
+    span.className = "checkmark"; 
+    
+    label.append(input, span, text);
+
+    return label;
+}
+
+//Add the new category to the to-do form
+export function addCategorySelectForm(category){
+    if(category == null){
+        alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
+    }else{
+        let categories = document.getElementById('categories-dropdown');
+        let newCategory = document.createElement('li');
+        newCategory.setAttribute('id',`li-category-${category.id}`)
+        
+        let categoryInput = document.createElement('input');
+        categoryInput.setAttribute('type', 'radio');
+        categoryInput.setAttribute('name','category');
+        categoryInput.setAttribute('id',`category-${category.id}`);
+        categoryInput.setAttribute('value',`category${category.id}`);
+        
+        let categoryLabel = document.createElement('label');
+        categoryLabel.setAttribute('for',`category-${category.id}`);
+        categoryLabel.setAttribute('id',`label-category-${category.id}`);
+        categoryLabel.textContent = category.name;
+
+        newCategory.append(categoryInput, categoryLabel);
+
+        categories.append(newCategory);
+    }
+}
+
+//Update the name for a specific category on the to-do form
+export function updateCategorySelectForm(category_id, name){
+    let labelCategory = document.getElementById(`label-category-${category_id}`);
+    labelCategory.textContent = name;
+}
+
+//Show the category form
+export function hideCategoryForm(){
+    let category_form = document.getElementById('floating-category-form');
+    let titleInput = document.getElementById('category-form-title');
+    let descriptionInput = document.getElementById('category-form-description');
+    let button_edit = document.getElementById('edit-category');
+    let button_save = document.getElementById('save-category');
+
+    category_form.classList.remove('active');
+    category_form.classList.add('hide');
+    titleInput.value = '';
+    descriptionInput.value = '';
+    setTimeout(()=>{
+        button_edit.style.display = 'none';
+        button_save.style.display = 'flex';
+    },1000)
+}
+
+//Change the description in the column info or in the filter column
+export function refreshDescription(name, description){
+    let titleContainer = null;
+    let descContainer = null;
+
+    if (filterDescriptionCollapse()) {
+        titleContainer = document.getElementById('category-title-collapse');
+        descContainer = document.getElementById('category-desc-collapse');
+    }else{
+        titleContainer = document.getElementById('category-title');
+        descContainer = document.getElementById('category-desc');
+    }
+
+    //Change filter description on the available container
+    let title = document.createElement('h1');
+    title.textContent = name
+    titleContainer.innerHTML = "";
+    
+    titleContainer.append(title);
+
+    let desc = document.createElement('p');
+    desc.textContent = description;
+    descContainer.innerHTML = "";
+    descContainer.append(desc);
+}
+
+//Return false if the column info-panel is displayed, otherwise return true
+export function filterDescriptionCollapse(){
+    //Determine which container is available
+    let categoryInfo = document.getElementById('info-panel');
+    let categoryInfoComputedStyle = window.getComputedStyle(categoryInfo);
+    let categoryInfoCollapse = document.getElementById('filter-description');
+    let categoryInfoCollapseComputedStyle = window.getComputedStyle(categoryInfoCollapse);
+    
+    if (categoryInfoComputedStyle.display == 'flex' && categoryInfoCollapseComputedStyle.display == 'none'){
+        return false;
+    } else if(categoryInfoCollapseComputedStyle.display == 'flex' && categoryInfoComputedStyle.display == 'none'){
+        return true;
+
+    }
 }

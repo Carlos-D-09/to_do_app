@@ -124,7 +124,7 @@ body{
 }
 
 .floating-navbar-menu{
-    min-width: 250px;
+    max-width: 250px;
     background-color: var(--navbar-color);
     color: var(--background-color);
     padding: 0px;
@@ -208,6 +208,9 @@ body{
     }
     .navbar {
         grid-template-columns: [navbar-title] 3fr [navbar-list] 1fr;
+    }
+    .content{
+        padding: 110px 10px 10px 10px;
     }
 
 }
