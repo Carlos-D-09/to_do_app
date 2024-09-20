@@ -1,5 +1,3 @@
-import { saveTodoClick } from "./todo.js";
-
 //Print each to-do in the ul
 export function printTodos(todos){
     //Clear the list before print the new data
@@ -129,7 +127,7 @@ function buildTodoImportant(important, todo_id){
 
     let importantLabel = document.createElement('label');
     let importantText = document.createElement('p');
-    importantText.textContent = 'Completed';
+    importantText.textContent = 'Important';
     importantLabel.setAttribute('for','important'+todo_id);
     importantLabel.append(importantText);
     
@@ -166,7 +164,7 @@ function buildTodoDate(date){
 
     let date_div = document.createElement('div');
     date_div.className = 'to_do_element_date';
-    date_div.append(iconDate, date_text);
+    date_div.append(date_text, iconDate);
 
     return date_div;
 }
@@ -205,13 +203,19 @@ export function buildTodoButtons(todo_id){
 //Clean create form
 export function clearForm() {
     document.getElementById('name').value = '';
-    document.getElementById('description').value = ''
+    document.querySelector('input[name="floating-category"]:checked').checked = false;
     document.querySelector('input[name="category"]:checked').checked = false;
+    document.querySelector('input[name="date"').classList.remove('filled');
+    document.querySelector('input[name="date"').value = '';
+    document.querySelector('input[name="time"').classList.remove('filled');
+    document.querySelector('input[name="time"').value = '';
+    document.getElementById('floating-category-1').checked = true;
     document.getElementById('category-1').checked = true;
+    document.getElementById('floating-category-dropdown-button').textContent = 'Undefined';
     document.getElementById('category-dropdown-button').textContent = 'Undefined';
+    document.getElementById('description').value = '';
+    document.getElementById('floating-important').checked = false;
     document.getElementById('important').checked = false;
-    document.getElementById('date').value = '';
-    document.getElementById('time').value = '';
 }
 
 //Remove the edit buttons in the update form.
@@ -261,7 +265,38 @@ export function addEditButtons(todo_id){
     document.getElementById('save').append(editButton, cancelButton);
 }
 
-//Add the completed checkbox in the update form.
+//Add the completed checkbox in the floating udpate form
+export function addFloatingCompleted(completed){
+    let div = document.createElement('div');
+    div.setAttribute('id','floating-completed');
+    div.className = 'icon-center';
+
+    let input = document.createElement('input');
+    input.className = 'completed';
+    input.setAttribute('type','checkbox');
+    input.setAttribute('name','floating-completed-input');
+    input.setAttribute('id','floating-completed');
+    input.checked = completed;
+    
+    let label = document.createElement('label');
+    label.setAttribute('for','floating-completed');
+    label.setAttribute('id','floating-completed-label');
+    
+    div.append(input, label);
+    
+    document.getElementById('floating-todo-form-category-dropdown').append(div);
+}
+
+//Remove the completed checkbox in the static update form.
+export function removeFloatingCompletedCheckbox(){
+    let completedContainer = document.getElementById('floating-completed');
+    if (completedContainer != null){
+        completedContainer.remove();
+    }
+}
+
+
+//Add the completed checkbox in the static update form.
 export function addCompleted(completed){
     let input = document.createElement('input');
     input.className = 'completed';
@@ -276,7 +311,7 @@ export function addCompleted(completed){
     document.getElementById('tags').append(input,label);
 }
 
-//Remove the completed checkbox in the update form.
+//Remove the completed checkbox in the static update form.
 export function removeCompletedCheckbox(){
     let completed_input = document.getElementById('completed');
     if (completed_input != null){
@@ -323,11 +358,13 @@ export function addFilter(category){
         alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
     }else{
         let filter = buildFilterElement(category);
+        let collapsedFilter = buildCollapsedFilter(category);
         document.getElementById('custome-filters').append(filter);
+        document.getElementById('custome-filters-collapse').append(collapsedFilter);
     }
 }
 
-//Construir un elemento para añadir al filtro 
+//Build a filter element
 function buildFilterElement(category){
     let label = document.createElement('label');
     label.className = 'custome-checkmark';
@@ -350,12 +387,25 @@ function buildFilterElement(category){
     return label;
 }
 
+//Build a filter collapsed element
+function buildCollapsedFilter(category){
+    let button = document.createElement('div');
+    button.setAttribute('id',`filter-collapsed-category${category.id}`);
+    button.dataset.value = category.id;
+    button.setAttribute('name',"filters-collapsed");
+    button.className = "filter-button"
+    button.textContent = category.name
+
+    return button
+}
+
 //Add the new category to the to-do form
 export function addCategorySelectForm(category){
     if(category == null){
         alert('Your categorie is saved, but something went wrong trying to update the view, please reload the page to see it');
     }else{
         let categories = document.getElementById('categories-dropdown');
+        
         let newCategory = document.createElement('li');
         newCategory.setAttribute('id',`li-category-${category.id}`)
         
@@ -363,16 +413,49 @@ export function addCategorySelectForm(category){
         categoryInput.setAttribute('type', 'radio');
         categoryInput.setAttribute('name','category');
         categoryInput.setAttribute('id',`category-${category.id}`);
-        categoryInput.setAttribute('value',`category${category.id}`);
+        categoryInput.setAttribute('value',`${category.id}`);
         
         let categoryLabel = document.createElement('label');
         categoryLabel.setAttribute('for',`category-${category.id}`);
         categoryLabel.setAttribute('id',`label-category-${category.id}`);
         categoryLabel.textContent = category.name;
-
+        
         newCategory.append(categoryInput, categoryLabel);
 
+        let button = document.getElementById('category-dropdown-button');
+        newCategory.addEventListener('click', ()=> {
+            let label_text = document.getElementById('label-category-'+category.id);
+            button.textContent = label_text.textContent;
+        }); 
+
         categories.append(newCategory);
+        
+        
+        let floatingCategories = document.getElementById('floating-categories-dropdown');
+        
+        let newFloatingCategory = document.createElement('li');
+        newFloatingCategory.setAttribute('id',`floating-li-category-${category.id}`)
+
+        let floatingCategoryInput = document.createElement('input');
+        floatingCategoryInput.setAttribute('type','radio');
+        floatingCategoryInput.setAttribute('name','floating-category');
+        floatingCategoryInput.setAttribute('id',`floating-category-${category.id}`);
+        floatingCategoryInput.setAttribute('value', `${category.id}`);
+
+        let floatingCategoryLabel = document.createElement('label');
+        floatingCategoryLabel.setAttribute('for',`floating-category-${category.id}`);
+        floatingCategoryLabel.setAttribute('id',`floating-label-category-${category.id}`);
+        floatingCategoryLabel.textContent = category.name;
+
+        newFloatingCategory.append(floatingCategoryInput, floatingCategoryLabel);
+
+        let floatingButton = document.getElementById('floating-category-dropdown-button');
+        newFloatingCategory.addEventListener('click', ()=>{
+            let labelText = document.getElementById('floating-label-category-'+category.id);
+            floatingButton.textContent = labelText.textContent;
+        })
+
+        floatingCategories.append(newFloatingCategory);
     }
 }
 
@@ -440,4 +523,40 @@ export function filterDescriptionCollapse(){
         return true;
 
     }
+}
+
+export function hideTodoFloatingForm(){
+    let todo_form = document.getElementById('todo-form');
+    
+    document.getElementById('name').value = '';
+    document.querySelector('input[name="floating-category"]:checked').checked = false;
+    document.querySelector('input[name="category"]:checked').checked = false;
+    document.querySelector('input[name="date"').classList.remove('filled');
+    document.querySelector('input[name="date"').value = '';
+    document.querySelector('input[name="time"').classList.remove('filled');
+    document.querySelector('input[name="time"').value = '';
+    document.getElementById('floating-category-1').checked = true;
+    document.getElementById('category-1').checked = true;
+    document.getElementById('floating-category-dropdown-button').textContent = 'Undefined';
+    document.getElementById('category-dropdown-button').textContent = 'Undefined';
+    document.getElementById('description').value = '';
+    document.getElementById('floating-important').checked = false;
+    document.getElementById('important').checked = false;
+
+    todo_form.classList.remove('active');
+    todo_form.classList.add('hide');
+    setTimeout(()=>{
+        todo_form.classList.remove('hide');
+    }, 700);
+    
+    let dropdown_container = document.getElementById('floating-categories-dropdown-container');
+    
+    if(dropdown_container.classList.contains('active')){
+        dropdown_container.classList.remove('active'); 
+    }else{
+        setTimeout(()=>{
+            dropdown_container.classList.add('hide');
+        }, 1000);
+    }
+
 }

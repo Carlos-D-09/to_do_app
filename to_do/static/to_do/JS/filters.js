@@ -21,98 +21,6 @@ const DESCRIPTIONS = {
     'completed': "You can see your completed activities, doesn't matter the category or if they are important or not"
 }
 
-//Listener to detect when the window is resized
-export function filterWindowResize(){
-    window.addEventListener('resize', debounce(syncronizeFiltersList, 300));
-}
-
-// Debounce function to syncronice filters
-function debounce(func, delay) {
-    let timerId;
-    return function(...args) {
-        clearTimeout(timerId);
-        if (typeof func === 'function') {
-            timerId = setTimeout(() => func.apply(this, args), delay);
-        }
-    };
-}
-
-function syncronizeFiltersList(){
-    //Get the filter checked on the filter list 
-    let uncollapsedFilter = document.querySelector('input[name="filter"]:checked');
-    
-    if (!uncollapsedFilter) return;
-    
-    const currentFilterValue = uncollapsedFilter.value;
-    const isLargeScreen = window.innerWidth > 1200;
-    
-    // Syncronize uncollapsed filter with collapsed filter when the window is resized with a width bigger than 1200px 
-    if(isLargeScreen && currentFilterValue != previousCollapsedFilter){
-        //Unmark the selected filter
-        uncollapsedFilter.setAttribute('checked',false);
-    
-        //Get the current uncollapsed filter based on the selected on collapsed filter list
-        const elementId = FILTERS[previousCollapsedFilter] ? `filter-${previousCollapsedFilter}` : `category${previousCollapsedFilter}`;
-    
-        //Mark as checked
-        document.getElementById(elementId).setAttribute('checked',true);
-    
-        toggleUncollapsedFilterSelected(previousCollapsedFilter);
-    
-        previousCollapsedFilter = currentFilterValue;
-    } 
-
-    //Syncronize collapsed filter with uncollapsed filter when the window is resized with a width lower than 1200px
-    if(!isLargeScreen && currentFilterValue != previousCollapsedFilter){ 
-        toggleCollapsedFilterSelected(previousCollapsedFilter, true);
-
-        toggleCollapsedFilterSelected(currentFilterValue);
-
-        //Update previousCollapsedFilter value. 
-        previousCollapsedFilter = currentFilterValue;
-    }
-}
-
-//Change the filter style and if the filter is not a default, add the edit and delete buttons
-function toggleCollapsedFilterSelected(filter, remove=false){
-    const elementID =  FILTERS[filter] ? `filter-collapsed-${filter}` : `filter-collapsed-category${filter}`;
-
-    if(remove){
-        document.getElementById(elementID).classList.remove('selected');
-    }else{
-        if(FILTERS[filter]){
-            document.getElementById(elementID).classList.add('selected');
-        }else{
-            document.getElementById(elementID).classList.add('selected');
-            //add edit buttons
-            //Logica por agregar
-        }
-    }
-}
-
-//If the filter is default, remove posible edit and delete buttons and update the description, otherwise, add the edit and delete buttons. 
-function toggleUncollapsedFilterSelected(filter){    
-    //Check if the filter selected is a default or a custome filter
-    if(FILTERS[filter]){
-        //Update the description for a custome filter
-        document.getElementById('options-category').innerHTML = '';
-        document.getElementById('options-category-collapse').innerHTML = '';
-        refreshDescription(capitalizeFirstLetter(filter), DESCRIPTIONS[filter]);
-    }else{
-        //Resfresh the description for a custome filter 
-        document.getElementById(`category${filter}`).setAttribute('checked',true);
-        getCategory(filter).then(
-            data => {
-                let category = data['category'];
-                refreshDescription(capitalizeFirstLetter(category['name']), category['description']);
-            }
-        ).catch(
-            error => console.error(error)
-        );
-        showOptionsButtons(filter);
-    }
-}
-
 //Add event listeners to each filter list (Collapsed and uncollapsed)
 export function checkFilters(){
     let filters = document.getElementById('filter-list');
@@ -125,21 +33,28 @@ export function checkFilters(){
 function filtersCollapsed(filters){
     filters.addEventListener('click', function(event){
         if(event.target.getAttribute('name') == 'filters-collapsed'){
-            
+
+            //Start update collapsed view
+
             //Get data value from the event target
             let filter = event.target.dataset.value;
+
+            updateCollapsedFilters(filter);
+
             
-            //Change the old selected filter style
-            toggleCollapsedFilterSelected(previousCollapsedFilter, true);
-
-            //Change the current selected filter style
-            toggleCollapsedFilterSelected(filter);
-
-            //Update current filter
-            previousCollapsedFilter = filter;
+            let currentUncollapseFilter = document.querySelector('[name="filter"]:checked');
+            currentUncollapseFilter.removeAttribute('checked');
+            updateUncollapsedFilters(filter);
 
             //Update to-do list according the selected filter
             updateTodoList(filter, true);
+
+            //add edit and delete buttons in case of personal filters
+            if(!FILTERS[filter]){
+                showOptionsCollapsedButtons(filter);
+            }else{
+                removeCollpasedEditDeleteButtons();
+            }
         }
     })
 }
@@ -152,13 +67,85 @@ function filtersUncollapsed(filters){
             //Get the input value
             let radio = event.target.value;
             
-            //Change the current filter selected by the user
-            toggleUncollapsedFilterSelected(radio)
+            updateCollapsedFilters(radio);
+
+            updateUncollapsedFilters(radio);
 
             //Update to-do list
             updateTodoList(radio);
         }
     });
+}
+
+function updateCollapsedFilters(filter){
+    //Change the old selected filter style
+    toggleCollapsedFilterSelected(previousCollapsedFilter, true);
+
+    //Change the current selected filter style
+    toggleCollapsedFilterSelected(filter);
+
+    previousCollapsedFilter = filter;
+}
+
+function updateUncollapsedFilters(filter){
+    toggleUncollapsedFilterSelected(filter)
+}
+
+//Change the filter style and if the filter is not a default, add the edit and delete buttons
+function toggleCollapsedFilterSelected(filter, remove=false){
+    const elementID =  FILTERS[filter] ? `filter-collapsed-${filter}` : `filter-collapsed-category${filter}`;
+    if(remove){
+        document.getElementById(elementID).classList.remove('selected');
+    }else{
+        if(FILTERS[filter]){
+            document.getElementById(elementID).classList.add('selected');
+        }else{
+            document.getElementById(elementID).classList.add('selected');
+        }
+    }
+}
+
+//If the filter is default, remove posible edit and delete buttons and update the description, otherwise, add the edit and delete buttons. 
+function toggleUncollapsedFilterSelected(filter){    
+    //Check if the filter selected is a default or a custome filter
+    if(FILTERS[filter]){
+        document.getElementById('filter-'+filter).checked = true;
+        //Update the description for a custome filter
+        document.getElementById('options-category').innerHTML = '';
+        document.getElementById('options-category-collapse').innerHTML = '';
+        refreshDescription(capitalizeFirstLetter(filter), DESCRIPTIONS[filter]);
+    }else{
+        //Resfresh the description for a custome filter 
+        document.getElementById(`category${filter}`).checked = true;
+        getCategory(filter).then(
+            data => {
+                if(data['success']){
+                    let category = data['category'];
+                    refreshDescription(capitalizeFirstLetter(category['name']), category['description']);
+                }else{
+                    alert(data['error']);
+                }
+            }
+        ).catch(
+            error => console.error(error)
+        );
+        showOptionsButtons(filter);
+    }
+}
+
+export function removeCollpasedEditDeleteButtons(){
+    let deleteButton = document.getElementById('category-delete-button');
+    let editButton = document.getElementById('category-edit-button');
+
+    if(deleteButton && editButton){
+        let todoButton = document.getElementById('mobile-add-todo');
+        let categoryButton = document.getElementById('mobile-add-category');
+        
+        todoButton.style['min-width'] = '80px';
+        categoryButton.style['min-width'] = '80px';
+        editButton.remove();
+        deleteButton.remove();
+    }
 }
 
 //Make the request to get the to-do list according the filter passed on value 
@@ -194,8 +181,9 @@ function updateTodoList(value, collapsed=false){
 }
 
 export function selectFirstFilter(){
+    //Select first filter for uncollapsed view
     let selectedFilter = document.querySelector('input[name="filter"]:checked');
-    selectedFilter.setAttribute('checked', false);
+    selectedFilter.checked = true;
     
     let newSelectedFilter = document.querySelectorAll('input[name="filter"]')[0];
     newSelectedFilter.checked = true;
@@ -204,6 +192,14 @@ export function selectFirstFilter(){
     document.getElementById('options-category-collapse').innerHTML = '';
     refreshFilterContent();
     refreshDescription('All', DESCRIPTIONS['all']);
+
+    //Select first filter for collapsed view
+    let selectedCollapsedFilter = document.querySelector('[name="filters-collapsed"].selected');
+    selectedCollapsedFilter.classList.remove('selected');
+    
+    document.getElementById('filter-collapsed-all').classList.add('selected');
+
+    previousCollapsedFilter = "all";
 }
 
 export function refreshFilterElement(category_id, name){
@@ -242,6 +238,43 @@ function showOptionsButtons(category_id){
 
 }
 
+//Add the edit and delete buttons to the collapsed view
+function showOptionsCollapsedButtons(value){
+    getCategory(value).then(
+        data => {
+            if(data['success']){
+                let category = data['category'];
+                let deleteButton = document.getElementById('category-delete-button');
+                let editButton = document.getElementById('category-edit-button');
+                let todoButton = document.getElementById('mobile-add-todo');
+                let categoryButton = document.getElementById('mobile-add-category');
+                
+                todoButton.style['min-width'] = '100px';
+                categoryButton.style['min-width'] = '120px';
+
+                if(!deleteButton && !editButton){
+                    let options_container = document.getElementById('options-collapse');
+                    
+                    deleteButton = bulidDeleteCategoryButtonCollapsedView(category.id);
+                    editButton = bulidEditCategoryButtonCollapsedView(category.id);
+
+                    removeCollpasedEditDeleteButtons();
+                    options_container.append(editButton, deleteButton);
+                }else{
+                    deleteButton.setAttribute('onclick',`showAlertDeleteCategory(${category.id})`)
+                    editButton.setAttribute('onclick',`showCollapsedEditForm(${category.id})`)
+                }
+
+
+            }else{
+                console.log(data['error']);
+            }
+        }
+    ).catch(
+        error => console.log(error)
+    );
+}
+
 //Return delete icon
 function buildDeleteButton(category_id){
     let div = document.createElement('div');
@@ -268,4 +301,40 @@ function buildEditButton(category_id){
     div.append(icon);
 
     return div;
+}
+
+function bulidDeleteCategoryButtonCollapsedView(category_id){
+    let button = document.createElement('button');
+    button.className =  'button-rounded-layout danger';
+    button.style['min-width'] = '130px';
+    button.setAttribute('onclick', `showAlertDeleteCategory(${category_id})`)
+    button.setAttribute('id', `category-delete-button`);
+
+    let icon = document.createElement('i');
+    icon.className = 'fa-solid fa-trash';
+
+    let text = document.createElement('p');
+    text.textContent = 'Delete category'
+
+    button.append(icon, text);
+
+    return button
+}
+
+function bulidEditCategoryButtonCollapsedView(category_id){
+    let button = document.createElement('button');
+    button.className =  'button-rounded-layout info';
+    button.style['min-width'] = '120px';
+    button.setAttribute('onclick', `showUpdateFormCategory(${category_id})`)
+    button.setAttribute('id', `category-edit-button`);
+
+    let icon = document.createElement('i');
+    icon.className = 'fa-solid fa-trash';
+
+    let text = document.createElement('p');
+    text.textContent = 'Edit category'
+
+    button.append(icon, text);
+
+    return button
 }

@@ -110,7 +110,7 @@ class Activities(db.Model):
             Activities.description, 
             Activities.completed, 
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d/%m/%Y').label('end_at'),
             Activities.created_at, 
             Activities.completed, 
             Activities.important
@@ -133,7 +133,7 @@ class Activities(db.Model):
             Activities.description,
             Activities.completed,
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d-%m-%Y').label('end_at'),
             Activities.created_at, 
             Activities.important
         ).join(
@@ -170,7 +170,7 @@ class Activities(db.Model):
             Activities.description,
             Activities.completed,
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d-%m-%Y').label('end_at'),
             Activities.created_at, 
             Activities.important
         ).join(
@@ -198,7 +198,7 @@ class Activities(db.Model):
             Activities.description,
             Activities.completed,
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d-%m-%Y').label('end_at'),
             Activities.created_at, 
             Activities.important
         ).join(
@@ -219,7 +219,7 @@ class Activities(db.Model):
             Activities.description,
             Activities.completed,
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d-%m-%Y').label('end_at'),
             Activities.created_at, 
             Activities.important
         ).join(
@@ -239,14 +239,15 @@ class Activities(db.Model):
             Activities.description,
             Activities.completed,
             Categories.name.label('category'),
-            func.date_format(Activities.end_at, '%d-%m-%Y at %H:%i').label('end_at'),
+            func.date_format(Activities.end_at, '%d-%m-%Y').label('end_at'),
             Activities.created_at, 
             Activities.important
         ).join(
             Categories, Activities.category_id == Categories.id
         ).filter(
             (Categories.id == category_id) &
-            (Activities.created_by == user_id)
+            (Activities.created_by == user_id) &
+            (Activities.completed == False)
         ).order_by(
             func.coalesce(Activities.end_at,'"9999-12-31"').asc()
         ).all()

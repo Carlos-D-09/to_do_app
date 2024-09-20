@@ -1,4 +1,4 @@
-import { refreshFilterContent, refreshFilterElement } from "./filters.js";
+import { refreshFilterContent, refreshFilterElement, removeCollpasedEditDeleteButtons } from "./filters.js";
 import { createCategory, deleteCategory, getCategory, updateCategory } from "./requests.js";
 import { addFilter, addCategorySelectForm, hideCategoryForm, refreshDescription, updateCategorySelectForm, deleteFloatingDialog, clearCategoryForm } from "./utils.js"
 import { selectFirstFilter } from './filters.js'
@@ -14,8 +14,8 @@ export function categoryAddClick(){
         }  
     });
 
-    let category_movil = document.getElementById('movil-add-category');
-    category_movil.addEventListener('click', ()=>{
+    let category_mobile = document.getElementById('mobile-add-category');
+    category_mobile.addEventListener('click', ()=>{
         let category_form = document.getElementById('floating-category-form');
         if (category_form.classList.contains('active') == false){
             category_form.classList.remove('hide');
@@ -152,7 +152,7 @@ function buildAlertDelete(category){
     let message = document.createElement('p');
     let question = document.createElement('b');
     question.textContent = 'Are your sure you want to continue?';
-    message.textContent = `You are going to delete the next category: ${category.name}, This transaction is irreversible. `;
+    message.textContent = `You are going to delete the next category: ${category.name}. This transaction is irreversible. `;
     message.append(document.createElement('br'), document.createElement('br'), question);
 
     msgDiv.append(message);
@@ -180,8 +180,15 @@ export function removeCategory(category_id){
             deleteFloatingDialog();
             alert('The category was deleted succesfully');
             selectFirstFilter();
+
+            // Remove category from filters list
             document.getElementById(`label-category${category_id}`).remove();
+            document.getElementById(`filter-collapsed-category${category_id}`).remove();
+            removeCollpasedEditDeleteButtons();
+            
+            // Remove category from dropdown list
             document.getElementById(`li-category-${category_id}`).remove();
+            document.getElementById(`floating-li-category-${category_id}`).remove();
 
         }else{
             alert(data['error']);

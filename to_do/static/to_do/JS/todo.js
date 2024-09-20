@@ -2,52 +2,141 @@ import { refreshFilterContent } from './filters.js';
 import { createTodo, updateTags, getTodo, updateTodo, deleteTodo} from './requests.js';
 import { buildTodoButtons, clearForm, removeEditButtons, 
     addEditButtons, addCompleted, removeCompletedCheckbox, restoreSaveButton,
-    deleteFloatingDialog
+    deleteFloatingDialog, hideTodoFloatingForm,
+    removeFloatingCompletedCheckbox,
+    addFloatingCompleted
 } from "./utils.js";
 
 let CURRENT_TODO_SELECTED = 0;
 
 //Listener to display category dropdown menu
 export function categoryDropdownClick(){
+    // Display category dropdown menu on the static to-do form
     let category_button = document.getElementById('category-dropdown-button');
     let dropdown_menu = document.getElementById('categories-dropdown-container');
     category_button.addEventListener('click',()=>{
         dropdown_menu.classList.toggle('active') ? dropdown_menu.classList.remove('hide') : dropdown_menu.classList.add('hide');
     })
+
+    // Display category dropdown menu on the floating to-do form
+    let floating_todo_category_button = document.getElementById('floating-category-dropdown-button');
+    let floating_todo_dropdown_menu = document.getElementById('floating-categories-dropdown-container');
+    floating_todo_category_button.addEventListener('click',()=>{
+        floating_todo_dropdown_menu.classList.toggle('active') ? floating_todo_dropdown_menu.classList.remove('hide') : floating_todo_dropdown_menu.classList.add('hide');
+    })
 }
 
 //Listener to change the text inside the category dropdown button each time the value inside the dropdown has changed
 export function categoryDropdownMenu(){
+    //Change the text on the static form 
     let categories_radio = document.querySelectorAll('input[name="category"]');
     let button = document.getElementById('category-dropdown-button');
     categories_radio.forEach(element => {
         element.addEventListener('click', ()=> {
             let label_text = document.getElementById('label-category-'+element.value);
             button.textContent = label_text.textContent;
+            
+            label_text = document.getElementById('floating-label-category-'+element.value);
+            floating_button.textContent = label_text.textContent;
+            selectFloatingCategoryDropdownInput(element.value);
         }); 
+    });
+
+    //Change the text on the floating 
+    let floating_categories_radio = document.querySelectorAll('input[name="floating-category"]');
+    let floating_button = document.getElementById('floating-category-dropdown-button');
+    floating_categories_radio.forEach(element => {
+        element.addEventListener('click', ()=> {
+            let label_text = document.getElementById('floating-label-category-'+element.value);
+            floating_button.textContent = label_text.textContent;
+
+            label_text = document.getElementById('label-category-'+element.value);
+            button.textContent = label_text.textContent;
+            selectCategoryDropdownInput(element.value);
+        }); 
+    });
+}
+
+function selectCategoryDropdownInput(element){
+    let input = document.querySelector('input[name="category"]:checked');
+    input.checked = false;
+    
+    input = document.getElementById(`category-${element}`);
+    input.checked = true;
+}
+
+function selectFloatingCategoryDropdownInput(element){
+    let input = document.querySelector('input[name="floating-category"]:checked');
+    input.checked = false;
+    
+    input = document.getElementById(`floating-category-${element}`);
+    input.checked = true;
+}
+
+//Listener to detected the changes on the inputs for the hour and time and adjust the style 
+export function dateHourTodoForm(){
+    document.querySelectorAll('.todo-form-date-hour input').forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.value) {
+                // Hide the placeholder text
+                this.classList.add('filled');
+            } else {
+                // Show the placeholder text
+                this.classList.remove('filled');
+            }
+        });
+        
+        if (input.value) {
+            // Hide the placeholder text
+            input.classList.add('filled');
+        }
+    });
+}
+
+export function addTodoClick(){
+    let add_todo_button = document.getElementById('mobile-add-todo');
+    add_todo_button.addEventListener('click', ()=>{
+        let todo_form = document.getElementById('todo-form');
+        if (todo_form.classList.contains('active') == false){
+            todo_form.classList.remove('hide');
+            todo_form.classList.add('active');
+        }  
+    });
+}
+
+//Listener to detect when the user cancel the to-do floating form
+export function todoCancelClick(){
+    let todo_floating_cancel = document.getElementById('cancel-todo');
+    todo_floating_cancel.addEventListener('click', ()=>{
+        hideTodoFloatingForm();
+        
+        if(CURRENT_TODO_SELECTED != 0){
+            unselectTodoDiv(CURRENT_TODO_SELECTED);
+            removeFloatingCompletedCheckbox();
+            CURRENT_TODO_SELECTED = 0;
+        }
     });
 }
 
 //Listener to create a to-do
 export function saveTodoClick(){
-    document.getElementById('save').addEventListener('click', (event)=>{
-        if (event.target.matches('#save-todo')) {
-            let todo = getTodoFromForm();
-            if (todo == false){
-                alert("Title and description are required");
-                return false;
-            }else{
-                createTodo(todo).then(data => {
-                    if(data['success']){
-                        refreshFilterContent();
-                        clearForm();
-                        alert('The to-do was added succesfully');
-                    }else{
-                        alert("We couldn't save your to-do");
-                        console.log(data['error']);
-                    }
-                }).catch(error => console.log(error));
-            }
+    //Listener to static form
+    document.getElementById('save-todo').addEventListener('click', ()=>{
+        let todo = getTodoFromForm();
+        if (todo == false){
+            alert("Title and description are required");
+            return false;
+        }else{
+            createTodo(todo).then(data => {
+                if(data['success']){
+                    refreshFilterContent();
+                    clearForm();
+                    alert('The to-do was added succesfully');
+                }else{
+                    alert("We couldn't save your to-do");
+                    console.log(data['error']);
+                }
+            }).catch(error => console.log(error));
         }
     });
 }
@@ -57,11 +146,21 @@ function getTodoFromForm(update = false) {
     //Get values in the form
     let name = document.getElementById('name').value;
     let description = document.getElementById('description').value;
-    let category = document.querySelector('input[name="category"]:checked').value;
-    let important = document.getElementById('important');
+    let category = null;
+    let important = null;
+    if(window.innerWidth < 850){
+        category = document.querySelector('input[name="floating-category"]:checked').value;
+        important = document.getElementById('floating-important');
+    }else{
+        category = document.querySelector('input[name="category"]:checked').value;
+        important = document.getElementById('important');
+
+    }
+
     important.checked ?
         important = 1 :
         important = 0;
+        
     let date = document.getElementById('date').value;
     let time = document.getElementById('time').value;
     
@@ -89,16 +188,28 @@ function getTodoFromForm(update = false) {
         todo['completed'] = completed
     }
 
+
+    console.log(todo);
+
     return todo;
 }
 
 //Function called when the edit button is pressed on a to-do
 export function updateTodoClick(button){
-    let todo_id = button.dataset.id;
-    getTodo(todo_id).then(data => {
-        let todo = data['todo'];
-        selectTodo(todo);
-    }).catch(error => console.log(error));
+    if(window.innerWidth >= 850){
+        let todo_id = button.dataset.id;
+        getTodo(todo_id).then(data => {
+            let todo = data['todo'];
+            selectTodo(todo);
+        }).catch(error => console.log(error));
+    }
+    else if(window.innerWidth < 850){
+        let todo_id = button.dataset.id;
+        getTodo(todo_id).then(data => {
+            let todo = data['todo'];
+            selectTodoCollapsedView(todo);
+        }).catch(error => console.log(error));
+    }
 }
 
 //Check if is necessary just select a todo or unselect and select, also call the function to fill the form
@@ -108,6 +219,13 @@ function selectTodo(todo){
     CURRENT_TODO_SELECTED = todo.id;
     selectTodoDiv(todo.id);
     fillFormUpdate(todo);
+}
+
+function selectTodoCollapsedView(todo){
+    if (CURRENT_TODO_SELECTED != 0) unselectTodoDiv(CURRENT_TODO_SELECTED);
+    CURRENT_TODO_SELECTED = todo.id;
+    selectTodoDiv(todo.id);
+    showFloatingUpdateForm(todo);
 }
 
 //Select a to-do for edit. Remove important and completed checkbox and add style to the current to-do selected. 
@@ -139,6 +257,28 @@ function unselectTodoDiv(todo_id){
 
     document.getElementById(`important${todo_id}`).disabled = false;
     document.getElementById(`completed${todo_id}`).disabled = false;
+}
+
+function showFloatingUpdateForm(todo){
+    let floatingForm = document.getElementById('floating-todo-form');
+    if(floatingForm.classList.contains('active') == false){
+        floatingForm.classList.remove('hide');
+        floatingForm.classList.add('active');
+    }
+
+    let saveButton = document.getElementById('save-floating-todo');
+    saveButton.style['display'] = 'none';
+
+    let editButton = document.getElementById('edit-floating-todo');
+    editButton.style['display'] = 'flex';
+
+    fillFloatingUpdateForm(todo);
+}
+
+function fillFloatingUpdateForm(todo){
+    removeCompletedCheckbox();
+    removeFloatingCompletedCheckbox();
+    addFloatingCompleted(todo.completed);
 }
 
 //Modified the create form to use it for update, and fill the inputs.
@@ -269,11 +409,18 @@ function verifyFilterTags(todo){
     
     const FILTERS = {
         'all': refreshTodo, //If the filter selected is all, just refresh to-do
-        'completed': removeUncompleted, //If the filter selected is completed, check if the to-do was marked as uncompleted and remove it
-        'important': removeUnimportant //If the filter selected is important, check if the to-do was marked as unimportant
+        'completed': removeUncompleted, //If the filter selected is completed, check if the to-do is marked as uncompleted and remove it
+        'important': removeUnimportant //If the filter selected is important, check if the to-do is marked as unimportant
     }
 
-    FILTERS[selectedFilter] ? FILTERS[selectedFilter](tags,todo.id) : refreshTodo(tags, todo.id)
+    refreshTodo(tags, todo.id);
+
+    setTimeout(()=>{
+        if (FILTERS[selectedFilter]){
+            FILTERS[selectedFilter](tags,todo.id)
+        }
+    }, 1000)
+
 }
 
 //Refresh the to-do title style according the attribute completed
@@ -298,6 +445,8 @@ function refreshTodo(tags, todo_id){
     else{
         titleDiv.append(titleTag);
     }
+
+
 }
 
 // Remove a to-do that doesn't belongs to to complete filter. First it remove the completed title style and with a delay, remove the to-do from the list.
@@ -313,13 +462,13 @@ function removeUncompleted(tags,todo_id){
 
         setTimeout(function (){
             document.getElementById(`to_do_element_${todo_id}`).remove();
-        }, 1000);
+        }, 300);
     }
 }
 
 // Remove a to-do that doesn't belongs to to important filter
 function removeUnimportant(tags,todo_id){
-    if (tags['important'] == false){
+    if (tags['important'] ==  false || tags['completed'] == true){
         setTimeout(function (){
             document.getElementById(`to_do_element_${todo_id}`).remove();
         }, 1000);

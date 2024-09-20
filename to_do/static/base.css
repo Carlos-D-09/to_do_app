@@ -4,13 +4,13 @@
     --todo-selected: #d1ebe8;
     --button-success-color: #81c784;
     --button-success-background: #eafae7;
-    --button-success-hover: #d0f5c9;
+    --button-success-hover: hwb(110 79% 4%);
     --button-info-color: #58a5c8;
-    --button-info-background: #bcedf1;
-    --button-info-hover: #a8edf3;
-    --button-danger-color: #e15959;
+    --button-info-background: #caedf0;
+    --button-info-hover: #bbeef3;
+    --button-danger-color: #e65252;
     --button-danger-background: #e6cec7;
-    --button-danger-hover: #ebbcae;
+    --button-danger-hover: #f3b9a7;
     --input-background: #d7edea;
     --input-placeholder: #bacfcc;
 }
@@ -202,7 +202,7 @@ body{
     font-weight: 530;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 850px) {
     .navbar-username{
         display: none !important;
     }

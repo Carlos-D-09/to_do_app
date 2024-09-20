@@ -16,12 +16,12 @@
     <div class="index-structure">
         <!-- Start Options with Filters (movil view) -->
         <div class="options-filters">
-            <div class="options-collapse">
-                <button class="button-rounded-layout success" id="movil-add-to-do">
+            <div class="options-collapse" id="options-collapse">
+                <button class="button-rounded-layout success" id="mobile-add-todo">
                     <i class="fa-solid fa-book"></i>
                     <p>Add to-do</p>
                 </button>
-                <button class="button-rounded-layout success" id="movil-add-category">
+                <button class="button-rounded-layout success" id="mobile-add-category">
                     <i class="fa-solid fa-circle-plus"></i>
                     <p>Add category</p>
                 </button>
@@ -244,14 +244,20 @@
         <!-- End to-do list -->
 
         <!-- Start form to create a todo -->
-        <div class="to_do_form">
-            <!-- Title and category -->
-            <div class="title">
+        <div class="todo-form" id="todo-form">
+            <!-- Header-->
+            <div class="todo-form-header">
+                <h2>Create a to-do</h2>
+            </div>
+            <!-- Title-->
+            <div class="todo-title">
+                <!-- Title input -->
                 <input class="title-input" type="text" name="name" id="name" placeholder="Title">
-                <div class="icon-center">
-                    <i class="fa-solid fa-layer-group fa-lg"></i>
-                </div>
-                <div>
+                <!-- Category -->
+                <div class="todo-form-category-dropdown">
+                    <div class="icon-center">
+                        <i class="fa-solid fa-layer-group fa-lg"></i>
+                    </div>
                     <button class="category-dropdown-button" id="category-dropdown-button">
                         Undefined
                     </button>
@@ -271,22 +277,61 @@
                         </ul>
                     </div>
                 </div>
+                <!-- Floating to-do form important -->
+                <div class="icon-center floating-todo-form-important">
+                    <input type="checkbox" class="important" name="floating-important" id="floating-important">
+                    <label for="floating-important"></label>
+                </div>
+            </div>
+            <!-- Floating todo form category -->
+            <div class="floating-todo-form-category-dropdown" id="floating-todo-form-category-dropdown">
+                <div class="floating-category-dropdown-icon">
+                    <i class="fa-solid fa-layer-group fa-lg"></i>
+                </div>
+                <button class="category-dropdown-button" id="floating-category-dropdown-button">
+                    Undefined
+                </button>
+                <div class="categories-dropdown-container hide" id="floating-categories-dropdown-container">
+                    <ul name="floating-category" id="floating-categories-dropdown" class="categories-dropdown">
+                        {% for category in categories %}
+                        <li id="floating-li-category-{{category['id']}}">
+                            {% if loop.index0 == 0 %}
+                                <input type="radio" name="floating-category" id="floating-category-{{category['id']}}" value="{{category['id']}}" checked>
+                                <label for="floating-category-{{category['id']}}" id="floating-label-category-{{category['id']}}">{{category['name']}}</label>
+                            {% else %}    
+                                <input type="radio" name="floating-category" id="floating-category-{{category['id']}}" value="{{category['id']}}">
+                                <label for="floating-category-{{category['id']}}" id="floating-label-category-{{category['id']}}">{{category['name']}}</label>
+                            {% endif %}    
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
             <!-- Date and hour -->
-            <div class="date-hour">
+            <div class="todo-form-date-hour">
                 <input type="date" name="date" id="date">
-                <input type="time" name="time" id="time">    
+                <label for="date">Date</label>
+                <input type="time" name="time" id="time"> 
+                <label for="time">Time</label> 
             </div>
             <!-- Description -->
-            <div class="description">
+            <div class="todo-form-description">
                 <textarea name="description" id="description" cols="100" rows="3" placeholder="Description"></textarea>
             </div>
             <!-- Important and Save -->
-            <div class="save" id="save">
-                <div class="icon-center" id="tags">
+            <div class="todo-form-buttons" id="save">
+                <div class="icon-center todo-form-important" id="tags">
                     <input type="checkbox" class="important" name="important" id="important">
                     <label for="important"></label>
                 </div>
+                <button class="button-layout danger edit-todo" id="edit-todo">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <p>Edit</p>
+                </button>
+                <button class="button-layout danger cancel-todo" id="cancel-todo">
+                    <i class="fa-solid fa-xmark"></i>
+                    <p>Cancel</p>
+                </button>
                 <button class="button-layout success" id="save-todo">
                     <i class="fa-regular fa-floppy-disk"></i>
                     <p>Save</p>
@@ -295,6 +340,7 @@
         </div>
         <!-- End form to create a todos -->
     </div>
+    <!-- Start floating category form -->
     <div class="floating-category-form" id="floating-category-form">
         <div class="category-form-title">
             <label for="category-form-title">Title:</label>
@@ -319,5 +365,4 @@
             </button>
         </div>
     </div>
-
 {% endblock %}

@@ -8,7 +8,7 @@
     column-gap: 20px;
 }
 
-/* Start options-filters */
+/* Start options-filters (Collapsed view)*/
 .options-filters{
   width: 100%;
   height: 100%;
@@ -21,8 +21,9 @@
 
 .options-collapse{
   height: 100%;
+  box-sizing: border-box;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   flex-flow: row nowrap;
   gap: 10px;
@@ -30,8 +31,8 @@
 }
 
 .options-collapse::-webkit-scrollbar{
-  height: 4px;
-  width: 9px;
+  height: 0px;
+  width: 0px;
   scroll-behavior: smooth;
 }
 
@@ -57,8 +58,8 @@
 }
 
 .filters-list-collapse::-webkit-scrollbar{
-  height: 4px;
-  width: 9px;
+  height: 0px;
+  width: 0px;
   scroll-behavior: smooth;
 }
 
@@ -108,7 +109,7 @@
   background-color: var(--navbar-color);
   color: var(--background-color);
 }
-/* End options-filters */
+/* End options-filters (Collapsed view)*/
 
 /* Start options */
 .options{
@@ -185,7 +186,7 @@
 
 .filters-list::-webkit-scrollbar{
   height: 4px;
-  width: 9px;
+  width: 7px;
 }
 
 .filters-list::-webkit-scrollbar-track{
@@ -556,7 +557,7 @@
 /* End to do list */
 
 /* Start to do form */
-.to_do_form{
+.todo-form{
   width: 100%;
   height: 100%;
   padding: 5px;
@@ -571,15 +572,28 @@
   grid-template-columns: [inputs] minmax(0px, 2fr) [options] minmax(0px,1.4fr);
   grid-auto-flow: dense;
   text-align: center;
-  overflow: hidden;
 }
 
 /* Hide Scroll bar */
-.to_do_form::-webkit-scrollbar{
+.todo-form::-webkit-scrollbar{
   display: none;
 }
 
-.title{
+.todo-form-header{
+  padding: 10px;
+  box-sizing: border-box;
+  color: var(--navbar-color);
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.todo-form-header h2{
+  margin: 0px;
+  text-align: left;
+}
+
+.todo-title{
   width: 100%;
   height: 90%;
   padding: 5px;
@@ -591,7 +605,7 @@
 }
 
 .title-input{
-  width: 60%;
+  width: 50%;
   height: 80%;
   padding-left: 10px;
   font-size: 1.2em;
@@ -612,11 +626,36 @@
   color: var(--navbar-color);
 }
 
-.category-dropdown-button{
-  min-width: 120px;
-  height: 85%;
-  margin: 0px;
+.floating-todo-form-category-dropdown{
   position: relative;
+  z-index: 2;
+  width: calc(100% - 20px);
+  height: 60px;
+  box-sizing: border-box;
+  padding-left: 5px;
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.todo-form-category-dropdown{
+  position: relative;
+  z-index: 2;
+  height: 85%;
+  box-sizing: border-box;
+  padding-left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.category-dropdown-button{
+  position: relative;
+  width: 120px;
+  height: 45px;
+  margin: 0px;
   display: flex;
   align-items: center;
   justify-content: left;
@@ -651,6 +690,10 @@
 }
 
 .categories-dropdown-container{
+  position: absolute;
+  z-index: 1;
+  bottom: 45px;
+  left: 70px;
   width: 200px;
   height: 180px;
   box-sizing: border-box;
@@ -658,14 +701,11 @@
   margin: 0px;
   padding: 0px;
   background-color: var(--input-background);
-  position: absolute;
-  z-index: 1;
   display: none;
   align-items: flex-start;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: scroll;
-
 }
 
 .categories-dropdown-container.active{
@@ -758,17 +798,22 @@
   justify-content: flex-start;
 }
 
-.description{
+.floating-todo-form-important{
+  display: none !important;
+}
+
+.todo-form-description{
   width: 100%;
   height: 100%;
   padding: 5px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: flex-start;
+  justify-content: flex-start;
   text-align: left;
 }
 
-.description textarea {
+.todo-form-description textarea {
   width: 100%;
   height: 68%;
   font-size: 1em;
@@ -780,30 +825,30 @@
   resize: none;
 }
 
-.description textarea::placeholder{
+.todo-form-description textarea::placeholder{
   color: var(--input-placeholder);
 }
 
-.description textarea:focus{
+.todo-form-description textarea:focus{
   outline: none;
 }
 
-.description textarea::-webkit-scrollbar{
+.todo-form-description textarea::-webkit-scrollbar{
   height: 4px;
   width: 7px;
 }
 
-.description textarea::-webkit-scrollbar-track{
+.todo-form-description textarea::-webkit-scrollbar-track{
   background-color: var(--input-placeholder);
   border-radius: 0px 8px 8px 0px;
 }
 
-.description textarea::-webkit-scrollbar-thumb{
+.todo-form-description textarea::-webkit-scrollbar-thumb{
   background-color: var(--navbar-color);
   border-radius: 0px 8px 8px 0px;
 }
 
-.date-hour{
+.todo-form-date-hour{
   margin: 5px;
   display: flex;
   flex-wrap: nowrap;
@@ -811,7 +856,11 @@
   gap: 2px
 }
 
-.date-hour input{
+.todo-form-date-hour label{
+  display: none;
+}
+
+.todo-form-date-hour input{
   padding: 0px;
   font-size: 1em;
   color: var(--navbar-color);
@@ -821,25 +870,29 @@
   padding: 10px;
 }
 
-.date-hour input::placeholder{
+.todo-form-date-hour input::placeholder{
   color: var(--input-placeholder);
 }
 
-.date-hour input:focus{
+.todo-form-date-hour input:focus{
   outline: none;
 }
 
-.save{
+.todo-form-buttons{
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-end;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 5px;
 }
 
-.save p{
-  margin: 0px 5px 0px 5px;
+.edit-todo{
+  display: none;
+}
+
+.cancel-todo{
+  display: none;
 }
 
 .icon-center{
@@ -992,7 +1045,9 @@
 .category-form-buttons p{
   padding-left: 5px;
 }
+/* End floating category form */
 
+/* Start floating dialog */
 .floating-dialog{
   width: 25%;
   height: 250px;
@@ -1043,15 +1098,20 @@
   flex-flow: row wrap;
   gap: 10px;
 }
-/* End floating category form */
+/* End floating dialog */
 
 @media (max-width: 1600px){
+  /* Adjust index grid structure to non-display the filter description in a third row */
   .index-structure{
     grid-template-columns: [filter] 1fr [activities] 3fr;
   }
+
+  /* Hide filter description */
   .info-panel{
     display: none;
   }
+
+  /* Create a grid to display the filter list and the filter description */
   .filters{
     box-sizing: border-box;
     grid-row: second / span 2;
@@ -1069,26 +1129,39 @@
     grid-row: description;
   }
 
+  /* Adjust category form size */
   .floating-category-form{
     width: 39%;
   }
 }
 
 @media (max-width: 1400px){
+  /* Adjust index grid size */
   .index-structure{
     grid-template-columns: [filter] 1fr [activities] 4fr;
   }
+
+  /* Adjust category form size */
   .floating-category-form{
     width: 45%;
     left: 29%;
   }
+
+  /* Adjust floating dialog size */
+  .floating-dialog{
+    width: 35% !important;
+    left: 35%;
+  }
 }
 
 @media (max-width: 1200px){
+  /* Modify index grid structure to adjust to the collapsed view */
   .index-structure{
     grid-template-columns: [activities] 100%;
     grid-template-rows: [first] 60px [second] 4fr [third] 1fr;
   }
+  
+  /* Hide the normal view filters and show collapsed filters */
   .filters{
     display: none;
   }
@@ -1098,13 +1171,18 @@
   .to_do_list{
     grid-row: second;
   }
+
   .options-filters{
     display: flex;
     grid-row: first;
   }
+
+  /* Hide the button to create a to-do */
   .options-collapse button:nth-child(1){
     display: none;
   }
+
+  /* Adjust floating category form */
   .floating-category-form{
     width: 50%;
     left: 24%;
@@ -1112,93 +1190,297 @@
 }
 
 @media (max-width: 960px){
+  /* Adjust the title input on the to-do form to the available space */
   .title-input{
     width: 50%;
   }
+
+  /* Adjust category form size */
   .floating-category-form{
     width: 60%;
     left: 19%;
   }
+
+  /* Adjust floating dialog size */
+  .floating-dialog{
+    width: 50% !important;
+    left: 25%;
+  }
 }
 
+
 @media (max-width: 850px){
+  /* Enable to move the overflow content to another row */
   .options-filters{
     flex-flow: row wrap;
     gap: 5px;
   }
+
+  /* Set the options container to use the 100% width */
   .options-collapse{
     width: 100%;
     height: 50%;
   }
+
+  /* Show the button to create a to-do */
   .options-collapse button:nth-child(1){
     display: flex;
   }
+  
+  /* Set the filters container to use the 100% width */
   .filters-list-collapse{
     width: 100%;
     height: 50%;
   }
-  .to_do_form{
+
+  /* Change to-do form position and structure*/
+  .todo-form{
+    width: 70%;
+    height: auto;
+    padding: 10px 10px 20px 10px;
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 1;
+    top: 30%;
+    left: 15%;
+    background-color: var(--background-color);
+    border-color: rgb(175, 175, 175);
+    box-shadow: 0px 4px 50px var(--navbar-color);
+    display: none;
+    grid-template-columns: [inputs] 65% [buttons] 30%;
+    grid-template-rows: [header] 50px [title] 50px [category] 50px [date-hour] 50px [description] 120px [buttons-row] 1fr;
+    gap: 10px;
+  }
+
+  .todo-form.active{
+    display: grid;
+    animation: show-floating-dialog 1s forwards;
+  }
+
+  .todo-form.hide{
+    display: grid;
+    animation: remove-floating-dialog 1s forwards;
+  }
+
+  .todo-form-header{
+    grid-column: inputs / buttons 2;
+    grid-row: header;
+    display: inline;
+  }
+
+  .todo-form-title{
+    grid-column: inputs / buttons 2;
+    grid-row: title;
+    width: calc(100% - 20px);
+    height: 60px;
+    align-content: start;
+    justify-content: start;
+    text-align: left;
+    flex-wrap: nowrap;
+  }
+
+  .title-input{
+    width: 70%;
+    height: 45px;
+  }
+
+  .floating-todo-form-important{
+    display: inline !important;
+  }
+
+  .todo-form-important{
+    display: none !important;
+  }
+
+  .todo-form-category-dropdown{
     display: none;
   }
+
+  .floating-todo-form-category-dropdown{
+    grid-column: inputs;
+    grid-row: category;
+    display: flex;
+  }
+
+  .categories-dropdown-container{
+    margin-bottom: 8px;
+    left: 40px;
+  }
+
+  .categories-dropdown-container::-webkit-scrollbar{
+    height: 4px;
+    width: 7px;
+  }
+
+  .categories-dropdown-container.active{
+    animation: show-todo-floating-category-dropdown 1s forwards;
+  }
+  
+  .categories-dropdown-container.hide{
+    animation: remove-todo-floating-category-dropdown 1s forwards;
+  }
+
+  .todo-form-date-hour{
+    grid-column: inputs / buttons 2;
+    grid-row: date-hour;
+    position: relative;
+    justify-content: flex-start;
+    gap: 5px;
+    overflow-x: auto;
+  }
+  
+  .todo-form-date-hour input{
+    position: relative;
+    width: 150px;
+  }
+
+  .todo-form-date-hour label {
+      display: inline;
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      transition: 0.2s ease all;
+      pointer-events: none;
+      font-weight: 500;
+      color: var(--input-placeholder);
+      overflow-x: auto;
+  }
+
+  .todo-form-date-hour input[type="time"] + label {
+    left: 185px;
+  }
+  
+  .todo-form-date-hour input[type="date"],
+  .todo-form-date-hour input[type="time"] {
+      color: transparent;
+      text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  .todo-form-date-hour input:focus + label,
+  .todo-form-date-hour input.filled + label{
+      top: -15px;
+      font-size: 12px;
+  }
+
+  .todo-form-date-hour input.filled{
+    color: var(--navbar-color);
+    text-shadow: 0 0 0;
+  }
+
+  .todo-form-date-hour::-webkit-scrollbar{
+    height: 4px;
+    width: 7px;
+  }
+
+  .todo-form-date-hour::-webkit-scrollbar-track{
+    background-color: var(--input-placeholder);
+    border-radius: 8px;
+  }
+  
+  .todo-form-date-hour::-webkit-scrollbar-thumb{
+    background-color: var(--navbar-color);
+    border-radius: 8px;
+  }
+
+  .todo-form-description{
+    grid-column: inputs / buttons 2;
+    grid-row: description;
+    width: 90%;
+  }
+
+  .todo-form-description textarea{
+    width: 100%;
+    height: calc(100% - 20px);
+  }
+
+  .todo-form-buttons{
+    grid-column: inputs / buttons 2;
+    grid-row: buttons-row;
+    width: calc(100% - 10px);
+    gap: 10px;
+  }
+
+  .cancel-todo{
+    display: flex;
+  }
+
+  /* End change todo form structure and position */
+
+  /* Adjust index grid structure */
   .index-structure{
     grid-template-rows: [first] 120px [second] 1fr;
   }
+
+  /* Start change to-do list style */
+  
+  /* List style */
   .to_do_list{
     border: 0px solid;
     box-shadow: 0px 0px 0px;
   }
   .to_do_list ul{
     gap: 10px;
+    margin: 20px 0px 20px 0px;
   } 
+
   .to_do_list::-webkit-scrollbar-track{
     border-radius: 8px;
   }
   .to_do_list::-webkit-scrollbar-thumb{
     border-radius: 8px;
   }
+
+  /* To-do element grid structure */
   .to_do_element{
     height: 200px;
     padding-top: 5px;
-    grid-template-columns: [column-start] 65% [column-end] 34%;
-    grid-template-rows: [title] 1fr [date] 30px [description] 2fr [options] 2fr;
+    grid-template-columns: [column-start] 60% [column-end] 39%;
+    grid-template-rows: [title] 1fr [description] 2fr [options] 2fr;
     gap: 0px;
   }
 
+  /* To-do title */
   .to_do_element_title{
     display: flex;
     align-items: center;
     justify-content: flex-start;
   }
 
+  /* To-do buttons delete and edit container */
   .to_do_element_options-2{
     grid-row: options;
     grid-column: column-end;
-    display: flex;
-    gap:5px;
-    align-items: flex-end;
-    justify-content: end;
+    align-items: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .to_do_element_options-2 button p{
+    display: none;
+  }
+
+  .to_do_element_options-2 button{
+    min-width: 10px;
+    max-width: 20px;
+    min-height: 10px;
+    max-height: 20px;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border: 0px solid;
+  }
+
+  .to_do_element_options-2 button i{
+    font-size: 1.5em;
+  }
+
+  /* To-do date */
+  .to_do_element_date{
+    grid-row: title;
+    grid-column: column-end;
+    align-items: center;
+    justify-content: flex-end;
   }
   
-  .to_do_element_options-2 p{
-    margin: 0px 5px 0px 5px;
-  }
-
-  .to_do_element_date{
-    padding-left: 10px;
-    grid-row: date;
-    grid-column: column-start;
-    align-items: center;
-    justify-content: flex-start;
-  }
-
-  .to_do_element_date p {
-    order: 2;
-  }
-
-  .to_do_element i{
-    order: 1;
-  }
-
+  /* To-do description */
   .to_do_element_description{
     grid-row: description;
     grid-column: column-start / span 2;
@@ -1210,6 +1492,7 @@
     white-space: nowrap;
   }
 
+  /* Change grid to flexbox to display the important, completed and category elements*/
   .grid-operations{
     max-width: 100%;
     gap: 10px;
@@ -1218,26 +1501,7 @@
     justify-content: center;
   }
 
-  .to_do_element_options-2{
-    grid-row: title;
-    grid-column: column-end;
-    align-items: flex-end;
-    align-items: flex-end;
-  }
-
-  .to_do_element_options-2 button p{
-    display: none;
-  }
-
-  .to_do_element_options-2 button{
-    max-width: 50px;
-    min-width: 50px;
-  }
-
-  .to_do_list ul{
-    margin: 20px 0px 20px 0px;
-  }
-
+  /* Completed container */
   .element1{
     width: 30px;
     height: 30px;
@@ -1245,6 +1509,12 @@
     align-items: center;
     justify-content: center;
   }
+
+  .element1 label p{
+    display: none;
+  }
+
+  /* Important container */
   .element2{
     width: 30px;
     height: 30px;
@@ -1252,35 +1522,61 @@
     align-items: center;
     justify-content: center;
   }
-  .element3{
-    height: 30px;
-  }
-  .element1 label p{
-    display: none;
-  }
+
   .element2 label p{
     display: none;
+  }
+
+  /* Category container */
+  .element3{
+    height: 30px;
   }
   .element3 label p{
     display: none;
   }
 
-  .floating-category-form{
-    width: 70%;
-    left: 14%;
-  }
+  /* End change to-do list style */
 }
 
 @media (max-width: 700px){
+  /* Adjust category form size */
   .floating-category-form{
     width: 80%;
     left: 9%;
   }
+
+  /* Adjust floating dialog size */
+  .floating-dialog{
+    width: 80% !important;
+    left: 10%;
+  }
+}
+
+@media (max-width: 650px){
+  .todo-form{
+    width: 80%;
+    left: 10%;
+  }
 }
 
 @media (max-width: 550px){
+  /* Adjust category form size */
   .floating-category-form{
     width: 90%;
     left: 4%;
+  }
+
+  /* Adjust floating dialog size */
+  .floating-dialog{
+    width: 90% !important;
+    left: 5%;
+    top: calc(50% - 100px);
+  }
+
+  @media (max-width: 650px){
+    .todo-form{
+      width: 95%;
+      left: 2.5%;
+    }
   }
 }

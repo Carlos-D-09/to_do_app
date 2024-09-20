@@ -1,5 +1,5 @@
 .button-rounded-layout{
-    max-width: 120px;
+    max-width: 130px;
     min-width: 80px;
     max-height: 55px;
     min-height: 50px;
@@ -14,7 +14,7 @@
 }
 
 .button-layout{
-    max-width: 120px;
+    max-width: 130px;
     min-width: 80px;
     max-height: 45px;
     min-height: 40px;
@@ -24,6 +24,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 5px;
 }
 
 .button-layout:hover,
@@ -42,20 +43,24 @@
     background-color: var(--button-success-hover);
 }
 
-.button-layout.info{
+.button-layout.info,
+.button-rounded-layout.info{
     background-color: var(--button-info-background);
     color: var(--button-info-color);
 }
 
-.button-layout.info:hover{
+.button-layout.info:hover,
+.button-rounded-layout.info:hover{
     background-color: var(--button-info-hover);
 }
 
-.button-layout.danger{
+.button-layout.danger,
+.button-rounded-layout.danger{
     background-color: var(--button-danger-background);
     color: var(--button-danger-color);
 }
 
-.button-layout.danger:hover{
+.button-layout.danger:hover,
+.button-rounded-layout.danger:hover{
     background-color: var(--button-danger-hover);
 }
